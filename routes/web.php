@@ -21,7 +21,7 @@ Route::get('/', function () {
 use App\Http\Controllers\FansController;
 Route::get('/fans', [FansController::class, 'index'])->name('fan.index');
 Route::get('/fans/create', [FansController::class, 'create'])->name('fan.create');
-Route::post('/fans', [FansController::class, 'store'])->name('fan.store');
+Route::post('/fans', [FansController::class, 'store2'])->name('fan.store');
 Route::get('/fans/{fan}', [FansController::class, 'show'])->name('fan.show');
 
 Route::get('/dashboard', function () {

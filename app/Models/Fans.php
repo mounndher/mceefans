@@ -11,8 +11,8 @@ class Fans extends Model
     use HasFactory;
 
 protected $fillable = [
-         'name', 'phone', 'card_number', 'email', 'qr_code', 'image', 'card_image'
-    ];
+    'name', 'email', 'phone', 'card_number', 'image', 'qr_code', 'card_image'
+];
 
 
   //  protected static function booted()

@@ -5,10 +5,11 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Fans;
 use Illuminate\Support\Facades\Storage;
-use Intervention\Image\ImageManagerStatic as Image;
 use Illuminate\Support\Str;
 use Carbon\Carbon;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
+use Intervention\Image\ImageManagerStatic as Image;
+
 class FansController extends Controller
 {
     //
@@ -146,6 +147,81 @@ public function store(Request $request)
         // Create Fan
         Fans::create($data);
            return back()->with('success', 'Fan created successfully!');
+
+    }
+public function store2(Request $request)
+{
+    // 1. Validate input
+    $request->validate([
+        'name' => 'required|string|max:255',
+        'phone' => 'required|string|max:20',
+        'card_number' => 'required|string|unique:fans,card_number',
+        'email' => 'required|email|unique:fans,email',
+        'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+    ]);
+
+    $data = $request->except('_token');
+
+    // 2. Handle profile image
+    if ($request->hasFile('image')) {
+        $file = $request->file('image');
+        $fileName = rand() . '_' . $file->getClientOriginalName();
+        $file->move(public_path('uploads'), $fileName);
+        $data['image'] = '/uploads/' . $fileName;
+    }
+
+    // 3. Generate QR code as proper PNG
+    $uniqueString = $data['card_number'] . '-' . Str::random(8);
+    $qrFileName = $data['card_number'].'_qr.png';
+    $uploadsFolder = public_path('uploads');
+    if (!file_exists($uploadsFolder)) mkdir($uploadsFolder, 0777, true);
+    $qrPath = $uploadsFolder . '/' . $qrFileName;
+
+    $pngData = \QrCode::format('png')->size(100)->generate($uniqueString);
+    file_put_contents($qrPath, $pngData);
+
+    $data['qr_code'] = '/uploads/' . $qrFileName;
+
+    // 4. Create virtual card (overlay QR + text)
+    $templatePath = public_path('images/card_template.png'); // your design template
+    $cardFileName = $data['card_number'].'_card.png';
+    $cardPath = $uploadsFolder . '/' . $cardFileName;
+
+    $card = imagecreatefrompng($templatePath);
+    $qr = imagecreatefrompng($qrPath);
+
+    // Copy QR to card
+    $qrWidth = imagesx($qr);
+    $qrHeight = imagesy($qr);
+    $cardWidth = imagesx($card);
+    $cardHeight = imagesy($card);
+
+    $destX = $cardWidth - $qrWidth - 20;
+    $destY = $cardHeight - $qrHeight - 20;
+    imagecopy($card, $qr, $destX, $destY, 0, 0, $qrWidth, $qrHeight);
+
+    // Write text: name and card number
+    $black = imagecolorallocate($card, 0, 0, 0);
+    $fontPath = public_path('fonts/arial.ttf');
+
+    imagettftext($card, 40, 0, 50, 50, $black, $fontPath, $data['name']);
+    imagettftext($card, 18, 0, 50, 90, $black, $fontPath, $data['card_number']);
+
+    // Save virtual card
+    imagepng($card, $cardPath);
+    imagedestroy($card);
+    imagedestroy($qr);
+
+    $data['card_image'] = '/uploads/' . $cardFileName;
+
+    // 5. Save fan
+    \App\Models\Fans::create($data);
+
+    return back()->with('success', 'Fan created successfully with virtual card!');
 }
+
+
+
+
 
 }
