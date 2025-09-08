@@ -19,8 +19,11 @@ Route::get('/', function () {
 });
 
 use App\Http\Controllers\FansController;
-Route::get('/cards', [FansController::class, 'index'])->name('cards.index');
-Route::resource('cards', FansController::class);
+Route::get('/fans', [FansController::class, 'index'])->name('fan.index');
+Route::get('/fans/create', [FansController::class, 'create'])->name('fan.create');
+Route::post('/fans', [FansController::class, 'store'])->name('fan.store');
+Route::get('/fans/{fan}', [FansController::class, 'show'])->name('fan.show');
+
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
