@@ -10,6 +10,7 @@ class Fans extends Model
 {
     use HasFactory;
 
+     protected $tableable='fans';
 protected $fillable = [
     'name', 'email', 'phone', 'card_number', 'image', 'qr_code', 'card_image'
 ];
