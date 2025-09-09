@@ -2,7 +2,9 @@
 
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
-
+//use App\Http\Controllers\FansController;
+ use App\Http\Controllers\admin\FansController;
+//use App\Http\Controllers\FansController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -15,14 +17,21 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('backend.dashboard');
 });
 
-use App\Http\Controllers\FansController;
-Route::get('/fans', [FansController::class, 'index'])->name('fan.index');
-Route::get('/fans/create', [FansController::class, 'create'])->name('fan.create');
-Route::post('/fans', [FansController::class, 'store2'])->name('fan.store');
-Route::get('/fans/{fan}', [FansController::class, 'show'])->name('fan.show');
+Route::get('/create', function () {
+    return view('backend.fans.create');
+});
+
+///// fans///////////////////////////////////
+Route::resource('fans/',FansController::class);
+
+
+//Route::get('/fanss', [FansController::class, 'index'])->name('fan.index');
+//Route::get('/fanss/create', [FansController::class, 'create'])->name('fan.create');
+///Route::post('/fanss', [FansController::class, 'store2'])->name('fan.store');
+//Route::get('/fanss/{fan}', [FansController::class, 'show'])->name('fan.show');
 
 Route::get('/dashboard', function () {
     return view('dashboard');
