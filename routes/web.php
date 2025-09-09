@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('backend.dashboard');
+    return view('dashboard');
 });
 
 Route::get('/create', function () {

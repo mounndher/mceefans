@@ -1,126 +1,72 @@
 @extends('backend.layouts.master')
-@section('content')
-<!-- Content wrapper -->
-<div class="content-wrapper">
-    <!-- Content -->
-    <div class="container-xxl flex-grow-1 container-p-y">
 
-        <!-- Existing dashboard cards ... -->
-
-        <!-- Users List Table -->
-        <div class="card mt-4">
-            <div class="card-body">
-                <!-- Filters -->
-                <form class="row g-3 mb-4">
-                    <div class="col-md-3">
-                        <select class="form-select" name="role">
-                            <option selected>Select Role</option>
-                            <option>Maintainer</option>
-                            <option>Subscriber</option>
-                            <option>Editor</option>
-                            <option>Author</option>
-                            <option>Admin</option>
-                        </select>
-                    </div>
-                    <div class="col-md-3">
-                        <select class="form-select" name="plan">
-                            <option selected>Select Plan</option>
-                            <option>Enterprise</option>
-                            <option>Basic</option>
-                            <option>Team</option>
-                        </select>
-                    </div>
-                    <div class="col-md-3">
-                        <select class="form-select" name="status">
-                            <option selected>Select Status</option>
-                            <option>Active</option>
-                            <option>Inactive</option>
-                            <option>Pending</option>
-                        </select>
-                    </div>
-                    <div class="col-md-3 d-flex justify-content-end">
-                        <button type="button" class="btn btn-danger"><i class="bx bx-plus"></i> Add New User</button>
-                    </div>
-                </form>
-                <!-- Search & Export -->
-                <div class="row mb-3">
-                    <div class="col-md-2">
-                        <select class="form-select">
-                            <option>10</option>
-                            <option>25</option>
-                            <option>50</option>
-                        </select>
-                    </div>
-                    <div class="col-md-7"></div>
-                    <div class="col-md-3 d-flex">
-                        <input type="text" class="form-control me-2" placeholder="Search User">
-                        <button class="btn btn-outline-secondary me-2"><i class="bx bx-export"></i> Export</button>
+@section('context')
+    <div class="page-body">
+        <div class="container-xl">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Course Languages</h3>
+                    <div class="card-actions">
+                        <a href="" class="btn btn-primary">
+                            <!-- Download SVG icon from http://tabler-icons.io/i/plus -->
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24"
+                                viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                <path d="M12 5l0 14"></path>
+                                <path d="M5 12l14 0"></path>
+                            </svg>
+                            Add new
+                        </a>
                     </div>
                 </div>
-                <!-- Table -->
-                <div class="table-responsive">
-                    <table class="table align-middle">
-                        <thead>
-                            <tr>
-                                <th><input type="checkbox"></th>
-                                <th>User</th>
-                                <th>Role</th>
-                                <th>Plan</th>
-                                <th>Billing</th>
-                                <th>Status</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <!-- Example Row -->
-                            <tr>
-                                <td><input type="checkbox"></td>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-vcenter card-table">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Slag</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                                <tr>
+                                <td>hhj</td>
+                                <td>{jhjh</td>
                                 <td>
-                                    <div class="d-flex align-items-center">
-                                        <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="avatar" class="rounded-circle me-2" width="36" height="36">
-                                        <div>
-                                            <span class="fw-bold text-primary" style="background:#7B61FF; color:#fff; border-radius:3px; padding:2px 6px;">Zsazsa McCleverty</span><br>
-                                            <small>zmcclevertye@soundcloud.com</small>
-                                        </div>
-                                    </div>
+                                    <a href="" class="btn-sm btn-primary">
+                                        <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-edit"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" /><path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z" /><path d="M16 5l3 3" /></svg>
+                                    </a>
+                                    <a href="{{ route('destroy/5') }} class="text-red delete-item">
+                                        <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-trash-x"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 7h16" /><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" /><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" /><path d="M10 12l4 4m0 -4l-4 4" /></svg>
+                                    </a>
                                 </td>
-                                <td><i class="bx bx-user-circle text-success"></i> Maintainer</td>
-                                <td>Enterprise</td>
-                                <td>Auto Debit</td>
-                                <td><span class="badge bg-success">Active</span></td>
-                                <td>
-                                    <button class="btn btn-sm btn-link text-danger"><i class="bx bx-trash"></i></button>
-                                    <button class="btn btn-sm btn-link text-secondary"><i class="bx bx-show"></i></button>
-                                    <button class="btn btn-sm btn-link text-secondary"><i class="bx bx-dots-vertical-rounded"></i></button>
-                                </td>
-                            </tr>
-                            <!-- Add more rows as needed, or loop over your users -->
-                        </tbody>
-                    </table>
-                </div>
-                <!-- Pagination -->
-                <div class="d-flex justify-content-between align-items-center mt-3">
-                    <span>Showing 1 to 10 of 100 entries</span>
-                    <nav>
-                        <ul class="pagination pagination-rounded mb-0">
-                            <li class="page-item disabled"><a class="page-link" href="#">‹</a></li>
-                            <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                            <li class="page-item"><a class="page-link" href="#">2</a></li>
-                            <li class="page-item"><a class="page-link" href="#">3</a></li>
-                            <li class="page-item"><a class="page-link" href="#">4</a></li>
-                            <li class="page-item"><a class="page-link" href="#">5</a></li>
-                            <li class="page-item"><a class="page-link" href="#">…</a></li>
-                            <li class="page-item"><a class="page-link" href="#">10</a></li>
-                            <li class="page-item"><a class="page-link" href="#">›</a></li>
-                        </ul>
-                    </nav>
+                                </tr>
+
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="mt-4">
+
+                    </div>
                 </div>
             </div>
         </div>
-        <!-- /Users List Table -->
-
-        <div class="content-backdrop fade"></div>
     </div>
-    <!-- Content wrapper -->
-</div>
 @endsection
+@section('scripts')
+ <script>
+        $('.delete-item').on('click', function(e) {
+    e.preventDefault();
+
+    let url = $(this).attr('href');
+    delete_url = url;
+
+    $('#modal-danger').modal("show");
+});
+    </script>
+@endsection
+
+
