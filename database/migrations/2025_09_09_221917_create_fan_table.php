@@ -13,12 +13,12 @@ return new class extends Migration
     {
         Schema::create('fan', function (Blueprint $table) {
             $table->id();
-            $table->decimal('id_qrcode');
+            $table->string('id_qrcode')->unique();
             $table->string('nom');
             $table->string('prenom');
             $table->text('image');
             $table->text('imagecart');
-            $table->decimal('nin',18,2);
+            $table->string('nin',18)->unique();
             $table->text('numero_tele');
             $table->date('date_de_nai');
             $table->text('card');

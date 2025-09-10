@@ -5,9 +5,9 @@
     <div class="container-xl">
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title">Fans List</h3>
+                <h3 class="card-title">Abonments List</h3>
                 <div class="card-actions">
-                    <a href="{{ route('fans.create') }}" class="btn btn-primary">
+                    <a href="{{ route('abonments.create') }}" class="btn btn-primary">
                         <!-- Plus icon -->
                         <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24"
                              viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
@@ -16,7 +16,7 @@
                             <path d="M12 5l0 14"></path>
                             <path d="M5 12l14 0"></path>
                         </svg>
-                        Add New Fan
+                        Add New Abonment
                     </a>
                 </div>
             </div>
@@ -26,26 +26,29 @@
                     <table class="table table-vcenter card-table">
                         <thead>
                             <tr>
-                                <th>ID QR</th>
                                 <th>Nom</th>
-                                <th>Prénom</th>
-                                <th>NIN</th>
-                                <th>Téléphone</th>
-                                <th>Date Naissance</th>
+                                <th>Prix</th>
+                                <th>Nombre de Match</th>
+                                <th>Design Card</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @forelse($fans as $fan)
+                            @forelse($abonments as $abonment)
                                 <tr>
-                                    <td>{{ $fan->id_qrcode }}</td>
-                                    <td>{{ $fan->nom }}</td>
-                                    <td>{{ $fan->prenom }}</td>
-                                    <td>{{ $fan->nin }}</td>
-                                    <td>{{ $fan->numero_tele }}</td>
-                                    <td>{{ $fan->date_de_nai }}</td>
+                                    <td>{{ $abonment->nom }}</td>
+                                    <td>{{ $abonment->prix }}</td>
+                                    <td>{{ $abonment->nbrmatch }}</td>
                                     <td>
-                                        <a href="{{ route('fans.edit', $fan->id) }}" class="btn-sm btn-primary">
+                                        @if($abonment->desgin_card)
+                                            <img src="{{ asset('uploads/abonments/'.$abonment->desgin_card) }}" width="80">
+                                        @else
+                                            No Image
+                                        @endif
+                                    </td>
+
+                                    <td>
+                                        <a href="{{ route('abonments.edit', $abonment->id) }}" class="btn-sm btn-primary">
                                             <!-- edit icon -->
                                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                                  viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -58,11 +61,12 @@
                                             </svg>
                                         </a>
 
-                                        <form action="" method="POST" style="display:inline;">
+                                        <form action="{{ route('abonments.destroy', $abonment->id) }}"
+                                              method="POST" style="display:inline;">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="btn-sm btn-danger"
-                                                onclick="return confirm('Are you sure to delete this fan?')">
+                                                onclick="return confirm('Are you sure to delete this abonment?')">
                                                 <!-- trash icon -->
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                                      viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -80,7 +84,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="7" class="text-center">No fans found</td>
+                                    <td colspan="6" class="text-center">No abonments found</td>
                                 </tr>
                             @endforelse
                         </tbody>

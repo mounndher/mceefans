@@ -5,14 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Abonment extends Model
+class TransactionPaimnt extends Model
 {
     use HasFactory;
-       protected $fillable = [
-        'nom',
+    protected $fillable = [
+        'id_fan',
+        'id_abonment',
+        'date',
         'prix',
         'nbrmatch',
-        'image',
-        'desgin_card',
     ];
 }

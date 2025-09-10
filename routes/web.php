@@ -3,8 +3,8 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 //use App\Http\Controllers\FansController;
- use App\Http\Controllers\admin\FansController;
-//use App\Http\Controllers\FansController;
+use App\Http\Controllers\Admin\FanController;
+use App\Http\Controllers\Admin\AbonmentsController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -25,9 +25,27 @@ Route::get('/create', function () {
 });
 
 ///// fans///////////////////////////////////
-Route::resource('fans/',FansController::class);
+Route::get('/fans', [FanController::class, 'index'])->name('fans.index');
 
+// فورم إنشاء فان جديد
+Route::get('/fans/create', [FanController::class, 'create'])->name('fans.create');
 
+// حفظ فان جديد
+Route::post('/fans', [FanController::class, 'store'])->name('fans.store');
+
+// عرض فان واحد بالتفصيل
+Route::get('/fans/{fan}', [FanController::class, 'show'])->name('fans.show');
+
+// فورم تعديل فان
+Route::get('/fans/{fan}/edit', [FanController::class, 'edit'])->name('fans.edit');
+
+// تحديث بيانات فان
+Route::put('/fans/{fan}', [FanController::class, 'update'])->name('fans.update');
+
+// حذف فان
+Route::delete('/fans/{fan}', [FanController::class, 'destroy'])->name('fans.destroy');
+
+Route::resource('abonments', AbonmentsController::class);
 //Route::get('/fanss', [FansController::class, 'index'])->name('fan.index');
 //Route::get('/fanss/create', [FansController::class, 'create'])->name('fan.create');
 ///Route::post('/fanss', [FansController::class, 'store2'])->name('fan.store');
