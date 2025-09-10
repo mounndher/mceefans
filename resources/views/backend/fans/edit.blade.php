@@ -88,6 +88,17 @@
                         <x-input-error :messages="$errors->get('imagecart')" class="mt-2" />
                     </div>
 
+                    <div class="mb-3">
+                        <label class="form-label">card</label><br>
+                        @if ($fan->card)
+                        <img src="{{ asset($fan->card) }}" width="100" class="mb-2">
+                        @endif
+                        <input type="file" class="form-control" name="card">
+                        <x-input-error :messages="$errors->get('card')" class="mt-2" />
+                    </div>
+                    
+                    
+
 
                     <div class="mb-3">
                         <button class="btn btn-primary" type="submit">

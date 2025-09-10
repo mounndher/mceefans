@@ -172,8 +172,11 @@ public function store(Request $request)
 
     // ✅ Get abonment template from public/templates folder
     $abonment = Abonment::findOrFail($request->id_abonment);
-    $templatePath = public_path('templates/' . $abonment->desgin_card); // <--- ensure templates/ folder
+  //  $templatePath = public_path('templates/' . $abonment->desgin_card); // <--- ensure templates/ folder
+   // $templatePath = storage_path('app/public/card_templates/card_base.png');
+    $templatePath = public_path('card_templates/card_base.png');
 
+    //dd(file_exists($templatePath), $templatePath);
     if (!file_exists($templatePath)) {
         return back()->withErrors(['desgin_card' => 'Card template not found at: '.$templatePath]);
     }
