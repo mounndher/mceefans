@@ -5,6 +5,8 @@ use Illuminate\Support\Facades\Route;
 //use App\Http\Controllers\FansController;
 use App\Http\Controllers\Admin\FanController;
 use App\Http\Controllers\Admin\AbonmentsController;
+use App\Http\Controllers\Admin\EventController;
+use App\Http\Controllers\Admin\PaimntstController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -46,6 +48,9 @@ Route::put('/fans/{fan}', [FanController::class, 'update'])->name('fans.update')
 Route::delete('/fans/{fan}', [FanController::class, 'destroy'])->name('fans.destroy');
 
 Route::resource('abonments', AbonmentsController::class);
+Route::resource('events', EventController::class);
+Route::resource('Paimnts', PaimntstController::class);
+
 //Route::get('/fanss', [FansController::class, 'index'])->name('fan.index');
 //Route::get('/fanss/create', [FansController::class, 'create'])->name('fan.create');
 ///Route::post('/fanss', [FansController::class, 'store2'])->name('fan.store');

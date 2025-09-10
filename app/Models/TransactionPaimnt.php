@@ -15,4 +15,13 @@ class TransactionPaimnt extends Model
         'prix',
         'nbrmatch',
     ];
+    public function fan()
+    {
+        return $this->belongsTo(Fan::class, 'id_fan');
+    }
+
+    public function abonment()
+    {
+        return $this->belongsTo(Abonment::class, 'id_abonment');
+    }
 }

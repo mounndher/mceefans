@@ -133,23 +133,25 @@ public function store(Request $request)
 {
     // ✅ Validate input
     $validated = $request->validate([
-        'nom'          => 'required|string',
-        'prenom'       => 'required|string',
-        'nin'          => 'required|unique:fan|size:18',
-        'numero_tele'  => 'required',
+        'nom'          => 'required|string|max:255',
+        'prenom'       => 'required|string|max:255',
+        'nin'          => 'required|string|size:18|unique:fan,nin',
+        'numero_tele'  => 'required|string|max:20',
         'date_de_nai'  => 'required|date',
         'image'        => 'required|image|mimes:jpg,jpeg,png|max:2048',
         'id_abonment'  => 'required|exists:abonments,id',
     ]);
 
     $uploadsFolder = public_path('uploads');
-    if (!file_exists($uploadsFolder)) mkdir($uploadsFolder, 0777, true);
+    if (!file_exists($uploadsFolder)) {
+        mkdir($uploadsFolder, 0777, true);
+    }
 
-    // ✅ Generate random ID for fan
+    // ✅ Generate random ID for QR code data
     $randomId = $validated['nom'] . '-' . Str::random(6);
     $validated['id_qrcode'] = $randomId;
 
-    // ✅ Generate QR code
+    // ✅ Generate QR code (150px size)
     $qrFileName = $randomId . '_qr.png';
     $qrPath = $uploadsFolder . '/' . $qrFileName;
     $pngData = QrCode::format('png')->size(150)->generate($randomId);
@@ -157,36 +159,22 @@ public function store(Request $request)
     $validated['qr_img'] = '/uploads/' . $qrFileName;
 
     // ✅ Upload profile image
-    if ($request->hasFile('image')) {
-        $file = $request->file('image');
-        $fileName = uniqid().'_'.$file->getClientOriginalName();
-        $file->move($uploadsFolder, $fileName);
-        $validated['image'] = '/uploads/'.$fileName;
-    }
-    if ($request->hasFile('imagecart')) {
-        $file = $request->file('imagecart');
-        $fileName = uniqid().'_'.$file->getClientOriginalName();
-        $file->move($uploadsFolder, $fileName);
-        $validated['imagecart'] = '/uploads/'.$fileName;
+    $profileFile = $request->file('image');
+    $profileFileName = uniqid() . '_' . $profileFile->getClientOriginalName();
+    $profileFile->move($uploadsFolder, $profileFileName);
+    $validated['image'] = '/uploads/' . $profileFileName;
+
+    // ✅ Load card template
+    $cardTemplatePath = public_path('card_templates/card_base.png'); // تأكد من مسار القالب ودقته
+    if (!file_exists($cardTemplatePath)) {
+        return back()->withErrors(['desgin_card' => 'Card template not found']);
     }
 
-    // ✅ Get abonment template from public/templates folder
-    $abonment = Abonment::findOrFail($request->id_abonment);
-  //  $templatePath = public_path('templates/' . $abonment->desgin_card); // <--- ensure templates/ folder
-   // $templatePath = storage_path('app/public/card_templates/card_base.png');
-    $templatePath = public_path('card_templates/card_base.png');
-
-    //dd(file_exists($templatePath), $templatePath);
-    if (!file_exists($templatePath)) {
-        return back()->withErrors(['desgin_card' => 'Card template not found at: '.$templatePath]);
-    }
-
-    // ✅ Create virtual card
-    $card = imagecreatefrompng($templatePath);
+    $card = imagecreatefrompng($cardTemplatePath);
     $cardWidth = imagesx($card);
     $cardHeight = imagesy($card);
 
-    // Insert QR code
+    // ✅ Insert QR code on card (bottom left with 30px margin)
     $qr = imagecreatefrompng($qrPath);
     $qrWidth = imagesx($qr);
     $qrHeight = imagesy($qr);
@@ -195,15 +183,18 @@ public function store(Request $request)
     imagecopy($card, $qr, $qrX, $qrY, 0, 0, $qrWidth, $qrHeight);
     imagedestroy($qr);
 
-    // Insert profile image
-    $profileImgPath = public_path($validated['image']);
-    $profileExt = strtolower(pathinfo($profileImgPath, PATHINFO_EXTENSION));
-    if (in_array($profileExt, ['jpg', 'jpeg'])) {
-        $profile = imagecreatefromjpeg($profileImgPath);
-    } elseif ($profileExt === 'png') {
-        $profile = imagecreatefrompng($profileImgPath);
-    } else {
-        $profile = imagecreatefromjpeg($profileImgPath);
+    // ✅ Insert profile image (scaled to 120x120, top right corner with margin)
+    $profileImagePath = public_path($validated['image']);
+    $profileExt = strtolower(pathinfo($profileImagePath, PATHINFO_EXTENSION));
+    switch ($profileExt) {
+        case 'png':
+            $profile = imagecreatefrompng($profileImagePath);
+            break;
+        case 'jpg':
+        case 'jpeg':
+        default:
+            $profile = imagecreatefromjpeg($profileImagePath);
+            break;
     }
     $profile = imagescale($profile, 120, 120);
     $profileX = $cardWidth - 150;
@@ -211,32 +202,55 @@ public function store(Request $request)
     imagecopy($card, $profile, $profileX, $profileY, 0, 0, 120, 120);
     imagedestroy($profile);
 
-    // Add texts
+    // ✅ Text color & font
     $black = imagecolorallocate($card, 0, 0, 0);
     $fontPath = public_path('fonts/arial.ttf');
 
-    // Name
-    $nameText = $validated['nom'] . ' ' . $validated['prenom'];
+    // ✅ Add texts with positions (يمكن تعديل المواقع حسب التصميم)
+
+    // Full name (centered horizontally)
+    $nameText = strtoupper($validated['nom'] . ' ' . $validated['prenom']);
     $nameBox = imagettfbbox(28, 0, $fontPath, $nameText);
     $nameX = ($cardWidth - ($nameBox[2] - $nameBox[0])) / 2;
     $nameY = 250;
     imagettftext($card, 28, 0, $nameX, $nameY, $black, $fontPath, $nameText);
 
-    // NIN
+    // NIN (centered)
     $ninText = $validated['nin'];
     $ninBox = imagettfbbox(20, 0, $fontPath, $ninText);
     $ninX = ($cardWidth - ($ninBox[2] - $ninBox[0])) / 2;
     $ninY = $nameY + 50;
     imagettftext($card, 20, 0, $ninX, $ninY, $black, $fontPath, $ninText);
 
-    // Numero telephone
+    // Phone number (centered)
     $telText = $validated['numero_tele'];
     $telBox = imagettfbbox(20, 0, $fontPath, $telText);
     $telX = ($cardWidth - ($telBox[2] - $telBox[0])) / 2;
     $telY = $ninY + 40;
     imagettftext($card, 20, 0, $telX, $telY, $black, $fontPath, $telText);
 
-    // Save card
+    // Activity or Role (مثلاً "DÉVELOPPEUR(SE) MOBILE")
+    $activityText = 'DÉVELOPPEUR(SE) MOBILE'; // ممكن تعديلها إلى متغير مدخل
+    $activityBox = imagettfbbox(18, 0, $fontPath, $activityText);
+    $activityX = 30;
+    $activityY = $telY + 60;
+    imagettftext($card, 18, 0, $activityX, $activityY, $black, $fontPath, $activityText);
+
+    // تاريخ الإصدار - مثال في يمين البطاقة
+    $dateIssue = 'Date d\'émission : ' . date('d.m.Y');
+    $dateIssueBox = imagettfbbox(16, 0, $fontPath, $dateIssue);
+    $dateIssueX = $cardWidth - ($dateIssueBox[2] - $dateIssueBox[0]) - 30;
+    $dateIssueY = $cardHeight - 70;
+    imagettftext($card, 16, 0, $dateIssueX, $dateIssueY, $black, $fontPath, $dateIssue);
+
+    // تاريخ الصلاحية - مثال أسفل يمين البطاقة
+    $dateValid = 'Valide jusqu\'au : ' . date('d.m.Y', strtotime('+5 years'));
+    $dateValidBox = imagettfbbox(16, 0, $fontPath, $dateValid);
+    $dateValidX = $cardWidth - ($dateValidBox[2] - $dateValidBox[0]) - 30;
+    $dateValidY = $cardHeight - 40;
+    imagettftext($card, 16, 0, $dateValidX, $dateValidY, $black, $fontPath, $dateValid);
+
+    // ✅ Save final card image
     $cardFileName = $randomId . '_card.png';
     $cardPath = $uploadsFolder . '/' . $cardFileName;
     imagepng($card, $cardPath);
@@ -244,10 +258,11 @@ public function store(Request $request)
 
     $validated['card'] = '/uploads/' . $cardFileName;
 
-    // ✅ Create fan
+    // ✅ Save fan data to DB
     $fan = Fan::create($validated);
 
-    // ✅ Create transaction
+    // ✅ Create associated transaction (تأكد من وجود الموديل والحقول)
+    $abonment = Abonment::findOrFail($request->id_abonment);
     TransactionPaimnt::create([
         'id_fan'      => $fan->id,
         'id_abonment' => $abonment->id,
@@ -259,6 +274,7 @@ public function store(Request $request)
     return redirect()->route('fans.index')
         ->with('success', 'Fan created successfully with virtual card and transaction.');
 }
+
 
 
 
