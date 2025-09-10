@@ -19,5 +19,6 @@ class fan extends Model
         'numero_tele',
         'date_de_nai',
         'card',
+        'qr_img'
     ];
 }

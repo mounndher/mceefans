@@ -1,12 +1,14 @@
 <?php
 
 namespace App\Http\Controllers\Admin;
-
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Fan;
 use App\Models\TransactionPaimnt;
 use App\Models\Abonment;
+use Illuminate\Support\Str;
+use Carbon\Carbon;
 class FanController extends Controller
 {
 
@@ -61,34 +63,52 @@ class FanController extends Controller
 
     return redirect()->route('fans.index')->with('success', 'Fan created successfully with payment transaction.');
 }
+
+
+
 public function store(Request $request)
 {
     // ✅ Validate input
     $validated = $request->validate([
-        'id_qrcode'    => 'required|unique:fan',
         'nom'          => 'required|string',
         'prenom'       => 'required|string',
         'nin'          => 'required|unique:fan|size:18',
         'numero_tele'  => 'required',
         'date_de_nai'  => 'required|date',
-        'image'        => 'nullable|image|mimes:jpg,jpeg,png',
-        'imagecart'    => 'nullable|image|mimes:jpg,jpeg,png',
-        'card'         => 'nullable|string',
+        'image'        => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         'id_abonment'  => 'required|exists:abonments,id',
     ]);
 
-    // ✅ Split fan data (exclude id_abonment)
-    $fanData = $request->only([
-        'id_qrcode', 'nom', 'prenom', 'nin',
-        'numero_tele', 'date_de_nai', 'image', 'imagecart', 'card'
-    ]);
+    $uploadsFolder = public_path('uploads');
+    if (!file_exists($uploadsFolder)) mkdir($uploadsFolder, 0777, true);
 
-    $fan = Fan::create($fanData);
+    // ✅ Generate random ID for fan and save in id_qrcode
+    $randomId = $validated['nom'] . '-' . Str::random(6);
+    $validated['id_qrcode'] = $randomId;
 
-    // ✅ Get abonment
+    // ✅ Generate QR code
+    $qrFileName = $randomId . '_qr.png';
+    $qrPath = $uploadsFolder . '/' . $qrFileName;
+
+    $pngData = QrCode::format('png')->size(150)->generate($randomId);
+    file_put_contents($qrPath, $pngData);
+
+    // Save QR code path in card column
+    $validated['qr_img'] = '/uploads/' . $qrFileName;
+
+    // ✅ Upload profile image if exists
+    if ($request->hasFile('image')) {
+        $file = $request->file('image');
+        $fileName = uniqid().'_'.$file->getClientOriginalName();
+        $file->move($uploadsFolder, $fileName);
+        $validated['image'] = '/uploads/'.$fileName;
+    }
+
+    // ✅ Create fan
+    $fan = Fan::create($validated);
+
+    // ✅ Create transaction
     $abonment = Abonment::findOrFail($request->id_abonment);
-    //dd($fan->id);
-    // ✅ Insert transaction
     TransactionPaimnt::create([
         'id_fan'      => $fan->id,
         'id_abonment' => $abonment->id,
@@ -98,8 +118,10 @@ public function store(Request $request)
     ]);
 
     return redirect()->route('fans.index')
-                     ->with('success', 'Fan created successfully with payment transaction.');
+                     ->with('success', 'Fan created successfully with random QR code and transaction.');
 }
+
+
 
 
 
