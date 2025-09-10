@@ -1,6 +1,15 @@
 @extends('backend.layouts.master')
 
 @section('context')
+@if ($errors->any())
+    <div class="alert alert-danger">
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
 <div class="page-body">
     <div class="container-xl">
         <div class="card">
@@ -24,7 +33,7 @@
                 <form action="{{ route('fans.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
 
-                   
+
 
                     <div class="mb-3">
                         <label class="form-label">Nom</label>
@@ -60,6 +69,11 @@
                         <label class="form-label">Image</label>
                         <input type="file" class="form-control" name="image">
                         @error('image') <div class="text-danger small">{{ $message }}</div> @enderror
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Image DE CCART NATIONAL</label>
+                        <input type="file" class="form-control" name="imagecart">
+                        @error('imagecart') <div class="text-danger small">{{ $message }}</div> @enderror
                     </div>
 
                     <div class="mb-3">

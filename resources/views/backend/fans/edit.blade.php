@@ -81,12 +81,13 @@
 
                     <div class="mb-3">
                         <label class="form-label">Image Cart</label><br>
-                        @if ($fan->imagecart)
-                        <img src="{{ asset('uploads/fans/'.$fan->imagecart) }}" width="100" class="mb-2">
+                        @if (isset($fan) && $fan->imagecart)
+                        <img src="{{ asset($fan->imagecart) }}" width="100" class="mb-2">
                         @endif
                         <input type="file" class="form-control" name="imagecart">
                         <x-input-error :messages="$errors->get('imagecart')" class="mt-2" />
                     </div>
+
 
                     <div class="mb-3">
                         <button class="btn btn-primary" type="submit">
@@ -105,4 +106,3 @@
     </div>
 </div>
 @endsection
-
