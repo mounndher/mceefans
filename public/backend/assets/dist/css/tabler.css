@@ -16799,7 +16799,8 @@ Navbar vertical
     color: inherit;
   }
   .navbar-vertical.navbar-expand-sm .navbar-collapse .dropdown-menu .dropdown-item.active, .navbar-vertical.navbar-expand-sm .navbar-collapse .dropdown-menu .dropdown-item:active {
-    background: var(--tblr-navbar-active-bg);
+     background-color: #3bab63 !important; /* your green */
+    color: #fff !important; /* white text */
   }
   .navbar-vertical.navbar-expand-sm .navbar-collapse .dropdown-menu .dropdown-menu .dropdown-item {
     padding-left: calc(calc(calc(var(--tblr-page-padding) * 2) / 2) + 3.25rem);

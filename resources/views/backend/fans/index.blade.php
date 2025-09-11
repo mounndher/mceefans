@@ -9,9 +9,7 @@
                 <div class="card-actions">
                     <a href="{{ route('fans.create') }}" class="btn btn-primary">
                         <!-- Plus icon -->
-                        <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24"
-                             viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
-                             stroke-linecap="round" stroke-linejoin="round">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
                             <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
                             <path d="M12 5l0 14"></path>
                             <path d="M5 12l14 0"></path>
@@ -37,51 +35,54 @@
                         </thead>
                         <tbody>
                             @forelse($fans as $fan)
-                                <tr>
-                                    <td>{{ $fan->id_qrcode }}</td>
-                                    <td>{{ $fan->nom }}</td>
-                                    <td>{{ $fan->prenom }}</td>
-                                    <td>{{ $fan->nin }}</td>
-                                    <td>{{ $fan->numero_tele }}</td>
-                                    <td>{{ $fan->date_de_nai }}</td>
-                                    <td>
-                                        <a href="{{ route('fans.edit', $fan->id) }}" class="btn-sm btn-primary">
-                                            <!-- edit icon -->
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                                 viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                                 class="icon icon-tabler icon-tabler-edit">
-                                                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                                                <path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" />
-                                                <path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z" />
-                                                <path d="M16 5l3 3" />
-                                            </svg>
-                                        </a>
+                            <tr>
+                                <td>{{ $fan->id_qrcode }}</td>
+                                <td>{{ $fan->nom }}</td>
+                                <td>{{ $fan->prenom }}</td>
+                                <td>{{ $fan->nin }}</td>
+                                <td>{{ $fan->numero_tele }}</td>
+                                <td>{{ $fan->date_de_nai }}</td>
+                                <td>
+                                    <!-- ✅ Show button -->
+                                    <a href="{{ route('fans.show', $fan->id) }}" class="btn-sm btn-info">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icon-tabler-eye">
+                                            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                            <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+                                            <path d="M21 12c-2.4 4 -5.4 6 -9 6s-6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6s6.6 2 9 6" />
+                                        </svg>
+                                    </a>
 
-                                        <form action="" method="POST" style="display:inline;">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="btn-sm btn-danger"
-                                                onclick="return confirm('Are you sure to delete this fan?')">
-                                                <!-- trash icon -->
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                                     viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                     stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                                     class="icon icon-tabler icon-tabler-trash-x">
-                                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                                                    <path d="M4 7h16" />
-                                                    <path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" />
-                                                    <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" />
-                                                    <path d="M10 12l4 4m0 -4l-4 4" />
-                                                </svg>
-                                            </button>
-                                        </form>
-                                    </td>
-                                </tr>
+                                    <!-- ✅ Edit button -->
+                                    <a href="{{ route('fans.edit', $fan->id) }}" class="btn-sm btn-primary">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icon-tabler-edit">
+                                            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                            <path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" />
+                                            <path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z" />
+                                            <path d="M16 5l3 3" />
+                                        </svg>
+                                    </a>
+
+                                    <!-- ✅ Delete button -->
+                                    <form action="{{ route('fans.destroy', $fan->id) }}" method="POST" style="display:inline;">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn-sm btn-danger" onclick="return confirm('Are you sure to delete this fan?')">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icon-tabler-trash-x">
+                                                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                                <path d="M4 7h16" />
+                                                <path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" />
+                                                <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" />
+                                                <path d="M10 12l4 4m0 -4l-4 4" />
+                                            </svg>
+                                        </button>
+                                    </form>
+                                </td>
+
+                            </tr>
                             @empty
-                                <tr>
-                                    <td colspan="7" class="text-center">No fans found</td>
-                                </tr>
+                            <tr>
+                                <td colspan="7" class="text-center">No fans found</td>
+                            </tr>
                             @endforelse
                         </tbody>
                     </table>

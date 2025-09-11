@@ -1,3 +1,47 @@
+<style>
+    /* ✅ Sidebar background color */
+    .navbar-vertical {
+        background-color: #04430c !important;
+    }
+
+    /* ✅ Nav links (default state) */
+    .navbar-vertical .nav-link {
+        color: #ffffff !important; /* white text */
+    }
+
+    /* ✅ Nav links hover */
+    .navbar-vertical .nav-link:hover,
+    .navbar-vertical .nav-link:focus {
+        background-color: #04430c !important; /* darker green */
+        color: #ffffff !important;
+    }
+
+    /* ✅ Active link */
+    .navbar-vertical .nav-link.active {
+        background-color: #04430c !important; /* even darker for active */
+        color: #ffffff !important;
+        font-weight: bold;
+    }
+
+    /* ✅ Dropdown menu inside sidebar */
+    .navbar-vertical .dropdown-menu {
+        background-color: #04430c !important;
+    }
+
+    .navbar-vertical .dropdown-item {
+        color: #ffffff !important;
+    }
+
+    .navbar-vertical .dropdown-item:hover {
+        background-color: #04430c !important;
+    }
+
+    /* ✅ Icons inside links */
+    .navbar-vertical .nav-link-icon svg {
+        stroke: #ffffff !important;
+    }
+</style>
+
 <aside class="navbar navbar-vertical navbar-expand-lg" data-bs-theme="dark">
         <div class="container-fluid">
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#sidebar-menu" aria-controls="sidebar-menu" aria-expanded="false" aria-label="Toggle navigation">
@@ -213,9 +257,9 @@
                   </span>
                 </a>
               </li>
-              
+
 
             </ul>
           </div>
         </div>
-      </aside>
+</aside>

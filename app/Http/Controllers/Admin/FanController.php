@@ -139,6 +139,7 @@ public function store(Request $request)
         'numero_tele'  => 'required|string|max:20',
         'date_de_nai'  => 'required|date',
         'image'        => 'required|image|mimes:jpg,jpeg,png|max:2048',
+        'imagecart'        => 'required|image|mimes:jpg,jpeg,png|max:2048',
         'id_abonment'  => 'required|exists:abonments,id',
     ]);
 
@@ -163,9 +164,15 @@ public function store(Request $request)
     $profileFileName = uniqid() . '_' . $profileFile->getClientOriginalName();
     $profileFile->move($uploadsFolder, $profileFileName);
     $validated['image'] = '/uploads/' . $profileFileName;
+    //
+    $profileFile = $request->file('imagecart');
+    $profileFileName = uniqid() . '_' . $profileFile->getClientOriginalName();
+    $profileFile->move($uploadsFolder, $profileFileName);
+    $validated['imagecart'] = '/uploads/' . $profileFileName;
+
 
     // ✅ Load card template
-    $cardTemplatePath = public_path('card_templates/card_base.png'); // تأكد من مسار القالب ودقته
+    $cardTemplatePath = public_path('card_templates/generated-image.png'); // تأكد من مسار القالب ودقته
     if (!file_exists($cardTemplatePath)) {
         return back()->withErrors(['desgin_card' => 'Card template not found']);
     }
@@ -288,21 +295,51 @@ public function store(Request $request)
         $fan = Fan::findOrFail($id);
         return view('backend.fans.edit',compact('fan'));
     }
+    public function show($id)
+    {
+        $fan = Fan::findOrFail($id);
+        return view('backend.fans.show',compact('fan'));
+    }
 
     // Update fan
     public function update(Request $request, $id)
     {
         $fan = Fan::findOrFail($id);
 
+        // Validate input
         $validated = $request->validate([
-            'id_qrcode'    => 'sometimes|unique:fan,id_qrcode,' . $fan->id,
-            'nin'          => 'sometimes|unique:fan,nin,' . $fan->id,
-            'date_de_nai'  => 'sometimes|date',
+            'nom'          => 'required|string|max:255',
+            'prenom'       => 'required|string|max:255',
+            'nin'          => 'required|string|size:18|unique:fan,nin,'.$fan->id,
+            'numero_tele'  => 'required|string|max:20',
+            'date_de_nai'  => 'required|date',
+            'image'        => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'imagecart'    => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
-        $fan->update($request->all());
+        $uploadsFolder = public_path('uploads');
+        if (!file_exists($uploadsFolder)) {
+            mkdir($uploadsFolder, 0777, true);
+        }
 
-        return response()->json(['message' => 'Fan updated successfully', 'data' => $fan]);
+        // Handle profile image upload if exists
+        if ($request->hasFile('image')) {
+            $file = $request->file('image');
+            $fileName = uniqid().'_'.$file->getClientOriginalName();
+            $file->move($uploadsFolder, $fileName);
+            $validated['image'] = '/uploads/'.$fileName;
+        }
+        if ($request->hasFile('imagecart')) {
+            $file = $request->file('imagecart');
+            $fileName = uniqid().'_'.$file->getClientOriginalName();
+            $file->move($uploadsFolder, $fileName);
+            $validated['imagecart'] = '/uploads/'.$fileName;
+        }
+
+        // Update fan
+        $fan->update($validated);
+
+        return redirect()->route('fans.index')->with('success', 'Fan updated successfully');
     }
 
     // Delete fan
