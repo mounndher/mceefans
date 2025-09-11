@@ -1,6 +1,16 @@
 @extends('backend.layouts.master')
 
 @section('context')
+@if ($errors->any())
+    <div class="alert alert-danger">
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
+
 <div class="page-body">
     <div class="container-xl">
         <div class="card">

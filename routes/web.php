@@ -22,6 +22,7 @@ Route::get('/', function () {
     return view('auth.login');
 });
 
+Route::middleware(['auth', 'verified'])->group(function () {
 Route::get('/create', function () {
     return view('backend.fans.create');
 });
@@ -50,14 +51,14 @@ Route::delete('/fans/{fan}', [FanController::class, 'destroy'])->name('fans.dest
 Route::resource('abonments', AbonmentsController::class);
 Route::resource('events', EventController::class);
 Route::resource('Paimnts', PaimntstController::class);
-
+});
 //Route::get('/fanss', [FansController::class, 'index'])->name('fan.index');
 //Route::get('/fanss/create', [FansController::class, 'create'])->name('fan.create');
 ///Route::post('/fanss', [FansController::class, 'store2'])->name('fan.store');
 //Route::get('/fanss/{fan}', [FansController::class, 'show'])->name('fan.show');
 
 Route::get('/dashboard', function () {
-    return view('dashboard');
+    return view('backend.layouts.master');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {

@@ -155,7 +155,7 @@ public function store(Request $request)
     // ✅ Generate QR code (150px size)
     $qrFileName = $randomId . '_qr.png';
     $qrPath = $uploadsFolder . '/' . $qrFileName;
-    $pngData = QrCode::format('png')->size(150)->generate($randomId);
+    $pngData = QrCode::format('png')->size(100)->generate($randomId);
     file_put_contents($qrPath, $pngData);
     $validated['qr_img'] = '/uploads/' . $qrFileName;
 
@@ -164,15 +164,14 @@ public function store(Request $request)
     $profileFileName = uniqid() . '_' . $profileFile->getClientOriginalName();
     $profileFile->move($uploadsFolder, $profileFileName);
     $validated['image'] = '/uploads/' . $profileFileName;
-    //
+
     $profileFile = $request->file('imagecart');
     $profileFileName = uniqid() . '_' . $profileFile->getClientOriginalName();
     $profileFile->move($uploadsFolder, $profileFileName);
     $validated['imagecart'] = '/uploads/' . $profileFileName;
 
-
     // ✅ Load card template
-    $cardTemplatePath = public_path('card_templates/generated-image.png'); // تأكد من مسار القالب ودقته
+    $cardTemplatePath = public_path('card_templates/generated-image.png');
     if (!file_exists($cardTemplatePath)) {
         return back()->withErrors(['desgin_card' => 'Card template not found']);
     }
@@ -181,16 +180,16 @@ public function store(Request $request)
     $cardWidth = imagesx($card);
     $cardHeight = imagesy($card);
 
-    // ✅ Insert QR code on card (bottom left with 30px margin)
+    // ✅ Insert QR code on card (top right corner)
     $qr = imagecreatefrompng($qrPath);
     $qrWidth = imagesx($qr);
     $qrHeight = imagesy($qr);
-    $qrX = 30;
-    $qrY = $cardHeight - $qrHeight - 30;
+    $qrX = $cardWidth - $qrWidth - 30;  // Top right position
+    $qrY = 30;  // Top margin
     imagecopy($card, $qr, $qrX, $qrY, 0, 0, $qrWidth, $qrHeight);
     imagedestroy($qr);
 
-    // ✅ Insert profile image (scaled to 120x120, top right corner with margin)
+    // ✅ Insert profile image (scaled to 150x200, left side)
     $profileImagePath = public_path($validated['image']);
     $profileExt = strtolower(pathinfo($profileImagePath, PATHINFO_EXTENSION));
     switch ($profileExt) {
@@ -203,59 +202,62 @@ public function store(Request $request)
             $profile = imagecreatefromjpeg($profileImagePath);
             break;
     }
-    $profile = imagescale($profile, 120, 120);
-    $profileX = $cardWidth - 150;
-    $profileY = 40;
-    imagecopy($card, $profile, $profileX, $profileY, 0, 0, 120, 120);
+    $profile = imagescale($profile, 150, 200);  // Larger profile image
+    $profileX = 30;   // Left margin
+    $profileY = 150;  // Position below header
+    imagecopy($card, $profile, $profileX, $profileY, 0, 0, 150, 200);
     imagedestroy($profile);
 
     // ✅ Text color & font
     $black = imagecolorallocate($card, 0, 0, 0);
     $fontPath = public_path('fonts/arial.ttf');
 
-    // ✅ Add texts with positions (يمكن تعديل المواقع حسب التصميم)
+    // ✅ Add texts with new positions matching the image layout
 
-    // Full name (centered horizontally)
-    $nameText = strtoupper($validated['nom'] . ' ' . $validated['prenom']);
-    $nameBox = imagettfbbox(28, 0, $fontPath, $nameText);
-    $nameX = ($cardWidth - ($nameBox[2] - $nameBox[0])) / 2;
-    $nameY = 250;
-    imagettftext($card, 28, 0, $nameX, $nameY, $black, $fontPath, $nameText);
+    // Starting X position for text (right of profile image)
+    $textStartX = 200;
 
-    // NIN (centered)
+    // Nom (Name) - positioned to the right of profile image
+    $nameText = strtoupper($validated['nom']);
+    imagettftext($card, 20, 0, $textStartX, 200, $black, $fontPath, $nameText);
+
+    // Prénom (First Name) - below name
+    $prenomText = strtoupper($validated['prenom']);
+    imagettftext($card, 20, 0, $textStartX, 240, $black, $fontPath, $prenomText);
+
+    // N d'immatriculation (Registration Number) - you might need to add this field to validation
+    $immatriculationText = '100003200095624670'; // This should come from your form data
+    imagettftext($card, 18, 0, $textStartX, 280, $black, $fontPath, $immatriculationText);
+
+    // NIN (National ID) - below immatriculation
     $ninText = $validated['nin'];
-    $ninBox = imagettfbbox(20, 0, $fontPath, $ninText);
-    $ninX = ($cardWidth - ($ninBox[2] - $ninBox[0])) / 2;
-    $ninY = $nameY + 50;
-    imagettftext($card, 20, 0, $ninX, $ninY, $black, $fontPath, $ninText);
+    imagettftext($card, 18, 0, $textStartX, 320, $black, $fontPath, $ninText);
 
-    // Phone number (centered)
+    // Activity - below NIN
+    $activityText = 'DÉVELOPPEUR(SE) MOBILE';
+    imagettftext($card, 18, 0, $textStartX, 360, $black, $fontPath, $activityText);
+
+    // Date d'émission (Issue Date) - left side, below activity
+    $dateIssue = date('d.m.Y');
+    imagettftext($card, 16, 0, $textStartX, 420, $black, $fontPath, $dateIssue);
+
+    // Date de validité (Valid Until) - right side
+    $dateValid = date('d.m.Y', strtotime('+5 years'));
+    imagettftext($card, 16, 0, $cardWidth - 200, 420, $black, $fontPath, $dateValid);
+
+    // Phone number at bottom
     $telText = $validated['numero_tele'];
-    $telBox = imagettfbbox(20, 0, $fontPath, $telText);
-    $telX = ($cardWidth - ($telBox[2] - $telBox[0])) / 2;
-    $telY = $ninY + 40;
-    imagettftext($card, 20, 0, $telX, $telY, $black, $fontPath, $telText);
+    imagettftext($card, 16, 0, 50, $cardHeight - 60, $black, $fontPath, $telText);
 
-    // Activity or Role (مثلاً "DÉVELOPPEUR(SE) MOBILE")
-    $activityText = 'DÉVELOPPEUR(SE) MOBILE'; // ممكن تعديلها إلى متغير مدخل
-    $activityBox = imagettfbbox(18, 0, $fontPath, $activityText);
-    $activityX = 30;
-    $activityY = $telY + 60;
-    imagettftext($card, 18, 0, $activityX, $activityY, $black, $fontPath, $activityText);
+    // Add labels in Arabic (if needed) - positioned to the right
+    $labelX = $cardWidth - 150;
 
-    // تاريخ الإصدار - مثال في يمين البطاقة
-    $dateIssue = 'Date d\'émission : ' . date('d.m.Y');
-    $dateIssueBox = imagettfbbox(16, 0, $fontPath, $dateIssue);
-    $dateIssueX = $cardWidth - ($dateIssueBox[2] - $dateIssueBox[0]) - 30;
-    $dateIssueY = $cardHeight - 70;
-    imagettftext($card, 16, 0, $dateIssueX, $dateIssueY, $black, $fontPath, $dateIssue);
-
-    // تاريخ الصلاحية - مثال أسفل يمين البطاقة
-    $dateValid = 'Valide jusqu\'au : ' . date('d.m.Y', strtotime('+5 years'));
-    $dateValidBox = imagettfbbox(16, 0, $fontPath, $dateValid);
-    $dateValidX = $cardWidth - ($dateValidBox[2] - $dateValidBox[0]) - 30;
-    $dateValidY = $cardHeight - 40;
-    imagettftext($card, 16, 0, $dateValidX, $dateValidY, $black, $fontPath, $dateValid);
+    // Arabic labels (you can adjust these based on your needs)
+    //imagettftext($card, 16, 0, $labelX, 200, $black, $fontPath, 'اللقب');      // Surname
+   // imagettftext($card, 16, 0, $labelX, 240, $black, $fontPath, 'الاسم');      // First name
+    //imagettftext($card, 16, 0, $labelX, 280, $black, $fontPath, 'رقم التسجيل'); // Registration number
+   // imagettftext($card, 16, 0, $labelX, 320, $black, $fontPath, 'رقم التعريف الوطني'); // NIN
+    //imagettftext($card, 16, 0, $labelX, 360, $black, $fontPath, 'النشاط');     // Activity
 
     // ✅ Save final card image
     $cardFileName = $randomId . '_card.png';
@@ -268,7 +270,7 @@ public function store(Request $request)
     // ✅ Save fan data to DB
     $fan = Fan::create($validated);
 
-    // ✅ Create associated transaction (تأكد من وجود الموديل والحقول)
+    // ✅ Create associated transaction
     $abonment = Abonment::findOrFail($request->id_abonment);
     TransactionPaimnt::create([
         'id_fan'      => $fan->id,
@@ -281,7 +283,6 @@ public function store(Request $request)
     return redirect()->route('fans.index')
         ->with('success', 'Fan created successfully with virtual card and transaction.');
 }
-
 
 
 
