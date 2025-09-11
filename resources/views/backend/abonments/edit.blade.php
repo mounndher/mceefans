@@ -67,6 +67,8 @@
                                      alt="Current design" width="120" class="rounded">
                             </div>
                         @endif
+
+                    </div></form>
                         @error('desgin_card')
                             <div class="text-danger small">{{ $message }}</div>
                         @enderror
