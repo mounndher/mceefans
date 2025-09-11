@@ -41,7 +41,7 @@
                                     <td>{{ $abonment->nbrmatch }}</td>
                                     <td>
                                         @if($abonment->desgin_card)
-                                            <img src="{{ asset('uploads/abonments/'.$abonment->desgin_card) }}" width="80">
+                                            <img src="{{ asset($abonment->desgin_card) }}" width="80">
                                         @else
                                             No Image
                                         @endif

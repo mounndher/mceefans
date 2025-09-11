@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\FanController;
 use App\Http\Controllers\Admin\AbonmentsController;
 use App\Http\Controllers\Admin\EventController;
 use App\Http\Controllers\Admin\PaimntstController;
+use App\Http\Controllers\Admin\IndexController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -21,7 +22,8 @@ use App\Http\Controllers\Admin\PaimntstController;
 Route::get('/', function () {
     return view('auth.login');
 });
-
+Route::get('/generate-card-index', [IndexController::class, 'create'])->name('generate.card.index');
+Route::post('/generate-card-preview', [IndexController::class, 'index'])->name('generate.card.preview');
 Route::middleware(['auth', 'verified'])->group(function () {
 Route::get('/create', function () {
     return view('backend.fans.create');

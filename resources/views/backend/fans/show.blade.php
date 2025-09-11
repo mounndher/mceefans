@@ -59,7 +59,7 @@
                         <th>Image de la Carte Nationale</th>
                         <td>
                             @if($fan->imagecart)
-                                <img src="{{ asset($fan->imagecart) }}" alt="Carte Image" height="100">
+                                <img src="{{ asset($fan->imagecart) }}" alt="Carte Image"  width="100 height="100">
                             @else
                                 <span class="text-muted">No image uploaded</span>
                             @endif
@@ -69,7 +69,7 @@
                         <th>Card Image</th>
                         <td>
                             @if($fan->card)
-                                <img src="{{ asset($fan->card) }}" alt="Carte Image" height="100">
+                                <img src="{{ asset($fan->card) }}" alt="Carte Image"  width="100" height="100">
                             @else
                                 <span class="text-muted">No card generated</span>
                             @endif
@@ -79,7 +79,7 @@
                         <th>QR Code</th>
                         <td>
                             @if($fan->qr_img)
-                                <img src="{{ asset($fan->qr_img) }}" alt="Carte Image" height="100">
+                                <img src="{{ asset($fan->qr_img) }}" alt="Carte Image"  width="100 height="100">
                             @else
                                 <span class="text-muted">No card generated</span>
                             @endif
@@ -88,7 +88,7 @@
                     </tr>
                 </table>
 
-                
+
 
             </div>
         </div>

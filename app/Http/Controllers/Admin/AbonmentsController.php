@@ -5,10 +5,11 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Abonment;
+
 class AbonmentsController extends Controller
 {
     //
-      public function index()
+    public function index()
     {
         $abonments = Abonment::all();
         return view('backend.abonments.index', compact('abonments'));
@@ -33,9 +34,9 @@ class AbonmentsController extends Controller
 
         if ($request->hasFile('desgin_card')) {
             $file = $request->file('desgin_card');
-            $filename = time().'.'.$file->getClientOriginalExtension();
+            $filename = time() . '.' . $file->getClientOriginalExtension();
             $file->move(public_path('uploads/abonments'), $filename);
-            $data['desgin_card'] = $filename;
+            $data['desgin_card'] = 'uploads/abonments/' . $filename; // ✅ store with folder
         }
 
         Abonment::create($data);
@@ -58,16 +59,16 @@ class AbonmentsController extends Controller
             'prix' => 'required|string',
             'nbrmatch' => 'required|string',
 
-            'desgin_card' => 'nullable|string',
+            'desgin_card' => 'nullable',
         ]);
 
         $data = $request->all();
 
         if ($request->hasFile('desgin_card')) {
             $file = $request->file('desgin_card');
-            $filename = time().'.'.$file->getClientOriginalExtension();
+            $filename = time() . '.' . $file->getClientOriginalExtension();
             $file->move(public_path('uploads/abonments'), $filename);
-            $data['desgin_card'] = $filename;
+            $data['desgin_card'] = 'uploads/abonments/' . $filename; // ✅ store with folder
         }
 
         $abonment->update($data);
@@ -79,8 +80,8 @@ class AbonmentsController extends Controller
     {
         $abonment = Abonment::findOrFail($id);
 
-        if ($abonment->image && file_exists(public_path('uploads/abonments/'.$abonment->image))) {
-            unlink(public_path('uploads/abonments/'.$abonment->image));
+        if ($abonment->image && file_exists(public_path('uploads/abonments/' . $abonment->image))) {
+            unlink(public_path('uploads/abonments/' . $abonment->image));
         }
 
         $abonment->delete();
