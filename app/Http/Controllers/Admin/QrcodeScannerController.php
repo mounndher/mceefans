@@ -10,7 +10,7 @@ use App\Models\Event;
 class QrcodeScannerController extends Controller
 {
     //
-   public function verifyFan(Request $request)
+public function verifyFan(Request $request)
 {
     $request->validate([
         'id_qrcode'  => 'required|string',
@@ -20,17 +20,16 @@ class QrcodeScannerController extends Controller
 
     $status  = 'checked_in';
     $message = 'الدخول مسموح ✅';
-    $success = true;
 
     // 🔹 البحث عن الفان بالكود
     $fan = Fan::where('id_qrcode', $request->id_qrcode)
         ->with(['transactions.abonment'])
         ->first();
 
+    // ===== 1. QR غير صالح =====
     if (!$fan) {
         $status  = 'qr_invalid';
         $message = 'QR code غير صالح';
-        $success = false;
 
         Attendance::create([
             'fan_id'     => null,
@@ -46,43 +45,13 @@ class QrcodeScannerController extends Controller
         ], 404);
     }
 
-    // ✅ مجموع المباريات
-    $totalMatches = $fan->transactions()->sum('nbrmatch');
-
-    // ✅ عدد الحضور (المباريات المستهلكة)
-    $usedMatches = Attendance::where('fan_id', $fan->id)
-        ->where('present', 1)
-        ->count();
-
-    $remaining = $totalMatches - $usedMatches;
-
-    if ($remaining <= 0) {
-        $status  = 'expired';
-        $message = 'البطاقة انتهت صلاحيتها (لا توجد مباريات متبقية)';
-        $success = false;
-
-        Attendance::create([
-            'fan_id'     => $fan->id,
-            'id_event'   => $request->id_event,
-            'idappareil' => $request->idappareil,
-            'present'    => 0,
-            'status'     => $status,
-        ]);
-
-        return response()->json([
-            'status'  => 'error',
-            'message' => $message,
-        ], 403);
-    }
-
-    // ✅ تحقق من الحدث
+    // ===== 2. تحقق من الحدث =====
     $event = Event::where('id', $request->id_event)
                   ->where('status', 'active')
                   ->first();
     if (!$event) {
         $status  = 'invalid_event';
         $message = 'الحدث غير صالح أو غير نشط';
-        $success = false;
 
         Attendance::create([
             'fan_id'     => $fan->id,
@@ -98,7 +67,7 @@ class QrcodeScannerController extends Controller
         ], 404);
     }
 
-    // ✅ تحقق إذا حضر نفس الحدث من قبل
+    // ===== 3. تحقق إذا حضر نفس الحدث مسبقاً =====
     $alreadyAttended = Attendance::where('fan_id', $fan->id)
         ->where('id_event', $event->id)
         ->where('present', 1)
@@ -107,7 +76,6 @@ class QrcodeScannerController extends Controller
     if ($alreadyAttended) {
         $status  = 'scanned_twice';
         $message = 'الفان حضر هذا الحدث مسبقاً';
-        $success = false;
 
         Attendance::create([
             'fan_id'     => $fan->id,
@@ -123,18 +91,51 @@ class QrcodeScannerController extends Controller
         ], 409);
     }
 
-    // ✅ تسجيل الحضور
-    
+    // ===== 4. حساب المباريات =====
+    $totalMatches = $fan->transactions()->sum('nbrmatch');
+    $usedMatches = Attendance::where('fan_id', $fan->id)
+        ->where('present')
+        ->count();
+    $remaining = $totalMatches - $usedMatches;
+
+    // ===== 5. تحقق من صلاحية البطاقة =====
+    if ($remaining <= 0) {
+        $status  = 'expired';
+        $message = 'البطاقة انتهت صلاحيتها (لا توجد مباريات متبقية)';
+
+        Attendance::create([
+            'fan_id'     => $fan->id,
+            'id_event'   => $request->id_event,
+            'idappareil' => $request->idappareil,
+            'present'    => 0,
+            'status'     => $status,
+        ]);
+
+        return response()->json([
+            'status'  => 'error',
+            'message' => $message,
+        ], 403);
+    }
+
+    // ===== 6. تسجيل الحضور =====
+    Attendance::create([
+        'fan_id'     => $fan->id,
+        'id_event'   => $event->id,
+        'idappareil' => $request->idappareil,
+        'present'    => 1,
+        'status'     => $status,
+    ]);
 
     return response()->json([
         'status'            => 'success',
         'message'           => $message,
         'fan_id'            => $fan->id,
         'total_matches'     => $totalMatches,
-        'used_matches'      => $usedMatches,
+        'used_matches'      => $usedMatches + 1,
         'remaining_matches' => $remaining - 1,
     ]);
 }
+
 
 
 

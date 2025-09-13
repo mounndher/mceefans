@@ -9,7 +9,7 @@ class Attendance extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'id_qrcode',
+        'fan_id',
         'id_event',
         'idappareil',
         'present',
