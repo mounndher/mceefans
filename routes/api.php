@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\EventController;
+use App\Http\Controllers\Admin\QrcodeScannerController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -19,3 +20,4 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 route::get('getallevent',[EventController::class, 'getAllEvent'])->name('getAllEvent');
+route::post('scannerqr',[QrcodeScannerController::class, 'verifyFan'])->name('scannerqr');

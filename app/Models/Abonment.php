@@ -15,4 +15,9 @@ class Abonment extends Model
         'image',
         'desgin_card',
     ];
+    public function transactions()
+{
+    return $this->hasMany(TransactionPaimnt::class, 'id_abonment');
+}
+
 }

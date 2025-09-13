@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\AbonmentsController;
 use App\Http\Controllers\Admin\EventController;
 use App\Http\Controllers\Admin\PaimntstController;
 use App\Http\Controllers\Admin\IndexController;
+use App\Http\Controllers\Admin\AppareilController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -49,7 +50,7 @@ Route::put('/fans/{fan}', [FanController::class, 'update'])->name('fans.update')
 
 // حذف فان
 Route::delete('/fans/{fan}', [FanController::class, 'destroy'])->name('fans.destroy');
-
+Route::resource('appareils', AppareilController::class);
 Route::resource('abonments', AbonmentsController::class);
 Route::resource('events', EventController::class);
 Route::resource('Paimnts', PaimntstController::class);

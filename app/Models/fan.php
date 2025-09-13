@@ -21,4 +21,8 @@ class fan extends Model
         'card',
         'qr_img'
     ];
+    public function transactions()
+{
+    return $this->hasMany(TransactionPaimnt::class, 'id_fan');
+}
 }
