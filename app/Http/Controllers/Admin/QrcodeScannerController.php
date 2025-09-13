@@ -137,6 +137,9 @@ public function verifyFan(Request $request)
 }
 
 
+public function index(){
+    
+}
 
 
 

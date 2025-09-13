@@ -66,10 +66,16 @@ public function getAllEvent()
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
-    {
-        //
-    }
+    public function terminer($id)
+{
+    $event = Event::findOrFail($id);
+
+    // Change status to "terminated"
+    $event->status = 'terminated';
+    $event->save();
+
+    return redirect()->route('events.index')->with('success', 'Event terminated successfully!');
+}
 
     /**
      * Show the form for editing the specified resource.

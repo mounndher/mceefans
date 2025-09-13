@@ -51,6 +51,7 @@ Route::put('/fans/{fan}', [FanController::class, 'update'])->name('fans.update')
 // حذف فان
 Route::delete('/fans/{fan}', [FanController::class, 'destroy'])->name('fans.destroy');
 Route::resource('appareils', AppareilController::class);
+Route::post('/events/{id}/terminer', [EventController::class, 'terminer'])->name('events.terminer');
 Route::resource('abonments', AbonmentsController::class);
 Route::resource('events', EventController::class);
 Route::resource('Paimnts', PaimntstController::class);
