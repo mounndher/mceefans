@@ -16,7 +16,7 @@ return new class extends Migration
              $table->string('nom');
              $table->text('prix');
              $table->text('nbrmatch');
-             $table->text('image');
+             
              $table->text('desgin_card');
             $table->timestamps();
         });

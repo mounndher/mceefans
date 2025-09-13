@@ -18,87 +18,125 @@ class QrcodeScannerController extends Controller
         'idappareil' => 'required|integer'
     ]);
 
+    $status  = 'checked_in';
+    $message = 'الدخول مسموح ✅';
+    $success = true;
+
     // 🔹 البحث عن الفان بالكود
     $fan = Fan::where('id_qrcode', $request->id_qrcode)
         ->with(['transactions.abonment'])
         ->first();
 
     if (!$fan) {
+        $status  = 'qr_invalid';
+        $message = 'QR code غير صالح';
+        $success = false;
+
+        Attendance::create([
+            'fan_id'     => null,
+            'id_event'   => $request->id_event,
+            'idappareil' => $request->idappareil,
+            'present'    => 0,
+            'status'     => $status,
+        ]);
+
         return response()->json([
             'status'  => 'error',
-            'message' => 'QR Code غير صالح'
+            'message' => $message,
         ], 404);
     }
 
-    // 🔹 آخر عملية شراء (أحدث اشتراك)
-    $latestTransaction = $fan->transactions()->latest()->first();
+    // ✅ مجموع المباريات
+    $totalMatches = $fan->transactions()->sum('nbrmatch');
 
-    if (!$latestTransaction || !$latestTransaction->abonment) {
-        return response()->json([
-            'status'  => 'error',
-            'message' => 'لا يوجد اشتراك صالح'
-        ], 403);
-    }
-
-    $offer = $latestTransaction->abonment;
-
-    // 🔹 عدد المباريات المستهلكة
-    $usedMatches = Attendance::where('id_qrcode', $request->id_qrcode)
+    // ✅ عدد الحضور (المباريات المستهلكة)
+    $usedMatches = Attendance::where('fan_id', $fan->id)
         ->where('present', 1)
         ->count();
 
-    // 🔹 عدد المباريات المتبقية
-    $remaining = $latestTransaction->nbrmatch - $usedMatches;
+    $remaining = $totalMatches - $usedMatches;
 
     if ($remaining <= 0) {
+        $status  = 'expired';
+        $message = 'البطاقة انتهت صلاحيتها (لا توجد مباريات متبقية)';
+        $success = false;
+
+        Attendance::create([
+            'fan_id'     => $fan->id,
+            'id_event'   => $request->id_event,
+            'idappareil' => $request->idappareil,
+            'present'    => 0,
+            'status'     => $status,
+        ]);
+
         return response()->json([
             'status'  => 'error',
-            'message' => 'البطاقة انتهت صلاحيتها (لا توجد مباريات متبقية)'
+            'message' => $message,
         ], 403);
     }
 
-    // 🔹 التحقق من الحدث الحالي
+    // ✅ تحقق من الحدث
     $event = Event::where('id', $request->id_event)
                   ->where('status', 'active')
                   ->first();
-
     if (!$event) {
+        $status  = 'invalid_event';
+        $message = 'الحدث غير صالح أو غير نشط';
+        $success = false;
+
+        Attendance::create([
+            'fan_id'     => $fan->id,
+            'id_event'   => $request->id_event,
+            'idappareil' => $request->idappareil,
+            'present'    => 0,
+            'status'     => $status,
+        ]);
+
         return response()->json([
             'status'  => 'error',
-            'message' => 'الحدث غير صالح أو غير نشط'
+            'message' => $message,
         ], 404);
     }
 
-    // 🔹 تحقق إذا حضر نفس الحدث من قبل
-    $alreadyAttended = Attendance::where('id_qrcode', $request->id_qrcode)
+    // ✅ تحقق إذا حضر نفس الحدث من قبل
+    $alreadyAttended = Attendance::where('fan_id', $fan->id)
         ->where('id_event', $event->id)
         ->where('present', 1)
         ->exists();
 
     if ($alreadyAttended) {
+        $status  = 'scanned_twice';
+        $message = 'الفان حضر هذا الحدث مسبقاً';
+        $success = false;
+
+        Attendance::create([
+            'fan_id'     => $fan->id,
+            'id_event'   => $event->id,
+            'idappareil' => $request->idappareil,
+            'present'    => 0,
+            'status'     => $status,
+        ]);
+
         return response()->json([
             'status'  => 'error',
-            'message' => 'الفان حضر هذا الحدث مسبقاً'
+            'message' => $message,
         ], 409);
     }
 
-    // 🔹 تسجيل الحضور
-    Attendance::create([
-        'id_qrcode' => $request->id_qrcode,
-        'id_event'  => $event->id,
-        'idappareil'=> $request->idappareil,
-        'present'   => 1,
-        'status'    => 'checked_in',
-        'created_at'=> now(),
-        'updated_at'=> now(),
-    ]);
+    // ✅ تسجيل الحضور
+    
 
     return response()->json([
-        'status'             => 'success',
-        'message'            => 'الدخول مسموح ✅',
-        'remaining_matches'  => $remaining - 1 // بعد تسجيل الحضور
+        'status'            => 'success',
+        'message'           => $message,
+        'fan_id'            => $fan->id,
+        'total_matches'     => $totalMatches,
+        'used_matches'      => $usedMatches,
+        'remaining_matches' => $remaining - 1,
     ]);
 }
+
+
 
 
 
