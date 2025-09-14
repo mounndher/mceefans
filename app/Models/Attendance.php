@@ -16,4 +16,18 @@ class Attendance extends Model
         'status',
         'date'
     ];
+       public function fan()
+    {
+        return $this->belongsTo(Fan::class, 'fan_id');
+    }
+
+    public function event()
+    {
+        return $this->belongsTo(Event::class, 'id_event');
+    }
+
+    public function appareil()
+    {
+        return $this->belongsTo(Appareil::class, 'idappareil');
+    }
 }

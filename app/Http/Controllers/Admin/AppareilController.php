@@ -18,6 +18,12 @@ class AppareilController extends Controller
     {
         return view('backend.appareils.create');
     }
+    
+    public function getAllAppareils()
+    {
+        $appareils = Appareil::all();
+        return response()->json($appareils);
+    }
 
     public function store(Request $request)
     {
@@ -32,7 +38,7 @@ class AppareilController extends Controller
 
     public function show(Appareil $appareil)
     {
-        
+
     }
 
     public function edit($id)

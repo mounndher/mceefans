@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\EventController;
 use App\Http\Controllers\Admin\PaimntstController;
 use App\Http\Controllers\Admin\IndexController;
 use App\Http\Controllers\Admin\AppareilController;
+use App\Http\Controllers\Admin\AttendanceController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -55,6 +56,9 @@ Route::post('/events/{id}/terminer', [EventController::class, 'terminer'])->name
 Route::resource('abonments', AbonmentsController::class);
 Route::resource('events', EventController::class);
 Route::resource('Paimnts', PaimntstController::class);
+Route::get('/attendances', [AttendanceController::class, 'index'])->name('attendances.index');
+
+
 });
 //Route::get('/fanss', [FansController::class, 'index'])->name('fan.index');
 //Route::get('/fanss/create', [FansController::class, 'create'])->name('fan.create');

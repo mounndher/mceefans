@@ -35,7 +35,6 @@ public function verifyFan(Request $request)
             'fan_id'     => null,
             'id_event'   => $request->id_event,
             'idappareil' => $request->idappareil,
-            'present'    => 0,
             'status'     => $status,
         ]);
 
@@ -57,7 +56,6 @@ public function verifyFan(Request $request)
             'fan_id'     => $fan->id,
             'id_event'   => $request->id_event,
             'idappareil' => $request->idappareil,
-            'present'    => 0,
             'status'     => $status,
         ]);
 
@@ -70,7 +68,7 @@ public function verifyFan(Request $request)
     // ===== 3. تحقق إذا حضر نفس الحدث مسبقاً =====
     $alreadyAttended = Attendance::where('fan_id', $fan->id)
         ->where('id_event', $event->id)
-        ->where('present', 1)
+        ->where('status', 'checked_in')
         ->exists();
 
     if ($alreadyAttended) {
@@ -81,7 +79,6 @@ public function verifyFan(Request $request)
             'fan_id'     => $fan->id,
             'id_event'   => $event->id,
             'idappareil' => $request->idappareil,
-            'present'    => 0,
             'status'     => $status,
         ]);
 
@@ -94,7 +91,7 @@ public function verifyFan(Request $request)
     // ===== 4. حساب المباريات =====
     $totalMatches = $fan->transactions()->sum('nbrmatch');
     $usedMatches = Attendance::where('fan_id', $fan->id)
-        ->where('present')
+        ->where('status', 'checked_in')
         ->count();
     $remaining = $totalMatches - $usedMatches;
 
@@ -107,7 +104,7 @@ public function verifyFan(Request $request)
             'fan_id'     => $fan->id,
             'id_event'   => $request->id_event,
             'idappareil' => $request->idappareil,
-            'present'    => 0,
+
             'status'     => $status,
         ]);
 
@@ -122,7 +119,6 @@ public function verifyFan(Request $request)
         'fan_id'     => $fan->id,
         'id_event'   => $event->id,
         'idappareil' => $request->idappareil,
-        'present'    => 1,
         'status'     => $status,
     ]);
 
@@ -137,8 +133,10 @@ public function verifyFan(Request $request)
 }
 
 
+
+
 public function index(){
-    
+
 }
 
 
