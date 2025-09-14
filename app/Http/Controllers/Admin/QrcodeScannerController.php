@@ -91,7 +91,7 @@ public function verifyFan(Request $request)
     // ===== 4. حساب المباريات =====
     $totalMatches = $fan->transactions()->sum('nbrmatch');
     $usedMatches = Attendance::where('fan_id', $fan->id)
-        ->where('status', 'checked_in')
+        ->whereIn('status', ['checked_in', 'absent'])
         ->count();
     $remaining = $totalMatches - $usedMatches;
 
@@ -104,7 +104,6 @@ public function verifyFan(Request $request)
             'fan_id'     => $fan->id,
             'id_event'   => $request->id_event,
             'idappareil' => $request->idappareil,
-
             'status'     => $status,
         ]);
 
