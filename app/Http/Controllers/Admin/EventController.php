@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Event;
 use App\Models\Attendance;
 use App\Models\fan;
-
+use Illuminate\Support\Facades\DB;
 class EventController extends Controller
 {
     /**
@@ -154,17 +154,31 @@ class EventController extends Controller
     /**
      * Remove the specified resource from storage.
      */
+
     public function destroy(Event $event)
     {
-        //
+        // تحقق إذا عنده Paiements مرتبطة
+        $hasPayments = DB::table('attendances')
+            ->where('id_event', $event->id)
+            ->exists();
+
+        if ($hasPayments) {
+            return redirect()->route('events.index')
+                ->with('error', 'You need to delete the related Paiements first before deleting this Event.');
+        }
+
+        // لو مافيش Paiements، نحذف الـ Event
         $event->delete();
-        return redirect()->route('events.index')->with('success', 'Event deleted successfully!');
+
+        return redirect()->route('events.index')
+            ->with('success', 'Event deleted successfully!');
     }
+
 
     public function statistics($id)
     {
         $event = Event::findOrFail($id);
-        $fan=Fan::count();
+        $fan = Fan::count();
 
         // نحسب الإحصائيات
         $stats = Attendance::where('id_event', $event->id)
@@ -176,16 +190,16 @@ class EventController extends Controller
             SUM(CASE WHEN status = 'expired' THEN 1 ELSE 0 END) as expired
         ")
             ->first();
-            $checkedIn = $stats->checked_in ?? 0;
-    $absent = $stats->absent ?? ($fan - $checkedIn);
+        $checkedIn = $stats->checked_in ?? 0;
+        $absent = $stats->absent ?? ($fan - $checkedIn);
 
-    $percentagePresent = $fan > 0 ? round(($checkedIn / $fan) * 100, 2) : 0;
-    $percentageAbsent  = $fan > 0 ? round(($absent / $fan) * 100, 2) : 0;
-     $scannedTwiceFans = Attendance::where('id_event', $event->id)
-        ->where('status', 'scanned_twice')
-        ->with('fan') // لازم عندك relation في Attendance -> fan()
-        ->get();
+        $percentagePresent = $fan > 0 ? round(($checkedIn / $fan) * 100, 2) : 0;
+        $percentageAbsent  = $fan > 0 ? round(($absent / $fan) * 100, 2) : 0;
+        $scannedTwiceFans = Attendance::where('id_event', $event->id)
+            ->where('status', 'scanned_twice')
+            ->with('fan') // لازم عندك relation في Attendance -> fan()
+            ->get();
 
-        return view('backend.event.statistics', compact('event','scannedTwiceFans', 'stats','fan','checkedIn','absent','percentagePresent','percentageAbsent',));
+        return view('backend.event.statistics', compact('event', 'scannedTwiceFans', 'stats', 'fan', 'checkedIn', 'absent', 'percentagePresent', 'percentageAbsent',));
     }
 }

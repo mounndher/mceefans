@@ -1,6 +1,7 @@
 @extends('backend.layouts.master')
 
 @section('context')
+
 <div class="page-body">
     <div class="container-xl">
         <div class="card">

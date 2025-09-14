@@ -15,7 +15,7 @@
     <div class="container-xl">
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title">Fans List</h3>
+                <h3 class="card-title">Liste des fans</h3>
                 <div class="card-actions">
                     <a href="{{ route('fans.create') }}" class="btn btn-primary">
                         <!-- Plus icon -->
@@ -24,7 +24,7 @@
                             <path d="M12 5l0 14"></path>
                             <path d="M5 12l14 0"></path>
                         </svg>
-                        Add New Fan
+                        ajouter de nouveaux fans
                     </a>
                 </div>
             </div>
