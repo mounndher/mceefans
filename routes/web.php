@@ -10,6 +10,7 @@ use App\Http\Controllers\Admin\PaimntstController;
 use App\Http\Controllers\Admin\IndexController;
 use App\Http\Controllers\Admin\AppareilController;
 use App\Http\Controllers\Admin\AttendanceController;
+use App\Http\Controllers\Admin\dashboardController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -59,7 +60,7 @@ Route::resource('events', EventController::class);
 Route::resource('abonments', AbonmentsController::class);
 Route::resource('Paimnts', PaimntstController::class);
 Route::get('/attendances', [AttendanceController::class, 'index'])->name('attendances.index');
-
+Route::get('dashboard',[dashboardController::class,'dashboard'])->name('dashboard');
 
 });
 //Route::get('/fanss', [FansController::class, 'index'])->name('fan.index');
@@ -67,9 +68,9 @@ Route::get('/attendances', [AttendanceController::class, 'index'])->name('attend
 ///Route::post('/fanss', [FansController::class, 'store2'])->name('fan.store');
 //Route::get('/fanss/{fan}', [FansController::class, 'show'])->name('fan.show');
 
-Route::get('/dashboard', function () {
-    return view('backend.layouts.master');
-})->middleware(['auth', 'verified'])->name('dashboard');
+//Route::get('/dashboard', function () {
+   
+//})->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

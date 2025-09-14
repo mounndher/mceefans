@@ -5,13 +5,13 @@
         <div class="container-xl">
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
-                    <h3 class="card-title">Attendance List</h3>
+                    <h3 class="card-title">Liste de présence</h3>
 
                     <!-- 🔎 Search Form -->
                     <form method="GET" action="{{ route('attendances.index') }}" class="d-flex">
                         <input type="text" name="search" class="form-control me-2"
-                               placeholder="Search..." value="{{ request('search') }}">
-                        <button class="btn btn-primary" type="submit">Search</button>
+                               placeholder="chercher..." value="{{ request('search') }}">
+                        <button class="btn btn-primary" type="submit">chercher</button>
                     </form>
                 </div>
 

@@ -41,7 +41,7 @@
                                 <td>{{ $event->nom }}</td>
                                 <td>{{ $event->subtitle }}</td>
                                 <td>
-                                    <img src="{{ asset('uploads/event/' . $event->image_post) }}" width="180">
+                                    <img src="{{ asset('uploads/event/' . $event->image_post) }}" width="100">
                                 </td>
                                 <td>{{ $event->date }}</td>
                                 <td>{{ $event->stade }}</td>

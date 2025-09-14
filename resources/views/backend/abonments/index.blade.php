@@ -5,7 +5,7 @@
     <div class="container-xl">
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title">Abonments List</h3>
+                <h3 class="card-title">Liste des abonnements</h3>
                 <div class="card-actions">
                     <a href="{{ route('abonments.create') }}" class="btn btn-primary">
                         <!-- Plus icon -->
@@ -16,7 +16,7 @@
                             <path d="M12 5l0 14"></path>
                             <path d="M5 12l14 0"></path>
                         </svg>
-                        Add New Abonment
+                       Ajouter un nouvel abonnement
                     </a>
                 </div>
             </div>
