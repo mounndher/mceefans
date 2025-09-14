@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Event;
+use App\Models\Attendance;
+use App\Models\fan;
 class EventController extends Controller
 {
     /**
@@ -66,15 +68,36 @@ public function getAllEvent()
     /**
      * Display the specified resource.
      */
-    public function terminer($id)
+   public function terminer($id)
 {
     $event = Event::findOrFail($id);
 
-    // Change status to "terminated"
+    // 1. Change status to "terminated"
     $event->status = 'terminated';
     $event->save();
 
-    return redirect()->route('events.index')->with('success', 'Event terminated successfully!');
+    // 2. Get all fans (من transactions أو حسب نظامك)
+    $fans = Fan::all(); // أو Fan::whereHas('transactions')...
+
+    foreach ($fans as $fan) {
+        $alreadyPresent = Attendance::where('fan_id', $fan->id)
+            ->where('id_event', $event->id)
+            ->where('status', 'checked_in')
+            ->exists();
+
+        // 3. If not present, mark as absent
+        if (!$alreadyPresent) {
+            Attendance::create([
+                'fan_id'     => $fan->id,
+                'id_event'   => $event->id,
+                'idappareil' => null,
+                'status'     => 'absent',
+            ]);
+        }
+    }
+
+    return redirect()->route('events.index')
+        ->with('success', 'Event terminated successfully! Absentees recorded.');
 }
 
     /**

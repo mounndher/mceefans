@@ -17,4 +17,8 @@ class Event extends Model
         'stade',
         'status'
     ];
+   public function fans()
+{
+    return $this->belongsToMany(Fan::class, 'attendances', 'id_event', 'fan_id');
+}
 }

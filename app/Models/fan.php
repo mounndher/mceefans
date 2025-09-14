@@ -25,4 +25,9 @@ class fan extends Model
 {
     return $this->hasMany(TransactionPaimnt::class, 'id_fan');
 }
+public function events()
+{
+    return $this->belongsToMany(Event::class, 'attendances', 'fan_id', 'id_event');
+}
+
 }
