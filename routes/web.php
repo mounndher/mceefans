@@ -53,8 +53,10 @@ Route::put('/fans/{fan}', [FanController::class, 'update'])->name('fans.update')
 Route::delete('/fans/{fan}', [FanController::class, 'destroy'])->name('fans.destroy');
 Route::resource('appareils', AppareilController::class);
 Route::post('/events/{id}/terminer', [EventController::class, 'terminer'])->name('events.terminer');
-Route::resource('abonments', AbonmentsController::class);
+Route::get('events/{id}/statistics', [EventController::class, 'statistics'])
+    ->name('events.statistics');
 Route::resource('events', EventController::class);
+Route::resource('abonments', AbonmentsController::class);
 Route::resource('Paimnts', PaimntstController::class);
 Route::get('/attendances', [AttendanceController::class, 'index'])->name('attendances.index');
 
