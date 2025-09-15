@@ -79,9 +79,7 @@ Route::get('dashboard',[dashboardController::class,'dashboard'])->name('dashboar
 ///Route::post('/fanss', [FansController::class, 'store2'])->name('fan.store');
 //Route::get('/fanss/{fan}', [FansController::class, 'show'])->name('fan.show');
 
-Route::get('/dashboard1', function () {
-   return view('');
-})->middleware(['auth', 'verified'])->name('dashboard');
+
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
