@@ -50,7 +50,7 @@ Route::get('/fans/{fan}/edit', [FanController::class, 'edit'])->name('fans.edit'
 // تحديث بيانات فان
 Route::put('/fans/{fan}', [FanController::class, 'update'])->name('fans.update');
 route::get('expired', [FanController::class, 'expired'])->name('fans.expired');
-
+route::get('expired/abonments', [AbonmentsController::class, 'expired'])->name('abonments.expired');
 // حذف فان
 Route::delete('/fans/{fan}', [FanController::class, 'destroy'])->name('fans.destroy');
 Route::post('/fans/{id}/renouveler', [FanController::class, 'renouvelerAbonment'])->name('fans.renouveler');

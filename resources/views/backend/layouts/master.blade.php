@@ -7,11 +7,11 @@
     <title>Dashboard - Tabler</title>
 
     <!-- CSS files -->
-    <link href="{{ asset('backend/assets/dist/css/tabler.min.css?1692870487') }}" rel="stylesheet"/>
-    <link href="{{ asset('backend/assets/dist/css/tabler-flags.min.css?1692870487') }}" rel="stylesheet"/>
-    <link href="{{ asset('backend/assets/dist/css/tabler-payments.min.css?1692870487') }}" rel="stylesheet"/>
-    <link href="{{ asset('backend/assets/dist/css/tabler-vendors.min.css?1692870487') }}" rel="stylesheet"/>
-    <link href="{{ asset('backend/assets/dist/css/demo.min.css?1692870487') }}" rel="stylesheet"/>
+    <link href="{{ asset('backend/assets/dist/css/tabler.min.css') }}" rel="stylesheet"/>
+    <link href="{{ asset('backend/assets/dist/css/tabler-flags.min.css') }}" rel="stylesheet"/>
+    <link href="{{ asset('backend/assets/dist/css/tabler-payments.min.css') }}" rel="stylesheet"/>
+    <link href="{{ asset('backend/assets/dist/css/tabler-vendors.min.css') }}" rel="stylesheet"/>
+    <link href="{{ asset('backend/assets/dist/css/demo.min.css') }}" rel="stylesheet"/>
    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     <style>
@@ -27,7 +27,7 @@
   </head>
   </head>
   <body >
-    <script src="./dist/js/demo-theme.min.js?1692870487"></script>
+    <script src="{{ asset('backend/assets/dist/js/demo-theme.min.js') }}"></script>
     <div class="page">
       <!-- Sidebar -->
       @include('backend.layouts.aside')
@@ -130,14 +130,14 @@
     </div>
 
     <!-- Libs JS -->
-  <script src="{{ asset('backend/assets/dist/libs/apexcharts/dist/apexcharts.min.js?1692870487') }}" defer></script>
-<script src="{{ asset('backend/assets/dist/libs/jsvectormap/dist/js/jsvectormap.min.js?1692870487') }}" defer></script>
-<script src="{{ asset('backend/assets/dist/libs/jsvectormap/dist/maps/world.js?1692870487') }}" defer></script>
-<script src="{{ asset('backend/assets/dist/libs/jsvectormap/dist/maps/world-merc.js?1692870487') }}" defer></script>
+  <script src="{{ asset('backend/assets/dist/libs/apexcharts/dist/apexcharts.min.js') }}" defer></script>
+<script src="{{ asset('backend/assets/dist/libs/jsvectormap/dist/js/jsvectormap.min.js') }}" defer></script>
+<script src="{{ asset('backend/assets/dist/libs/jsvectormap/dist/maps/world.js') }}" defer></script>
+<script src="{{ asset('backend/assets/dist/libs/jsvectormap/dist/maps/world-merc.js') }}" defer></script>
 
 <!-- Tabler Core -->
 <script src="{{ asset('backend/assets/dist/js/tabler.min.js') }}" defer></script>
-<script src="{{ asset('backend/assets/dist/js/demo.min.js?1692870487') }}" defer></script>
+<script src="{{ asset('backend/assets/dist/js/demo.min.js') }}" defer></script>
 
     <script>
       // @formatter:off

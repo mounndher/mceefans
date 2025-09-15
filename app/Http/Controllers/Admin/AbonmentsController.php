@@ -12,8 +12,15 @@ class AbonmentsController extends Controller
     //
     public function index()
     {
-        $abonments = Abonment::all();
+        $abonments = Abonment::where('status', 'active')->get();
         return view('backend.abonments.index', compact('abonments'));
+    }
+    public function expired()
+    {
+
+        $abonments = Abonment::where('status','expired')->get(); // قائمة كل Abonments
+        //dd($abonments); // اختبر لو تحب
+        return view('backend.abonments.expired', compact('abonments'));
     }
 
     public function create()
