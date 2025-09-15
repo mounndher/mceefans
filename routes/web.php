@@ -65,6 +65,11 @@ Route::get('events/{id}/statistics', [EventController::class, 'statistics'])
 Route::resource('events', EventController::class);
 Route::resource('abonments', AbonmentsController::class);
 Route::resource('Paimnts', PaimntstController::class);
+Route::get('/paimnts/historique', [PaimntstController::class, 'historique'])->name('paimnts.historique');
+Route::get('/paimnts/{id}/historique', [PaimntstController::class, 'moveToHistorique'])
+     ->name('paimnts.moveToHistorique');
+
+
 Route::get('/attendances', [AttendanceController::class, 'index'])->name('attendances.index');
 Route::get('dashboard',[dashboardController::class,'dashboard'])->name('dashboard');
 
