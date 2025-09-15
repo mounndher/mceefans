@@ -16,16 +16,7 @@
         <div class="card">
             <div class="card-header">
                 <h3 class="card-title">Liste des fans</h3>
-                <div class="card-actions">
-                    <a href="{{ route('fans.create') }}" class="btn btn-primary">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
-                            <path d="M12 5l0 14"></path>
-                            <path d="M5 12l14 0"></path>
-                        </svg>
-                        Ajouter de nouveaux fans
-                    </a>
-                </div>
+
             </div>
 
             <div class="card-body">
@@ -61,43 +52,10 @@
                                         </svg>
                                     </a>
 
-                                    <!-- Edit -->
-                                    <a href="{{ route('fans.edit', $fan->id) }}" class="text-primary ms-2" title="Edit">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-edit" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                                            <path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" />
-                                            <path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z" />
-                                            <path d="M16 5l3 3" />
-                                        </svg>
-                                    </a>
 
-                                    <!-- Delete -->
-                                    <form action="{{ route('fans.destroy', $fan->id) }}" method="POST" style="display:inline;">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-link p-0 ms-2 text-danger" onclick="return confirm('Are you sure?')" title="Delete">
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-trash-x" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                                                <path d="M4 7h16" />
-                                                <path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" />
-                                                <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" />
-                                                <path d="M10 12l4 4m0 -4l-4 4" />
-                                            </svg>
-                                        </button>
-                                    </form>
 
-                                    <!-- Renouveler Abonnement -->
-                                    <a href="javascript:void(0);"
-                                       class="renouveler-btn ms-2 text-warning"
-                                       data-fan-id="{{ $fan->id }}"
-                                       data-fan-name="{{ $fan->nom }} {{ $fan->prenom }}"
-                                       title="Renouveler Abonnement">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-refresh" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                                            <path d="M20 11a8.1 8.1 0 0 0 -15.5 -2m-.5 -4v4h4" />
-                                            <path d="M4 13a8.1 8.1 0 0 0 15.5 2m.5 4v-4h-4" />
-                                        </svg>
-                                    </a>
+                                   
+
                                 </td>
                             </tr>
                             @empty

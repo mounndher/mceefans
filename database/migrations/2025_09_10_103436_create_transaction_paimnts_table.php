@@ -17,7 +17,7 @@ return new class extends Migration
             $table->unsignedBigInteger('id_abonment');
             // Other fields
             $table->date('date');
-            $table->decimal('prix', 11, 4);   // 10 digits total, 2 after decimal
+            $table->text('prix');   // 10 digits total, 2 after decimal
             $table->integer('nbrmatch');
             // Relations (optional if you want foreign key constraints)
             $table->foreign('id_fan')->references('id')->on('fan')->onDelete('cascade');

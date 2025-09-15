@@ -18,10 +18,17 @@ class FanController extends Controller
     // Display all fans
     public function index()
     {
-        $fans = Fan::all();
-        $abonments = Abonment::all(); // قائمة كل Abonments
+        $fans = Fan::where('status','active')->get();
+        $abonments = Abonment::where('status','active')->get(); // قائمة كل Abonments
         //dd($abonments); // اختبر لو تحب
         return view('backend.fans.index', compact('fans','abonments'));
+    }
+    public function expired()
+    {
+        $fans = Fan::where('status','expired')->get();
+        $abonments = Abonment::where('status','active')->get(); // قائمة كل Abonments
+        //dd($abonments); // اختبر لو تحب
+        return view('backend.fans.expired', compact('fans','abonments'));
     }
     public function create()
     {
@@ -30,6 +37,38 @@ class FanController extends Controller
     }
 
     // Store a new fan
+    public function renouvelerAbonment(Request $request, $fanId)
+{
+    // 1. نجيب الـFan
+    $fan = Fan::findOrFail($fanId);
+
+    // 2. نتحقق من الإدخال (abonment جديد)
+    $validated = $request->validate([
+        'id_abonment' => 'required|exists:abonments,id',
+    ]);
+
+    // 3. نجيب الـAbonment
+    $abonment = Abonment::findOrFail($validated['id_abonment']);
+    $dd=$abonment;
+    //dd($dd);
+    // 4. نضيف TransactionPaimnt جديد (ما نغير id_qrcode)
+    TransactionPaimnt::create([
+    'id_fan'      => $fan->id,
+    'id_abonment' => $abonment->id,
+    'date'        => now(),
+    'prix'        => $abonment->prix,  // force numeric
+    'nbrmatch'    => $abonment->nbrmatch,
+]);
+
+    // 5. إذا حاب تحدث تاريخ صلاحية البطاقة
+    // مثلا تمدد 5 سنوات إضافية من اليوم
+    // $fan->valid_until = now()->addYears(5);
+    // $fan->save();
+
+    return redirect()->route('fans.index')
+        ->with('success', 'Abonnement renouvelé avec succès sans changer le QR code.');
+}
+
 
 
 
@@ -211,36 +250,7 @@ class FanController extends Controller
         $fan = Fan::findOrFail($id);
         return view('backend.fans.edit', compact('fan'));
     }
-    public function renouvelerAbonment(Request $request, $fanId)
-    {
-        // 1. نجيب الـFan
-        $fan = Fan::findOrFail($fanId);
 
-        // 2. نتحقق من الإدخال (abonment جديد)
-        $validated = $request->validate([
-            'id_abonment' => 'required|exists:abonments,id',
-        ]);
-
-        // 3. نجيب الـAbonment
-        $abonment = Abonment::findOrFail($validated['id_abonment']);
-
-        // 4. نضيف TransactionPaimnt جديد (ما نغير id_qrcode)
-        TransactionPaimnt::create([
-            'id_fan'      => $fan->id,
-            'id_abonment' => $abonment->id,
-            'date'        => now(),
-            'prix'        => $abonment->prix,
-            'nbrmatch'    => $abonment->nbrmatch,
-        ]);
-
-        // 5. إذا حاب تحدث تاريخ صلاحية البطاقة
-        // مثلا تمدد 5 سنوات إضافية من اليوم
-        // $fan->valid_until = now()->addYears(5);
-        // $fan->save();
-
-        return redirect()->route('fans.index')
-            ->with('success', 'Abonnement renouvelé avec succès sans changer le QR code.');
-    }
 
 
 
@@ -290,10 +300,14 @@ class FanController extends Controller
 
     // Delete fan
     public function destroy($id)
-    {
-        $fan = Fan::findOrFail($id);
-        $fan->delete();
+{
+    $fan = Fan::findOrFail($id);
 
-        return response()->json(['message' => 'Fan deleted successfully']);
-    }
+    // update status instead of deleting
+    $fan->status = 'expired';
+    $fan->save();
+
+    return redirect()->route('fans.index')->with('success', 'Fan marked as expired successfully');
+}
+
 }

@@ -29,10 +29,10 @@
                                     <td>{{ $paimnt->fan->nom ?? 'N/A' }} {{ $paimnt->fan->prenom ?? '' }}</td>
                                     <td>{{ $paimnt->abonment->nom ?? 'N/A' }}</td>
                                     <td>{{ $paimnt->date }}</td>
-                                    <td>{{ number_format($paimnt->prix, 2) }}</td>
+                                    <td>{{ $paimnt->prix}}</td>
                                     <td>{{ $paimnt->nbrmatch }}</td>
                                      <td>
-                                        
+
 
                                         <form action=""
                                               method="POST" style="display:inline;">

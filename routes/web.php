@@ -49,13 +49,19 @@ Route::get('/fans/{fan}/edit', [FanController::class, 'edit'])->name('fans.edit'
 
 // تحديث بيانات فان
 Route::put('/fans/{fan}', [FanController::class, 'update'])->name('fans.update');
+route::get('expired', [FanController::class, 'expired'])->name('fans.expired');
 
 // حذف فان
 Route::delete('/fans/{fan}', [FanController::class, 'destroy'])->name('fans.destroy');
+Route::post('/fans/{id}/renouveler', [FanController::class, 'renouvelerAbonment'])->name('fans.renouveler');
+Route::patch('/abonments/{id}/toggle', [AbonmentsController::class, 'toggle'])->name('abonments.toggle');
 Route::resource('appareils', AppareilController::class);
 Route::post('/events/{id}/terminer', [EventController::class, 'terminer'])->name('events.terminer');
 Route::get('events/{id}/statistics', [EventController::class, 'statistics'])
     ->name('events.statistics');
+
+
+
 Route::resource('events', EventController::class);
 Route::resource('abonments', AbonmentsController::class);
 Route::resource('Paimnts', PaimntstController::class);

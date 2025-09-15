@@ -14,10 +14,12 @@ class Abonment extends Model
         'nbrmatch',
         'image',
         'desgin_card',
+        'status'
     ];
     public function transactions()
 {
     return $this->hasMany(TransactionPaimnt::class, 'id_abonment');
 }
+
 
 }

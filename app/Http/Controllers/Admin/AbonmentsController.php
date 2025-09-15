@@ -5,7 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Abonment;
-
+use App\Models\Attendance;
+use App\Models\Fan;
 class AbonmentsController extends Controller
 {
     //
@@ -58,7 +59,6 @@ class AbonmentsController extends Controller
             'nom' => 'required|string|max:255',
             'prix' => 'required|string',
             'nbrmatch' => 'required|string',
-
             'desgin_card' => 'nullable',
         ]);
 
@@ -88,4 +88,20 @@ class AbonmentsController extends Controller
 
         return redirect()->route('abonments.index')->with('success', 'Abonment deleted successfully.');
     }
+
+    public function toggle($id)
+{
+    $abonment = Abonment::findOrFail($id);
+
+    $abonment->status = $abonment->status === 'active' ? 'expired' : 'active';
+    $abonment->save();
+
+    return response()->json([
+        'status' => $abonment->status,
+        'message' => 'Status updated successfully'
+    ]);
+}
+
+
+
 }
