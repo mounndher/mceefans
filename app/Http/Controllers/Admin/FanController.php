@@ -19,8 +19,9 @@ class FanController extends Controller
     public function index()
     {
         $fans = Fan::all();
-        //dd($fans); // اختبر لو تحب
-        return view('backend.fans.index', compact('fans'));
+        $abonments = Abonment::all(); // قائمة كل Abonments
+        //dd($abonments); // اختبر لو تحب
+        return view('backend.fans.index', compact('fans','abonments'));
     }
     public function create()
     {
@@ -30,106 +31,7 @@ class FanController extends Controller
 
     // Store a new fan
 
-    public function store1(Request $request)
-    {
-        //dd($request->all());
-        // ✅ Validate fan fields
-        $validated = $request->validate([
-            'id_qrcode'    => 'required|unique:fan',
-            'nom'          => 'required|string',
-            'prenom'       => 'required|string',
-            'nin'          => 'required|unique:fan|size:18',
-            'numero_tele'  => 'required',
-            'date_de_nai'  => 'required|date',
-            'image'        => 'nullable|image|mimes:jpg,jpeg,png',
-            'imagecart'    => 'nullable|image|mimes:jpg,jpeg,png',
-            'card'         => 'nullable|string',
 
-            // ✅ Add abonment selection
-            'id_abonment'  => 'required|exists:abonments,id',
-        ]);
-
-        // ✅ Create the fan
-        $fan = Fan::create($validated);
-
-        // ✅ Get the abonment
-        $abonment = Abonment::findOrFail($validated['id_abonment']);
-
-        // ✅ Insert into transaction_paimnts
-        TransactionPaimnt::create([
-            'id_fan'      => $fan->id,
-            'id_abonment' => $abonment->id,
-            'date'        => now(),
-            'prix'        => $abonment->prix,
-            'nbrmatch'    => $abonment->nbrmatch,
-        ]);
-
-        return redirect()->route('fans.index')->with('success', 'Fan created successfully with payment transaction.');
-    }
-
-
-
-    public function store2(Request $request)
-    {
-        // ✅ Validate input
-        $validated = $request->validate([
-            'nom'          => 'required|string',
-            'prenom'       => 'required|string',
-            'nin'          => 'required|unique:fan|size:18',
-            'numero_tele'  => 'required',
-            'date_de_nai'  => 'required|date',
-            'image'        => 'required|image|mimes:jpg,jpeg,png|max:2048',
-            'imagecart'        => 'required|image|mimes:jpg,jpeg,png|max:2048',
-            'id_abonment'  => 'required|exists:abonments,id',
-        ]);
-
-        $uploadsFolder = public_path('uploads');
-        if (!file_exists($uploadsFolder)) mkdir($uploadsFolder, 0777, true);
-
-        // ✅ Generate random ID for fan and save in id_qrcode
-        $randomId = $validated['nom'] . '-' . Str::random(6);
-        $validated['id_qrcode'] = $randomId;
-
-        // ✅ Generate QR code
-        $qrFileName = $randomId . '_qr.png';
-        $qrPath = $uploadsFolder . '/' . $qrFileName;
-
-        $pngData = QrCode::format('png')->size(150)->generate($randomId);
-        file_put_contents($qrPath, $pngData);
-
-        // Save QR code path in card column
-        $validated['qr_img'] = '/uploads/' . $qrFileName;
-
-        // ✅ Upload profile image if exists
-        if ($request->hasFile('image')) {
-            $file = $request->file('image');
-            $fileName = uniqid() . '_' . $file->getClientOriginalName();
-            $file->move($uploadsFolder, $fileName);
-            $validated['image'] = '/uploads/' . $fileName;
-        }
-        if ($request->hasFile('imagecart')) {
-            $file = $request->file('imagecart');
-            $fileName = uniqid() . '_' . $file->getClientOriginalName();
-            $file->move($uploadsFolder, $fileName);
-            $validated['imagecart'] = '/uploads/' . $fileName;
-        }
-
-        // ✅ Create fan
-        $fan = Fan::create($validated);
-
-        // ✅ Create transaction
-        $abonment = Abonment::findOrFail($request->id_abonment);
-        TransactionPaimnt::create([
-            'id_fan'      => $fan->id,
-            'id_abonment' => $abonment->id,
-            'date'        => now(),
-            'prix'        => $abonment->prix,
-            'nbrmatch'    => $abonment->nbrmatch,
-        ]);
-
-        return redirect()->route('fans.index')
-            ->with('success', 'Fan created successfully with random QR code and transaction.');
-    }
 
     public function store(Request $request)
     {
@@ -179,8 +81,8 @@ class FanController extends Controller
         // ✅ Load card template from abonment->desgin_card
         $cardTemplatePath = public_path($abonment->desgin_card);
 
-       // dd($cardTemplatePath);
-       // dd($abonment->desgin_card);
+        // dd($cardTemplatePath);
+        // dd($abonment->desgin_card);
         if (!file_exists($cardTemplatePath)) {
             return back()->withErrors(['desgin_card' => 'Card template not found at ' . $cardTemplatePath]);
         }
@@ -297,7 +199,11 @@ class FanController extends Controller
 
 
 
-
+    public function show($id)
+    {
+        $fan = Fan::findOrFail($id);
+        return view('backend.fans.show', compact('fan'));
+    }
 
     // Show a single fan
     public function edit($id)
@@ -305,11 +211,38 @@ class FanController extends Controller
         $fan = Fan::findOrFail($id);
         return view('backend.fans.edit', compact('fan'));
     }
-    public function show($id)
+    public function renouvelerAbonment(Request $request, $fanId)
     {
-        $fan = Fan::findOrFail($id);
-        return view('backend.fans.show', compact('fan'));
+        // 1. نجيب الـFan
+        $fan = Fan::findOrFail($fanId);
+
+        // 2. نتحقق من الإدخال (abonment جديد)
+        $validated = $request->validate([
+            'id_abonment' => 'required|exists:abonments,id',
+        ]);
+
+        // 3. نجيب الـAbonment
+        $abonment = Abonment::findOrFail($validated['id_abonment']);
+
+        // 4. نضيف TransactionPaimnt جديد (ما نغير id_qrcode)
+        TransactionPaimnt::create([
+            'id_fan'      => $fan->id,
+            'id_abonment' => $abonment->id,
+            'date'        => now(),
+            'prix'        => $abonment->prix,
+            'nbrmatch'    => $abonment->nbrmatch,
+        ]);
+
+        // 5. إذا حاب تحدث تاريخ صلاحية البطاقة
+        // مثلا تمدد 5 سنوات إضافية من اليوم
+        // $fan->valid_until = now()->addYears(5);
+        // $fan->save();
+
+        return redirect()->route('fans.index')
+            ->with('success', 'Abonnement renouvelé avec succès sans changer le QR code.');
     }
+
+
 
     // Update fan
     public function update(Request $request, $id)
@@ -325,6 +258,9 @@ class FanController extends Controller
             'date_de_nai'  => 'required|date',
             'image'        => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
             'imagecart'    => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'card'         => 'nullable|string',
+            'id_qrcode'    => 'nullable|string',
+            'qr_img'       => 'nullable|string',
         ]);
 
         $uploadsFolder = public_path('uploads');

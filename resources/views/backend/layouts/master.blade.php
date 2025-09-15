@@ -12,6 +12,7 @@
     <link href="{{ asset('backend/assets/dist/css/tabler-payments.min.css?1692870487') }}" rel="stylesheet"/>
     <link href="{{ asset('backend/assets/dist/css/tabler-vendors.min.css?1692870487') }}" rel="stylesheet"/>
     <link href="{{ asset('backend/assets/dist/css/demo.min.css?1692870487') }}" rel="stylesheet"/>
+   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     <style>
       @import url('https://rsms.me/inter/inter.css');

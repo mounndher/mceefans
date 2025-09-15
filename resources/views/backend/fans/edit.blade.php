@@ -53,21 +53,7 @@
                         <x-input-error :messages="$errors->get('date_de_nai')" class="mt-2" />
                     </div>
 
-                    <div class="mb-3">
-                        <label class="form-label">QR_CODE IMAGE</label>
-
-                        <!-- Display the card image -->
-                        @if(!empty($fan->qr_img))
-                        <div class="mb-2">
-                            <img src="{{ asset($fan->qr_img) }}" alt="Fan Card" style="max-width: 300px; border: 1px solid #ccc; border-radius: 8px;">
-                        </div>
-                        @endif
-
-                        <!-- Optional: hidden input to keep the card path -->
-                        <input type="hidden" name="card" value="{{ $fan->card }}">
-
-                        <x-input-error :messages="$errors->get('card')" class="mt-2" />
-                    </div>
+                    
 
 
                     <div class="mb-3">
@@ -88,14 +74,7 @@
                         <x-input-error :messages="$errors->get('imagecart')" class="mt-2" />
                     </div>
 
-                    <div class="mb-3">
-                        <label class="form-label">card</label><br>
-                        @if ($fan->card)
-                        <img src="{{ asset($fan->card) }}" width="100" class="mb-2">
-                        @endif
-                        
-                        <x-input-error :messages="$errors->get('card')" class="mt-2" />
-                    </div>
+
 
 
 
