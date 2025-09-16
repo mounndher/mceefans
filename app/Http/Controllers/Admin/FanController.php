@@ -237,25 +237,22 @@ class FanController extends Controller
 
 
 public function cardPdf($id)
+
 {
     $fan = Fan::findOrFail($id);
 
-    $cardWidthPx = 220;
-    $cardHeightPx = 349;
+    $cardPath = public_path($fan->card);
 
-    // Convert px → points (1 px ≈ 0.75 pt)
-    $cardWidthPt = $cardWidthPx * 0.75;   // 165 pt
-    $cardHeightPt = $cardHeightPx * 0.75; // 261.75 pt
+    if (!file_exists($cardPath)) {
+        abort(404, "Card not found.");
+    }
 
-    // Custom page size requires 4 values [x0, y0, x1, y1]
-    $customPaper = [0, 0, $cardWidthPt, $cardHeightPt];
-
+    // حجم الكارت 8.5 × 5.5 cm = 240pt × 156pt
     $pdf = Pdf::loadView('backend.fans.card_pdf', compact('fan'))
-              ->setPaper($customPaper, 'portrait');
+              ->setPaper([0, 0, 240, 156], 'portrait');
 
-    return $pdf->stream('fan_card_' . $fan->id . '.pdf');
+    return $pdf->stream("card_{$fan->id}.pdf");
 }
-
 
 
 
