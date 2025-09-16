@@ -70,6 +70,9 @@
                                             <path d="M16 5l3 3" />
                                         </svg>
                                     </a>
+                                    <a href="{{ route('fans.cardPdf', $fan->id) }}" class="btn btn-danger">
+                                         PDF
+                                    </a>
 
                                     <!-- Delete -->
                                     <form action="{{ route('fans.destroy', $fan->id) }}" method="POST" style="display:inline;">
@@ -87,11 +90,7 @@
                                     </form>
 
                                     <!-- Renouveler Abonnement -->
-                                    <a href="javascript:void(0);"
-                                       class="renouveler-btn ms-2 text-warning"
-                                       data-fan-id="{{ $fan->id }}"
-                                       data-fan-name="{{ $fan->nom }} {{ $fan->prenom }}"
-                                       title="Renouveler Abonnement">
+                                    <a href="javascript:void(0);" class="renouveler-btn ms-2 text-warning" data-fan-id="{{ $fan->id }}" data-fan-name="{{ $fan->nom }} {{ $fan->prenom }}" title="Renouveler Abonnement">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-refresh" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
                                             <path stroke="none" d="M0 0h24v24H0z" fill="none" />
                                             <path d="M20 11a8.1 8.1 0 0 0 -15.5 -2m-.5 -4v4h4" />
@@ -129,13 +128,13 @@
                         <select name="id_abonment" class="form-select" required>
                             <option value="">-- Sélectionner --</option>
                             @foreach($abonments as $abonment)
-                                <option value="{{ $abonment->id }}" {{ old('id_abonment') == $abonment->id ? 'selected' : '' }}>
-                                    {{ $abonment->nom }} - {{ $abonment->prix }} DA - {{ $abonment->nbrmatch }} matchs
-                                </option>
+                            <option value="{{ $abonment->id }}" {{ old('id_abonment') == $abonment->id ? 'selected' : '' }}>
+                                {{ $abonment->nom }} - {{ $abonment->prix }} DA - {{ $abonment->nbrmatch }} matchs
+                            </option>
                             @endforeach
                         </select>
                         @error('id_abonment')
-                            <div class="text-danger small">{{ $message }}</div>
+                        <div class="text-danger small">{{ $message }}</div>
                         @enderror
                     </div>
                 </div>
@@ -168,5 +167,6 @@
             });
         });
     });
+
 </script>
 @endsection

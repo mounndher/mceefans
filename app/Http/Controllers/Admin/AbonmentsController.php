@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Abonment;
 use App\Models\Attendance;
 use App\Models\Fan;
+
 class AbonmentsController extends Controller
 {
     //
@@ -18,7 +19,7 @@ class AbonmentsController extends Controller
     public function expired()
     {
 
-        $abonments = Abonment::where('status','expired')->get(); // قائمة كل Abonments
+        $abonments = Abonment::where('status', 'expired')->get(); // قائمة كل Abonments
         //dd($abonments); // اختبر لو تحب
         return view('backend.abonments.expired', compact('abonments'));
     }
@@ -71,6 +72,7 @@ class AbonmentsController extends Controller
 
         $data = $request->all();
 
+
         if ($request->hasFile('desgin_card')) {
             $file = $request->file('desgin_card');
             $filename = time() . '.' . $file->getClientOriginalExtension();
@@ -97,18 +99,15 @@ class AbonmentsController extends Controller
     }
 
     public function toggle($id)
-{
-    $abonment = Abonment::findOrFail($id);
+    {
+        $abonment = Abonment::findOrFail($id);
 
-    $abonment->status = $abonment->status === 'active' ? 'expired' : 'active';
-    $abonment->save();
+        $abonment->status = $abonment->status === 'active' ? 'expired' : 'active';
+        $abonment->save();
 
-    return response()->json([
-        'status' => $abonment->status,
-        'message' => 'Status updated successfully'
-    ]);
-}
-
-
-
+        return response()->json([
+            'status' => $abonment->status,
+            'message' => 'Status updated successfully'
+        ]);
+    }
 }

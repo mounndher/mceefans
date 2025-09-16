@@ -63,12 +63,10 @@
                         <input type="file" class="form-control" name="desgin_card">
                         @if($abonment->desgin_card)
                             <div class="mt-2">
-                                <img src="{{ asset('uploads/abonments/'.$abonment->desgin_card) }}"
+                                <img src="{{ asset($abonment->desgin_card) }}"
                                      alt="Current design" width="120" class="rounded">
                             </div>
                         @endif
-
-                    </div></form>
                         @error('desgin_card')
                             <div class="text-danger small">{{ $message }}</div>
                         @enderror

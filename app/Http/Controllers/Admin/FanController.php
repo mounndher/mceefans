@@ -10,7 +10,7 @@ use App\Models\TransactionPaimnt;
 use App\Models\Abonment;
 use Illuminate\Support\Str;
 use Carbon\Carbon;
-
+use Barryvdh\DomPDF\Facade\Pdf;
 class FanController extends Controller
 {
 
@@ -233,6 +233,26 @@ class FanController extends Controller
         return redirect()->route('fans.index')
             ->with('success', 'Fan created successfully with virtual card and transaction.');
     }
+
+
+
+public function cardPdf($id)
+{
+    $fan = Fan::findOrFail($id);
+
+    $cardWidthPx = 220;
+    $cardHeightPx = 349;
+
+    // Convert pixels to points for PDF page size
+    $cardWidthPt = $cardWidthPx * 0.75;   // 165 pt
+    $cardHeightPt = $cardHeightPx * 0.75; // 261.75 pt
+
+    $pdf = Pdf::loadView('backend.fans.card_pdf', compact('fan'))
+        ->setPaper([$cardWidthPt, $cardHeightPt], 'portrait');
+
+    return $pdf->stream('fan_card_' . $fan->id . '.pdf');
+}
+
 
 
 
