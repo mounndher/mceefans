@@ -243,12 +243,15 @@ public function cardPdf($id)
     $cardWidthPx = 220;
     $cardHeightPx = 349;
 
-    // Convert pixels to points for PDF page size
+    // Convert px → points (1 px ≈ 0.75 pt)
     $cardWidthPt = $cardWidthPx * 0.75;   // 165 pt
     $cardHeightPt = $cardHeightPx * 0.75; // 261.75 pt
 
+    // Custom page size requires 4 values [x0, y0, x1, y1]
+    $customPaper = [0, 0, $cardWidthPt, $cardHeightPt];
+
     $pdf = Pdf::loadView('backend.fans.card_pdf', compact('fan'))
-        ->setPaper([$cardWidthPt, $cardHeightPt], 'portrait');
+              ->setPaper($customPaper, 'portrait');
 
     return $pdf->stream('fan_card_' . $fan->id . '.pdf');
 }

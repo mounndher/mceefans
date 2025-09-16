@@ -1,31 +1,25 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="utf-8">
-    <title>Fan Card</title>
     <style>
-        body {
+        html, body {
             margin: 0;
             padding: 0;
-            background: #fff;
         }
         .card {
-            width: 220px;
-            height: 349px;
-            margin: 0;
-            position: relative;
+            width: 100%;
+            height: 100%;
         }
-        img {
-            width: 220px;
-            height: 349px;
-            display: block;
-            object-fit: cover;
+        .card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Keeps proportions and fills page */
         }
     </style>
 </head>
 <body>
     <div class="card">
-        <img src="{{ public_path($fan->card) }}" alt="Fan Card" />
+        <img src="{{ public_path('uploads/cards/' . $fan->image) }}" alt="Fan Card">
     </div>
 </body>
 </html>
