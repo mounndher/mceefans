@@ -23,7 +23,7 @@ use App\Http\Controllers\Admin\dashboardController;
 */
 
 Route::get('/', function () {
-    return view('auth.login');
+    return view('frontend.index');
 });
 Route::get('/generate-card-index', [IndexController::class, 'create'])->name('generate.card.index');
 Route::post('/generate-card-preview', [IndexController::class, 'index'])->name('generate.card.preview');
