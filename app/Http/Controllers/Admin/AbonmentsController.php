@@ -35,7 +35,6 @@ class AbonmentsController extends Controller
             'nom' => 'required|string|max:255',
             'prix' => 'required|string',
             'nbrmatch' => 'required|string',
-
             'desgin_card' => 'required',
         ]);
 
@@ -47,10 +46,16 @@ class AbonmentsController extends Controller
             $file->move(public_path('uploads/abonments'), $filename);
             $data['desgin_card'] = 'uploads/abonments/' . $filename; // ✅ store with folder
         }
+        if ($request->hasFile('image')) {
+            $file = $request->file('image');
+            $filename = time() . '.' . $file->getClientOriginalExtension();
+            $file->move(public_path('uploads/abonments'), $filename);
+            $data['image'] = 'uploads/abonments/' . $filename; // ✅ store with folder
+        }
 
         Abonment::create($data);
 
-        return redirect()->route('abonments.index')->with('success', 'Abonment created successfully.');
+        return redirect()->route('abonments.index')->with('success', 'Abonnement créé avec succès.');
     }
 
     public function edit($id)
@@ -79,24 +84,19 @@ class AbonmentsController extends Controller
             $file->move(public_path('uploads/abonments'), $filename);
             $data['desgin_card'] = 'uploads/abonments/' . $filename; // ✅ store with folder
         }
+        if ($request->hasFile('image')) {
+            $file = $request->file('image');
+            $filename = time() . '.' . $file->getClientOriginalExtension();
+            $file->move(public_path('uploads/abonments'), $filename);
+            $data['image'] = 'uploads/abonments/' . $filename; // ✅ store with folder
+        }
 
         $abonment->update($data);
 
-        return redirect()->route('abonments.index')->with('success', 'Abonment updated successfully.');
+        return redirect()->route('abonments.index')->with('success', 'Abonment mis à jour avec succès.');
     }
 
-    public function destroy($id)
-    {
-        $abonment = Abonment::findOrFail($id);
-
-        if ($abonment->image && file_exists(public_path('uploads/abonments/' . $abonment->image))) {
-            unlink(public_path('uploads/abonments/' . $abonment->image));
-        }
-
-        $abonment->delete();
-
-        return redirect()->route('abonments.index')->with('success', 'Abonment deleted successfully.');
-    }
+   
 
     public function toggle($id)
     {
@@ -107,7 +107,7 @@ class AbonmentsController extends Controller
 
         return response()->json([
             'status' => $abonment->status,
-            'message' => 'Status updated successfully'
+            'message' => 'Statut mis à jour avec succès'
         ]);
     }
 }

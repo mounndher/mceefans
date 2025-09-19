@@ -23,10 +23,16 @@ use App\Http\Controllers\Admin\dashboardController;
 */
 
 Route::get('/', function () {
-    return view('frontend.index');
+    return view('auth.login');
 });
 Route::get('/generate-card-index', [IndexController::class, 'create'])->name('generate.card.index');
 Route::post('/generate-card-preview', [IndexController::class, 'index'])->name('generate.card.preview');
+
+
+
+
+
+
 Route::middleware(['auth', 'verified'])->group(function () {
 Route::get('/create', function () {
     return view('backend.fans.create');
@@ -34,7 +40,9 @@ Route::get('/create', function () {
 
 ///// fans///////////////////////////////////
 Route::get('/fans', [FanController::class, 'index'])->name('fans.index');
-
+//Route::post('mceefans/{id}/regenerate', [FanController::class, 'regenerate']);
+Route::put('fans/{id}/regenerate', [FanController::class, 'regenerate'])
+    ->name('fans.regenerate');
 // فورم إنشاء فان جديد
 Route::get('/fans/create', [FanController::class, 'create'])->name('fans.create');
 

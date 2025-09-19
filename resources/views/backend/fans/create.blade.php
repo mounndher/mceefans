@@ -14,19 +14,8 @@
     <div class="container-xl">
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title">Create New Fan</h3>
-                <div class="card-actions">
-                    <a href="{{ route('fans.index') }}" class="btn btn-primary">
-                        <!-- Back icon -->
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icon-tabler-arrow-left">
-                            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                            <path d="M5 12l14 0" />
-                            <path d="M5 12l6 6" />
-                            <path d="M5 12l6 -6" />
-                        </svg>
-                        Back
-                    </a>
-                </div>
+                <h3 class="card-title">créer un nouveau fan</h3>
+               
             </div>
 
             <div class="card-body">
@@ -37,13 +26,13 @@
 
                     <div class="mb-3">
                         <label class="form-label">Nom</label>
-                        <input type="text" class="form-control" name="nom" value="{{ old('nom') }}" placeholder="Enter last name">
+                        <input type="text" class="form-control" name="nom" value="{{ old('nom') }}" placeholder="Entrez le nom de famille">
                         @error('nom') <div class="text-danger small">{{ $message }}</div> @enderror
                     </div>
 
                     <div class="mb-3">
                         <label class="form-label">Prénom</label>
-                        <input type="text" class="form-control" name="prenom" value="{{ old('prenom') }}" placeholder="Enter first name">
+                        <input type="text" class="form-control" name="prenom" value="{{ old('prenom') }}" placeholder="Entrez le prénom">
                         @error('prenom') <div class="text-danger small">{{ $message }}</div> @enderror
                     </div>
 
@@ -90,7 +79,7 @@
                     </div>
 
                     <div class="mb-3">
-                        <button class="btn btn-primary" type="submit">Create Fan</button>
+                        <button class="btn btn-primary" type="submit">créer un fan</button>
                     </div>
                 </form>
 

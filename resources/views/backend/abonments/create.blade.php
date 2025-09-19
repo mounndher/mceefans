@@ -5,21 +5,9 @@
     <div class="container-xl">
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title">Create New Abonment</h3>
+                <h3 class="card-title">Créer un nouvel abonnement</h3>
                 <div class="card-actions">
-                    <a href="{{ route('abonments.index') }}" class="btn btn-primary">
-                        <!-- Back icon -->
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                             viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                             stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                             class="icon icon-tabler icon-tabler-arrow-left">
-                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                            <path d="M5 12h14" />
-                            <path d="M5 12l6 6" />
-                            <path d="M5 12l6 -6" />
-                        </svg>
-                        Back
-                    </a>
+                   
                 </div>
             </div>
 
@@ -55,6 +43,13 @@
                         <label class="form-label">desgin_card</label>
                         <input type="file" class="form-control" name="desgin_card">
                         @error('desgin_card')
+                            <div class="text-danger small">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">desgin_card 1</label>
+                        <input type="file" class="form-control" name="image">
+                        @error('image')
                             <div class="text-danger small">{{ $message }}</div>
                         @enderror
                     </div>
