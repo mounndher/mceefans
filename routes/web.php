@@ -52,7 +52,8 @@ Route::post('/fans', [FanController::class, 'store'])->name('fans.store');
 // عرض فان واحد بالتفصيل
 Route::get('/fans/{fan}', [FanController::class, 'show'])->name('fans.show');
 Route::get('/fans/{fan}/card', [FanController::class, 'cardPdf'])->name('fans.cardPdf');
-
+Route::get('/fans/{fan}/cardtelecharger', [FanController::class, 'cardPdftelecharger'])
+->name('fans.cardPdftelecharger');
 // فورم تعديل فان
 Route::get('/fans/{fan}/edit', [FanController::class, 'edit'])->name('fans.edit');
 

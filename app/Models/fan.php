@@ -19,7 +19,8 @@ class fan extends Model
         'numero_tele',
         'date_de_nai',
         'card',
-        'qr_img'
+        'qr_img',
+        'qr_pdf_img'
     ];
     public function transactions()
 {

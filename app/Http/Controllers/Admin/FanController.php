@@ -191,6 +191,16 @@ class FanController extends Controller
 
     // ✅ Save fan
     $fan = Fan::create($validated);
+    $pdfQrFileName = $randomId . '_pdf_qr.png';
+    $pdfQrPath = $uploadsFolder . '/' . $pdfQrFileName;
+
+    $pdfUrl = route('fans.cardPdftelecharger', $fan->id); // link to PDF
+    $pngData2 = QrCode::format('png')->size(100)->generate($pdfUrl);
+    file_put_contents($pdfQrPath, $pngData2);
+
+    $fan->update([
+        'qr_pdf_img' => '/uploads/' . $pdfQrFileName,
+    ]);
 
     // ✅ Save transaction
     TransactionPaimnt::create([
@@ -202,9 +212,25 @@ class FanController extends Controller
     ]);
 
     return redirect()->route('fans.index')
-        ->with('success', 'Fan created successfully with virtual card and transaction.');
+        ->with('success', 'FAns créé avec succès avec carte virtuelle et transaction.');
 }
 
+
+public function cardPdftelecharger($id)
+{
+    $fan = Fan::findOrFail($id);
+
+    $cardPath = public_path($fan->card);
+    if (!file_exists($cardPath)) {
+        abort(404, "Card not found.");
+    }
+
+    $pdf = Pdf::loadView('backend.fans.card_pdf', compact('fan'))
+        ->setPaper([0, 0, 240, 156], 'portrait'); // حجم 8.5cm × 5.5cm
+
+    return $pdf->download("card_{$fan->id}.pdf"); 
+    // أو stream() لو حابب يفتح مباشرة
+}
 
 
     public function regenerate($id)

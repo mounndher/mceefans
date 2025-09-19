@@ -86,6 +86,17 @@
                         </td>
 
                     </tr>
+                    <tr>
+                        <th>QR Code pdf</th>
+                        <td>
+                            @if($fan->qr_img)
+                                <img src="{{ asset($fan->qr_pdf_img) }}" alt="Carte Image"  width="100 height="100">
+                            @else
+                                <span class="text-muted">No card generated</span>
+                            @endif
+                        </td>
+
+                    </tr>
                 </table>
 
 
