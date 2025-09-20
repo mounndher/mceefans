@@ -25,6 +25,9 @@ use App\Http\Controllers\Admin\dashboardController;
 Route::get('/', function () {
     return view('frontend.index');
 });
+
+Route::get('/fans/{fan}/cardtelecharger', [FanController::class, 'cardPdftelecharger'])
+->name('fans.cardPdftelecharger');
 Route::get('/generate-card-index', [IndexController::class, 'create'])->name('generate.card.index');
 Route::post('/generate-card-preview', [IndexController::class, 'index'])->name('generate.card.preview');
 
@@ -32,7 +35,7 @@ Route::post('/generate-card-preview', [IndexController::class, 'index'])->name('
 
 
 
-
+///////////// adlin////////////////////
 Route::middleware(['auth', 'verified'])->group(function () {
 Route::get('/create', function () {
     return view('backend.fans.create');
@@ -53,8 +56,7 @@ Route::get('/fans/bulk-pdf', [FanController::class, 'bulkPdf'])->name('fans.bulk
 // عرض فان واحد بالتفصيل
 Route::get('/fans/{fan}', [FanController::class, 'show'])->name('fans.show');
 Route::get('/fans/{fan}/card', [FanController::class, 'cardPdf'])->name('fans.cardPdf');
-Route::get('/fans/{fan}/cardtelecharger', [FanController::class, 'cardPdftelecharger'])
-->name('fans.cardPdftelecharger');
+
 // فورم تعديل فان
 Route::get('/fans/{fan}/edit', [FanController::class, 'edit'])->name('fans.edit');
 

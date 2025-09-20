@@ -5,12 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Fan extends Model
+class fan extends Model
 {
     use HasFactory;
     protected $table = 'fan';
     protected $fillable = [
         'id_qrcode',
+        'id_abonment',
         'nom',
         'prenom',
         'image',
@@ -29,6 +30,10 @@ class Fan extends Model
 public function events()
 {
     return $this->belongsToMany(Event::class, 'attendances', 'fan_id', 'id_event');
+}
+public function abonment()
+{
+    return $this->belongsTo(Abonment::class, 'id_abonment');
 }
 
 }

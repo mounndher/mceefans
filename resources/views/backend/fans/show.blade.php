@@ -110,42 +110,6 @@
 </div>
 
 <!-- Scripts -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-document.querySelectorAll('.regenerate-form').forEach(form => {
-    form.addEventListener('submit', function(e){
-        e.preventDefault();
-        if(!confirm('Regenerate QR code and card for this fan?')) return;
 
-        fetch(this.action, {
-            method: 'POST',
-            headers: {
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                'Accept': 'application/json'
-            }
-        })
-        .then(res => res.json())
-        .then(data => {
-            if(data.success){
-                // Update images dynamically
-                document.getElementById('qr-image').src = data.qr_img + '?' + new Date().getTime();
-                document.getElementById('card-image').src = data.card_img + '?' + new Date().getTime();
-                document.getElementById('qr-pdf-image').src = data.qr_pdf_img + '?' + new Date().getTime();
-
-                // Show toast
-                const toastEl = document.getElementById('liveToast');
-                document.getElementById('toast-message').innerText = data.message;
-                const toast = new bootstrap.Toast(toastEl);
-                toast.show();
-            } else {
-                alert('Error: ' + data.message);
-            }
-        }).catch(err => {
-            console.error(err);
-            
-        });
-    });
-});
-</script>
 
 @endsection

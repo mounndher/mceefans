@@ -20,6 +20,10 @@ class Abonment extends Model
 {
     return $this->hasMany(TransactionPaimnt::class, 'id_abonment');
 }
+public function fans()
+{
+    return $this->hasMany(Fan::class, 'id_abonment');
+}
 
 
 }

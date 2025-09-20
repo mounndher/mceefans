@@ -126,6 +126,7 @@ class FanController extends Controller
         'image'        => 'required|image|mimes:jpg,jpeg,png|max:2048',
         'imagecart'    => 'required|image|mimes:jpg,jpeg,png|max:2048',
         'id_abonment'  => 'required|exists:abonments,id',
+        
     ]);
 
     $uploadsFolder = public_path('uploads');
@@ -140,7 +141,7 @@ class FanController extends Controller
     // ✅ Generate QR code
     $qrFileName = $randomId . '_qr.png';
     $qrPath = $uploadsFolder . '/' . $qrFileName;
-    $pngData = QrCode::format('png')->size(67)->generate($randomId);
+    $pngData = QrCode::format('png')->size(pixels: 67)->generate($randomId);
     file_put_contents($qrPath, $pngData);
     $validated['qr_img'] = '/uploads/' . $qrFileName;
 
@@ -285,7 +286,7 @@ imagettftext($card, $fontSize, 0, $x, $y, $white, $fontRegular, $text);
     $pdfQrPath = $uploadsFolder . '/' . $pdfQrFileName;
 
     $pdfUrl = route('fans.cardPdftelecharger', $fan->id); // link to PDF
-    $pngData2 = QrCode::format('png')->size(pixels: 80)->generate($pdfUrl);
+    $pngData2 = QrCode::format('png')->size(pixels: 67)->generate($pdfUrl);
     file_put_contents($pdfQrPath, $pngData2);
 
     $fan->update([
@@ -323,59 +324,131 @@ public function cardPdftelecharger($id)
 }
 
 
-  
+
 public function regenerate(Request $request, $id)
 {
     $fan = Fan::findOrFail($id);
+    $abonment = Abonment::findOrFail($fan->id_abonment);
 
     $uploadsFolder = public_path('uploads');
     if (!file_exists($uploadsFolder)) {
         mkdir($uploadsFolder, 0777, true);
     }
 
-    // 1️⃣ Générer un nouvel ID QR
-    $randomId = $fan->nom . '-' . Str::random(6);
-    $fan->id_qrcode = $randomId;
-
-    // 2️⃣ Générer le nouveau QR code
-    $qrFileName = $randomId . '_qr.png';
-    $qrPath = $uploadsFolder . '/' . $qrFileName;
-    $pngData = QrCode::format('png')->size(pixels: 100)->generate($randomId);
-    
-    // Supprimer l'ancien QR code si existe
+    // 🔄 1. Supprimer les anciens fichiers (QR, carte, QR PDF)
     if ($fan->qr_img && file_exists(public_path($fan->qr_img))) {
         unlink(public_path($fan->qr_img));
     }
+    if ($fan->card && file_exists(public_path($fan->card))) {
+        unlink(public_path($fan->card));
+    }
+    if ($fan->qr_pdf_img && file_exists(public_path($fan->qr_pdf_img))) {
+        unlink(public_path($fan->qr_pdf_img));
+    }
+
+    // 🔄 2. Générer nouvel ID QR
+    $randomId = $fan->nom . '-' . Str::random(6);
+    $fan->id_qrcode = $randomId;
+
+    // 🔄 3. Nouveau QR code
+    $qrFileName = $randomId . '_qr.png';
+    $qrPath = $uploadsFolder . '/' . $qrFileName;
+    $pngData = QrCode::format('png')->size(67)->generate($randomId);
     file_put_contents($qrPath, $pngData);
     $fan->qr_img = '/uploads/' . $qrFileName;
 
-    // 3️⃣ Générer la nouvelle carte avec le nouveau QR code
-    if ($fan->card && file_exists(public_path($fan->card))) {
-        // Charger l'image existante de la carte
-        $card = imagecreatefrompng(public_path($fan->card));
-        $cardWidth = imagesx($card);
-        $cardHeight = imagesy($card);
-
-        $qr = imagecreatefrompng($qrPath);
-        $qrWidth = imagesx($qr);
-        $qrHeight = imagesy($qr);
-
-        // Position QR code sur la carte (à ajuster selon ton template)
-        $qrX = $cardWidth - $qrWidth - 30;
-        $qrY = 30;
-
-        imagecopy($card, $qr, $qrX, $qrY, 0, 0, $qrWidth, $qrHeight);
-        imagedestroy($qr);
-
-        // Sauvegarder la carte (remplace l'ancienne)
-        imagepng($card, public_path($fan->card));
-        imagedestroy($card);
+    // 🔄 4. Charger le template de l’abonnement
+    $cardTemplatePath = public_path($abonment->desgin_card);
+    if (!file_exists($cardTemplatePath)) {
+        return back()->withErrors(['desgin_card' => 'Card template not found at ' . $cardTemplatePath]);
     }
+
+    $ext = strtolower(pathinfo($cardTemplatePath, PATHINFO_EXTENSION));
+    switch ($ext) {
+        case 'jpg':
+        case 'jpeg':
+            $card = imagecreatefromjpeg($cardTemplatePath);
+            break;
+        case 'png':
+            $card = imagecreatefrompng($cardTemplatePath);
+            break;
+        default:
+            return back()->withErrors(['desgin_card' => 'Unsupported template format']);
+    }
+
+    // 🔄 5. Ajouter QR
+    $qr = imagecreatefrompng($qrPath);
+    $qrX = imagesx($card) - imagesx($qr) - 20;
+    $qrY = 20;
+    imagecopy($card, $qr, $qrX, $qrY, 0, 0, imagesx($qr), imagesy($qr));
+    imagedestroy($qr);
+
+    // 🔄 6. Ajouter photo de profil
+    $profilePath = public_path($fan->image);
+    if (file_exists($profilePath)) {
+        $profileExt = strtolower(pathinfo($profilePath, PATHINFO_EXTENSION));
+        $profile = $profileExt === 'png'
+            ? imagecreatefrompng($profilePath)
+            : imagecreatefromjpeg($profilePath);
+        $profile = imagescale($profile, 130, 130);
+        $profileX = 50;
+        $profileY = 100;
+        imagecopy($card, $profile, $profileX, $profileY, 0, 0, 130, 130);
+        imagedestroy($profile);
+    }
+
+    // 🔄 7. Ajouter textes (Nom, Prénom, Date…)
+    $white = imagecolorallocate($card, 255, 255, 255);
+    $fontRegular = public_path('fonts/Montserrat-Regular.ttf');
+    $fontSemiBold = public_path('fonts/Montserrat-SemiBold.ttf');
+
+    // Nom
+    $labelX = 190;
+    $nameX = 270;
+    $yNom = 120;
+    imagettftext($card, 10, 0, $labelX, $yNom, $white, $fontRegular, 'Nom:');
+    imagettftext($card, 14, 0, $nameX, $yNom, $white, $fontSemiBold, strtoupper($fan->nom));
+
+    // Prénom
+    $yPrenom = 160;
+    imagettftext($card, 10, 0, $labelX, $yPrenom, $white, $fontRegular, 'Prenom:');
+    imagettftext($card, 14, 0, $nameX, $yPrenom, $white, $fontSemiBold, strtoupper($fan->prenom));
+
+    // Date de naissance (ou émission si tu veux)
+    $yDate = 190;
+    imagettftext($card, 10, 0, $labelX, $yDate, $white, $fontRegular, 'Date d\'émission:');
+    imagettftext($card, 14, 0, $nameX + 37, $yDate, $white, $fontSemiBold, $fan->date_de_nai);
+
+    // ID QR (texte en bas)
+    $padding = 10;
+    $text = $fan->id_qrcode;
+    $fontSize = 10;
+    $cardHeight = imagesy($card);
+    $x = $padding;
+    $y = $cardHeight - $padding;
+    imagettftext($card, $fontSize, 0, $x, $y, $white, $fontRegular, $text);
+
+    // 🔄 8. Sauvegarde nouvelle carte
+    $cardFileName = $randomId . '_card.png';
+    $cardPath = $uploadsFolder . '/' . $cardFileName;
+    imagepng($card, $cardPath);
+    imagedestroy($card);
+    $fan->card = '/uploads/' . $cardFileName;
+
+    // 🔄 9. Générer QR vers PDF
+    $pdfQrFileName = $randomId . '_pdf_qr.png';
+    $pdfQrPath = $uploadsFolder . '/' . $pdfQrFileName;
+    $pdfUrl = route('fans.cardPdftelecharger', $fan->id);
+    $pngData2 = QrCode::format('png')->size(67)->generate($pdfUrl);
+    file_put_contents($pdfQrPath, $pngData2);
+    $fan->qr_pdf_img = '/uploads/' . $pdfQrFileName;
 
     $fan->save();
 
-    return redirect()->back()->with('success', 'QR code et carte régénérés avec succès.');
+    return redirect()->back()->with('success', 'Carte et QR régénérés avec succès.');
 }
+
+
 
 
 
