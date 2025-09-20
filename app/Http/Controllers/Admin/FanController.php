@@ -40,14 +40,14 @@ class FanController extends Controller
     return view('backend.fans.index', compact('fans','abonments'));
 }
 
-  public function bulkPdf(Request $request)
+ public function bulkPdf(Request $request)
 {
     // ✅ Get selected IDs from query string (?ids[]=1&ids[]=2)
     $ids = $request->get('ids', []);
 
     if (empty($ids)) {
         // If no IDs selected → get all fans
-        $fans = Fan::where('status','active');
+        $fans = Fan::where('status','active')->get();
     } else {
         $fans = Fan::whereIn('id', $ids)->get();
     }
@@ -58,10 +58,11 @@ class FanController extends Controller
 
     // ✅ PDF size (A4 for multiple, or you can keep card size)
     $pdf = Pdf::loadView('backend.fans.bulk_pdf', compact('fans'))
-          ->setPaper([0, 0, 240, 156], 'portrait'); // حجم 8.5cm × 5.5cm
+              ->setPaper([0, 0, 240, 156], 'portrait'); // حجم 8.5cm × 5.5cm
 
     return $pdf->download("fan.pdf");
 }
+
 
 
     public function expired()
@@ -302,8 +303,13 @@ imagettftext($card, $fontSize, 0, $x, $y, $white, $fontRegular, $text);
         'nbrmatch'    => $abonment->nbrmatch,
     ]);
 
-    return redirect()->route('fans.index')
-        ->with('success', 'FAns créé avec succès avec carte virtuelle et transaction.');
+    
+    return response()->json([
+    'success' => true,
+    'message' => 'Fan créé avec succès avec carte virtuelle et transaction.',
+    'qr_pdf_img' => $fan->qr_pdf_img,  // image path
+    'pdf_url'    => route('fans.cardPdftelecharger', $fan->id) // link to PDF
+]);
 }
 
 
