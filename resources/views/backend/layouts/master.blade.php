@@ -12,6 +12,7 @@
     <link href="{{ asset('backend/assets/dist/css/tabler-payments.min.css') }}" rel="stylesheet"/>
     <link href="{{ asset('backend/assets/dist/css/tabler-vendors.min.css') }}" rel="stylesheet"/>
     <link href="{{ asset('backend/assets/dist/css/demo.min.css') }}" rel="stylesheet"/>
+	<meta name="csrf-token" content="{{ csrf_token() }}">
 <!-- In your main layout (e.g., app.blade.php inside <head>) -->
 <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet"/>
 

@@ -16,13 +16,54 @@ class FanController extends Controller
 
 
     // Display all fans
-    public function index()
-    {
-        $fans = Fan::where('status','active')->get();
-        $abonments = Abonment::where('status','active')->get(); // قائمة كل Abonments
-        //dd($abonments); // اختبر لو تحب
-        return view('backend.fans.index', compact('fans','abonments'));
+   public function index(Request $request)
+{
+    $query = Fan::where('status', 'active');
+
+    // ✅ البحث
+    if ($request->filled('search')) {
+        $search = $request->input('search');
+        $query->where(function($q) use ($search) {
+            $q->where('nom', 'LIKE', "%{$search}%")
+              ->orWhere('prenom', 'LIKE', "%{$search}%")
+              ->orWhere('numero_tele', 'LIKE', "%{$search}%")
+              ->orWhere('nin', 'LIKE', "%{$search}%");
+        });
     }
+
+    // ✅ pagination
+    $fans = $query->paginate(15);
+
+    // Abonnements actifs
+    $abonments = Abonment::where('status','active')->get();
+
+    return view('backend.fans.index', compact('fans','abonments'));
+}
+
+  public function bulkPdf(Request $request)
+{
+    // ✅ Get selected IDs from query string (?ids[]=1&ids[]=2)
+    $ids = $request->get('ids', []);
+
+    if (empty($ids)) {
+        // If no IDs selected → get all fans
+        $fans = Fan::where('status','active');
+    } else {
+        $fans = Fan::whereIn('id', $ids)->get();
+    }
+
+    if ($fans->isEmpty()) {
+        return response()->json(['message' => 'No fans found.'], 404);
+    }
+
+    // ✅ PDF size (A4 for multiple, or you can keep card size)
+    $pdf = Pdf::loadView('backend.fans.bulk_pdf', compact('fans'))
+          ->setPaper([0, 0, 240, 156], 'portrait'); // حجم 8.5cm × 5.5cm
+
+    return $pdf->download("fan.pdf");
+}
+
+
     public function expired()
     {
         $fans = Fan::where('status','expired')->get();
@@ -233,63 +274,64 @@ public function cardPdftelecharger($id)
 }
 
 
-    public function regenerate($id)
+  
+public function regenerate(Request $request, $id)
 {
-    
     $fan = Fan::findOrFail($id);
-    // dd($fan);
+
     $uploadsFolder = public_path('uploads');
     if (!file_exists($uploadsFolder)) {
         mkdir($uploadsFolder, 0777, true);
     }
 
-    // ✅ Generate new random ID for card
+    // 1️⃣ Générer un nouvel ID QR
     $randomId = $fan->nom . '-' . Str::random(6);
     $fan->id_qrcode = $randomId;
-    $fan->id_card   = strtoupper(Str::random(10)); // if you keep an id_card
 
-    // ✅ Generate new QR code
+    // 2️⃣ Générer le nouveau QR code
     $qrFileName = $randomId . '_qr.png';
     $qrPath = $uploadsFolder . '/' . $qrFileName;
     $pngData = QrCode::format('png')->size(100)->generate($randomId);
+    
+    // Supprimer l'ancien QR code si existe
+    if ($fan->qr_img && file_exists(public_path($fan->qr_img))) {
+        unlink(public_path($fan->qr_img));
+    }
     file_put_contents($qrPath, $pngData);
     $fan->qr_img = '/uploads/' . $qrFileName;
 
-    // ✅ Rebuild new card from abonment template
-    $abonment = Abonment::findOrFail($fan->id_abonment);
-    $cardTemplatePath = public_path($abonment->desgin_card);
+    // 3️⃣ Générer la nouvelle carte avec le nouveau QR code
+    if ($fan->card && file_exists(public_path($fan->card))) {
+        // Charger l'image existante de la carte
+        $card = imagecreatefrompng(public_path($fan->card));
+        $cardWidth = imagesx($card);
+        $cardHeight = imagesy($card);
 
-    if (!file_exists($cardTemplatePath)) {
-        return back()->withErrors(['desgin_card' => 'Card template not found']);
+        $qr = imagecreatefrompng($qrPath);
+        $qrWidth = imagesx($qr);
+        $qrHeight = imagesy($qr);
+
+        // Position QR code sur la carte (à ajuster selon ton template)
+        $qrX = $cardWidth - $qrWidth - 30;
+        $qrY = 30;
+
+        imagecopy($card, $qr, $qrX, $qrY, 0, 0, $qrWidth, $qrHeight);
+        imagedestroy($qr);
+
+        // Sauvegarder la carte (remplace l'ancienne)
+        imagepng($card, public_path($fan->card));
+        imagedestroy($card);
     }
 
-    $card = imagecreatefrompng($cardTemplatePath);
-    $cardWidth = imagesx($card);
-    $cardHeight = imagesy($card);
-
-    // Insert new QR code
-    $qr = imagecreatefrompng($qrPath);
-    $qrWidth = imagesx($qr);
-    $qrHeight = imagesy($qr);
-    $qrX = $cardWidth - $qrWidth - 30;
-    $qrY = 30;
-    imagecopy($card, $qr, $qrX, $qrY, 0, 0, $qrWidth, $qrHeight);
-    imagedestroy($qr);
-
-    // ✅ Save new card file
-    $cardFileName = $randomId . '_card.png';
-    $cardPath = $uploadsFolder . '/' . $cardFileName;
-    imagepng($card, $cardPath);
-    imagedestroy($card);
-
-    $fan->card = '/uploads/' . $cardFileName;
-
-    // ✅ Save updates only for QR, card, id_card
     $fan->save();
 
-    return redirect()->route('fans.index')
-        ->with('success', 'Le code QR, la carte et la carte d identité ont été régénérés avec succès.');
+    return redirect()->back()->with('success', 'QR code et carte régénérés avec succès.');
 }
+
+
+
+
+
 
 
 public function cardPdf($id)

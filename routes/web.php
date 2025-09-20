@@ -41,14 +41,15 @@ Route::get('/create', function () {
 ///// fans///////////////////////////////////
 Route::get('/fans', [FanController::class, 'index'])->name('fans.index');
 //Route::post('mceefans/{id}/regenerate', [FanController::class, 'regenerate']);
-Route::put('fans/{id}/regenerate', [FanController::class, 'regenerate'])
-    ->name('fans.regenerate');
+// web.php
+Route::post('fans/{id}/regenerate', [FanController::class, 'regenerate'])->name('fans.regenerate');
+
 // فورم إنشاء فان جديد
 Route::get('/fans/create', [FanController::class, 'create'])->name('fans.create');
 
 // حفظ فان جديد
 Route::post('/fans', [FanController::class, 'store'])->name('fans.store');
-
+Route::get('/fans/bulk-pdf', [FanController::class, 'bulkPdf'])->name('fans.bulkPdf');
 // عرض فان واحد بالتفصيل
 Route::get('/fans/{fan}', [FanController::class, 'show'])->name('fans.show');
 Route::get('/fans/{fan}/card', [FanController::class, 'cardPdf'])->name('fans.cardPdf');

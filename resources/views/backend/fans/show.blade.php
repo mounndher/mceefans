@@ -1,6 +1,17 @@
 @extends('backend.layouts.master')
 
 @section('context')
+
+<!-- Toast -->
+<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+    <div id="liveToast" class="toast align-items-center text-bg-success border-0" role="alert">
+        <div class="d-flex">
+            <div id="toast-message" class="toast-body"></div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+        </div>
+    </div>
+</div>
+
 <div class="page-body">
     <div class="container-xl">
         <div class="card">
@@ -48,62 +59,93 @@
                     <tr>
                         <th>Image</th>
                         <td>
-                            @if($fan->image)
-                                <img src="{{ asset($fan->image) }}" alt="Fan Image" height="100">
-                            @else
-                                <span class="text-muted">No image uploaded</span>
-                            @endif
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>Image de la Carte Nationale</th>
-                        <td>
-                            @if($fan->imagecart)
-                                <img src="{{ asset($fan->imagecart) }}" alt="Carte Image"  width="100 height="100">
-                            @else
-                                <span class="text-muted">No image uploaded</span>
-                            @endif
+                            <img id="fan-image" src="{{ asset($fan->image) }}" alt="Fan Image" height="100">
                         </td>
                     </tr>
                     <tr>
                         <th>Card Image</th>
                         <td>
-                            @if($fan->card)
-                                <img src="{{ asset($fan->card) }}" alt="Carte Image"  width="100" height="100">
-                            @else
-                                <span class="text-muted">No card generated</span>
-                            @endif
+                            <img id="card-image" src="{{ asset($fan->card) }}" alt="Card Image" width="100" height="100">
                         </td>
                     </tr>
                     <tr>
                         <th>QR Code</th>
                         <td>
-                            @if($fan->qr_img)
-                                <img src="{{ asset($fan->qr_img) }}" alt="Carte Image"  width="100 height="100">
-                            @else
-                                <span class="text-muted">No card generated</span>
-                            @endif
+                            <img id="qr-image" src="{{ asset($fan->qr_img) }}" alt="QR Code" width="100" height="100">
                         </td>
-
                     </tr>
                     <tr>
-                        <th>QR Code pdf</th>
+                        <th>QR Code PDF</th>
                         <td>
-                            @if($fan->qr_img)
-                                <img src="{{ asset($fan->qr_pdf_img) }}" alt="Carte Image"  width="100 height="100">
-                            @else
-                                <span class="text-muted">No card generated</span>
-                            @endif
+                            <img id="qr-pdf-image" src="{{ asset($fan->qr_pdf_img) }}" alt="QR PDF" width="100" height="100">
                         </td>
-
+                    </tr>
+                    <tr>
+                        <th>QR ID</th>
+                        <td>{{ $fan->id_qrcode }}</td>
+                    </tr>
+                    <tr>
+                        <th>Actions</th>
+                        <td>
+                            <form action="{{ route('fans.regenerate', $fan->id) }}" method="POST" class="regenerate-form" style="display:inline;">
+                                @csrf
+                                <button type="submit" class="btn btn-sm btn-info">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+                                         viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                         stroke-linecap="round" stroke-linejoin="round"
+                                         class="icon icon-tabler icon-tabler-refresh">
+                                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                        <path d="M20 11a8.1 8.1 0 0 0 -15.5 -2m-.5 -4v4h4" />
+                                        <path d="M4 13a8.1 8.1 0 0 0 15.5 2m.5 4v-4h-4" />
+                                    </svg>
+                                    Regenerate Card
+                                </button>
+                            </form>
+                        </td>
                     </tr>
                 </table>
-
-
-
             </div>
         </div>
     </div>
 </div>
-@endsection
 
+<!-- Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+document.querySelectorAll('.regenerate-form').forEach(form => {
+    form.addEventListener('submit', function(e){
+        e.preventDefault();
+        if(!confirm('Regenerate QR code and card for this fan?')) return;
+
+        fetch(this.action, {
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                'Accept': 'application/json'
+            }
+        })
+        .then(res => res.json())
+        .then(data => {
+            if(data.success){
+                // Update images dynamically
+                document.getElementById('qr-image').src = data.qr_img + '?' + new Date().getTime();
+                document.getElementById('card-image').src = data.card_img + '?' + new Date().getTime();
+                document.getElementById('qr-pdf-image').src = data.qr_pdf_img + '?' + new Date().getTime();
+
+                // Show toast
+                const toastEl = document.getElementById('liveToast');
+                document.getElementById('toast-message').innerText = data.message;
+                const toast = new bootstrap.Toast(toastEl);
+                toast.show();
+            } else {
+                alert('Error: ' + data.message);
+            }
+        }).catch(err => {
+            console.error(err);
+            
+        });
+    });
+});
+</script>
+
+@endsection
