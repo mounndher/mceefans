@@ -61,7 +61,7 @@
                                         <th>ID QR</th>
                                         <th>Nom</th>
                                         <th>Prénom</th>
-                                        <th>NIN</th>
+                                        <th>Status</th>
                                         <th>Téléphone</th>
                                         <th>Date Naissance</th>
                                         <th>Action</th>
@@ -77,7 +77,20 @@
                                             <td>{{ $fan->id_qrcode }}</td>
                                             <td>{{ $fan->nom }}</td>
                                             <td>{{ $fan->prenom }}</td>
-                                            <td>{{ $fan->nin }}</td>
+                                            <td>{{ $fan->status }}</td>
+                                                <td>
+                    <!-- ✅ Toggle Switch -->
+                    <label class="form-check form-switch">
+                        <input type="checkbox" 
+                               class="form-check-input toggle-status" 
+                               data-id="{{ $fan->id }}" 
+                               {{ $fan->status === 'active' ? 'checked' : '' }}>
+                        <span class="form-check-label status-label-{{ $fan->id }}">
+                            {{ $fan->status === 'active' ? 'Actif' : 'Désactivé' }}
+                        </span>
+                    </label>
+                </td>
+                                            </td>
                                             <td>{{ $fan->numero_tele }}</td>
                                             <td>{{ $fan->date_de_nai }}</td>
                                             <td>
@@ -202,4 +215,34 @@
             });
         });
     </script>
+    <script>
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.toggle-status').forEach(function (checkbox) {
+        checkbox.addEventListener('change', function () {
+            let fanId = this.getAttribute('data-id');
+            let newStatus = this.checked ? 'active' : 'inactive';
+
+            fetch("{{ url('fans/toggle-status') }}/" + fanId, {
+                method: "POST",
+                headers: {
+                    "X-CSRF-TOKEN": "{{ csrf_token() }}",
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ status: newStatus })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    document.querySelector(".status-label-" + fanId).textContent =
+                        newStatus === 'active' ? 'Actif' : 'Désactivé';
+                } else {
+                    alert("Erreur: " + data.message);
+                }
+            })
+            .catch(err => console.error(err));
+        });
+    });
+});
+</script>
+
 @endsection

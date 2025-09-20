@@ -62,6 +62,28 @@ class FanController extends Controller
 
     return $pdf->download("fan.pdf");
 }
+public function toggleStatus(Request $request, $id)
+{
+    try {
+        $fan = Fan::findOrFail($id);
+
+        // ✅ force to string
+        $fan->status = (string) $request->status;  
+        $fan->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Status updated successfully',
+            'status'  => $fan->status
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Erreur: ' . $e->getMessage()
+        ], 500);
+    }
+}
+
 
 
 

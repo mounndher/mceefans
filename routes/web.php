@@ -46,7 +46,8 @@ Route::get('/fans', [FanController::class, 'index'])->name('fans.index');
 //Route::post('mceefans/{id}/regenerate', [FanController::class, 'regenerate']);
 // web.php
 Route::post('fans/{id}/regenerate', [FanController::class, 'regenerate'])->name('fans.regenerate');
-
+Route::post('/fans/toggle-status/{id}', [App\Http\Controllers\Admin\FanController::class, 'toggleStatus'])
+     ->name('fans.toggleStatus');
 // فورم إنشاء فان جديد
 Route::get('/fans/create', [FanController::class, 'create'])->name('fans.create');
 
