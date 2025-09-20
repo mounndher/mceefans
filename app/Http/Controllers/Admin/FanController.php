@@ -203,10 +203,10 @@ class FanController extends Controller
             $profile = imagecreatefromjpeg($profileImagePath);
             break;
     }
-   $profile = imagescale($profile, 120, 160); // adjust exact size
+   $profile = imagescale($profile, 130, 130); // adjust exact size
 $profileX = 50; // adjust X position
 $profileY = 100; // adjust Y position
-    imagecopy($card, $profile, $profileX, $profileY, 0, 0, 120, 160);
+    imagecopy($card, $profile, $profileX, $profileY, 0, 0, 130, 130);
     imagedestroy($profile);
 
     // ✅ Text color & font
@@ -249,8 +249,26 @@ $yQr = 220;          // Y position for QR line
     // X position for QR label
 $valueQrX = 350;     // X position for QR value
 
-imagettftext($card, 10, 0, $labelX, $yQr, $white, $fontRegular, 'ID QR:');
-imagettftext($card, 14, 0, $nameX + 20, $yQr, $white, $fontSemiBold, $validated['id_qrcode']);
+$padding = 10; // المسافة من الحافة
+$text = $validated['id_qrcode'];
+$fontSize = 10;
+
+// نأخذ أبعاد النص
+$bbox = imagettfbbox($fontSize, 0, $fontSemiBold, $text);
+$textHeight = $bbox[1] - $bbox[7]; // ارتفاع النص
+
+// أبعاد الصورة
+$cardWidth = imagesx($card);
+$cardHeight = imagesy($card);
+
+// X و Y للزاوية السفلية اليسرى
+$x = $padding;
+$y = $cardHeight - $padding; // Y من أسفل الصورة مع Padding
+
+// عرض النص
+imagettftext($card, $fontSize, 0, $x, $y, $white, $fontRegular, $text);
+// Calculate X position based on text width
+
 
 
     // ✅ Save final card
