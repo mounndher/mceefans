@@ -140,7 +140,7 @@ class FanController extends Controller
     // ✅ Generate QR code
     $qrFileName = $randomId . '_qr.png';
     $qrPath = $uploadsFolder . '/' . $qrFileName;
-    $pngData = QrCode::format('png')->size(100)->generate($randomId);
+    $pngData = QrCode::format('png')->size(67)->generate($randomId);
     file_put_contents($qrPath, $pngData);
     $validated['qr_img'] = '/uploads/' . $qrFileName;
 
@@ -185,8 +185,8 @@ class FanController extends Controller
     $qr = imagecreatefrompng($qrPath);
     $qrWidth = imagesx($qr);
     $qrHeight = imagesy($qr);
-    $qrX = $cardWidth - $qrWidth - 30;
-    $qrY = 30;
+    $qrX = $cardWidth - $qrWidth - 20;
+    $qrY = 20;
     imagecopy($card, $qr, $qrX, $qrY, 0, 0, $qrWidth, $qrHeight);
     imagedestroy($qr);
 
@@ -203,23 +203,54 @@ class FanController extends Controller
             $profile = imagecreatefromjpeg($profileImagePath);
             break;
     }
-    $profile = imagescale($profile, 150, 200);
-    $profileX = 30;
-    $profileY = 150;
-    imagecopy($card, $profile, $profileX, $profileY, 0, 0, 150, 200);
+   $profile = imagescale($profile, 120, 160); // adjust exact size
+$profileX = 50; // adjust X position
+$profileY = 100; // adjust Y position
+    imagecopy($card, $profile, $profileX, $profileY, 0, 0, 120, 160);
     imagedestroy($profile);
 
     // ✅ Text color & font
     $black = imagecolorallocate($card, 0, 0, 0);
-    $fontPath = public_path('fonts/arial.ttf');
+    $white = imagecolorallocate($card, 255, 255, 255);
+    // ✅ Colors & fonts
+$white = imagecolorallocate($card, 255, 255, 255);
+$black = imagecolorallocate($card, 0, 0, 0);
+$fontRegular = public_path('fonts/Montserrat-Regular.ttf');
+$fontSemiBold = public_path('fonts/Montserrat-SemiBold.ttf');
 
-    $textStartX = 200;
+// ———————————————————————————
+// Nom
+$labelX = 190;       // X position for label
+$nameX = 270;        // X position for name
+$yNom = 120;         // Y position for Nom line
 
-    // Name
-    imagettftext($card, 20, 0, $textStartX, 200, $black, $fontPath, strtoupper($validated['nom']));
-    // First Name
-    imagettftext($card, 20, 0, $textStartX, 240, $black, $fontPath, strtoupper($validated['prenom']));
-    // NIN
+imagettftext($card, 10, 0, $labelX, $yNom, $white, $fontRegular, 'Nom:');
+imagettftext($card, 14, 0, $nameX, $yNom, $white, $fontSemiBold, strtoupper($validated['nom']));
+
+// ———————————————————————————
+// Prenom
+$yPrenom = 160;      // Y position for Prenom line
+
+imagettftext($card, 10, 0, $labelX, $yPrenom, $white, $fontRegular, 'Prenom:');
+imagettftext($card, 14, 0, $nameX + 20, $yPrenom, $white, $fontSemiBold, strtoupper($validated['prenom']));
+
+// ———————————————————————————
+// Date d'émission
+$yDate = 190;        // Y position for date line
+  // X position for Date label
+$valueDateX = 350;   // X position for Date value
+
+imagettftext($card, 10, 0, $labelX, $yDate, $white, $fontRegular, 'Date d\'émission:');
+imagettftext($card, 14, 0, $nameX + 40, $yDate, $white, $fontSemiBold, $validated['date_de_nai']);
+
+// ———————————————————————————
+// ID QR
+$yQr = 220;          // Y position for QR line
+    // X position for QR label
+$valueQrX = 350;     // X position for QR value
+
+imagettftext($card, 10, 0, $labelX, $yQr, $white, $fontRegular, 'ID QR:');
+imagettftext($card, 14, 0, $nameX + 20, $yQr, $white, $fontSemiBold, $validated['id_qrcode']);
 
 
     // ✅ Save final card
@@ -236,7 +267,7 @@ class FanController extends Controller
     $pdfQrPath = $uploadsFolder . '/' . $pdfQrFileName;
 
     $pdfUrl = route('fans.cardPdftelecharger', $fan->id); // link to PDF
-    $pngData2 = QrCode::format('png')->size(100)->generate($pdfUrl);
+    $pngData2 = QrCode::format('png')->size(pixels: 80)->generate($pdfUrl);
     file_put_contents($pdfQrPath, $pngData2);
 
     $fan->update([
@@ -291,7 +322,7 @@ public function regenerate(Request $request, $id)
     // 2️⃣ Générer le nouveau QR code
     $qrFileName = $randomId . '_qr.png';
     $qrPath = $uploadsFolder . '/' . $qrFileName;
-    $pngData = QrCode::format('png')->size(100)->generate($randomId);
+    $pngData = QrCode::format('png')->size(pixels: 100)->generate($randomId);
     
     // Supprimer l'ancien QR code si existe
     if ($fan->qr_img && file_exists(public_path($fan->qr_img))) {
