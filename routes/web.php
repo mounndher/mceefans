@@ -23,10 +23,19 @@ use App\Http\Controllers\Admin\dashboardController;
 */
 
 Route::get('/', function () {
-    return view('auth.login');
+    return view('frontend.index');
 });
+
+Route::get('/fans/{fan}/cardtelecharger', [FanController::class, 'cardPdftelecharger'])
+->name('fans.cardPdftelecharger');
 Route::get('/generate-card-index', [IndexController::class, 'create'])->name('generate.card.index');
 Route::post('/generate-card-preview', [IndexController::class, 'index'])->name('generate.card.preview');
+
+
+
+
+
+///////////// adlin////////////////////
 Route::middleware(['auth', 'verified'])->group(function () {
 Route::get('/create', function () {
     return view('backend.fans.create');
@@ -34,13 +43,17 @@ Route::get('/create', function () {
 
 ///// fans///////////////////////////////////
 Route::get('/fans', [FanController::class, 'index'])->name('fans.index');
-
+//Route::post('mceefans/{id}/regenerate', [FanController::class, 'regenerate']);
+// web.php
+Route::post('fans/{id}/regenerate', [FanController::class, 'regenerate'])->name('fans.regenerate');
+Route::post('/fans/toggle-status/{id}', [App\Http\Controllers\Admin\FanController::class, 'toggleStatus'])
+     ->name('fans.toggleStatus');
 // فورم إنشاء فان جديد
 Route::get('/fans/create', [FanController::class, 'create'])->name('fans.create');
 
 // حفظ فان جديد
 Route::post('/fans', [FanController::class, 'store'])->name('fans.store');
-
+Route::get('/fans/bulk-pdf', [FanController::class, 'bulkPdf'])->name('fans.bulkPdf');
 // عرض فان واحد بالتفصيل
 Route::get('/fans/{fan}', [FanController::class, 'show'])->name('fans.show');
 Route::get('/fans/{fan}/card', [FanController::class, 'cardPdf'])->name('fans.cardPdf');

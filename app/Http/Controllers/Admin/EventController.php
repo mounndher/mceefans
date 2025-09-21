@@ -155,20 +155,18 @@ class EventController extends Controller
      * Remove the specified resource from storage.
      */
 
-    public function destroy(Event $event)
+    public function destroy($id)
     {
         // تحقق إذا عنده Paiements مرتبطة
-        $hasPayments = DB::table('attendances')
-            ->where('id_event', $event->id)
-            ->exists();
+       
+       $event = Event::findOrFail($id);
 
-        if ($hasPayments) {
-            return redirect()->route('events.index')
-                ->with('error', 'You need to delete the related Paiements first before deleting this Event.');
-        }
+        // 1. Change status to "terminated"
+        $event->status = 'supprimé';
+        $event->save();
 
         // لو مافيش Paiements، نحذف الـ Event
-        $event->delete();
+        
 
         return redirect()->route('events.index')
             ->with('success', 'Event deleted successfully!');

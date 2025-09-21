@@ -19,7 +19,7 @@
 </head>
 <body>
     <div class="card">
-        <img src="{{ public_path('uploads/cards/' . $fan->image) }}" alt="Fan Card">
+         <img src="{{ public_path(ltrim($fan->card, '/')) }}" alt="Fan Card">
     </div>
 </body>
 </html>

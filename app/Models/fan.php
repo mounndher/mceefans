@@ -11,6 +11,7 @@ class fan extends Model
     protected $table = 'fan';
     protected $fillable = [
         'id_qrcode',
+        'id_abonment',
         'nom',
         'prenom',
         'image',
@@ -19,7 +20,8 @@ class fan extends Model
         'numero_tele',
         'date_de_nai',
         'card',
-        'qr_img'
+        'qr_img',
+        'qr_pdf_img'
     ];
     public function transactions()
 {
@@ -28,6 +30,10 @@ class fan extends Model
 public function events()
 {
     return $this->belongsToMany(Event::class, 'attendances', 'fan_id', 'id_event');
+}
+public function abonment()
+{
+    return $this->belongsTo(Abonment::class, 'id_abonment');
 }
 
 }

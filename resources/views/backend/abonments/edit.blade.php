@@ -73,6 +73,20 @@
                     </div>
 
                     <div class="mb-3">
+                        <label class="form-label">Design Card 1</label>
+                        <input type="file" class="form-control" name="image">
+                        @if($abonment->image)
+                            <div class="mt-2">
+                                <img src="{{ asset($abonment->image) }}"
+                                     alt="Current design" width="120" class="rounded">
+                            </div>
+                        @endif
+                        @error('image')
+                            <div class="text-danger small">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <div class="mb-3">
                         <button class="btn btn-primary" type="submit">
                             <!-- Save icon -->
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
