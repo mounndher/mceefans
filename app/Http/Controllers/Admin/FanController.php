@@ -578,4 +578,29 @@ public function cardPdf($id)
     return redirect()->route('fans.index')->with('success', 'Fan marked as expired successfully');
 }
 
+public function inactive(Request $request)
+{
+    // Start query for inactive fans
+    $query = Fan::where('status', 'inactive');
+
+    // ✅ Add search if input exists
+    if ($request->filled('search')) {
+        $search = $request->input('search');
+        $query->where(function($q) use ($search) {
+            $q->where('nom', 'LIKE', "%{$search}%")
+              ->orWhere('prenom', 'LIKE', "%{$search}%")
+              ->orWhere('numero_tele', 'LIKE', "%{$search}%")
+              ->orWhere('nin', 'LIKE', "%{$search}%");
+        });
+    }
+
+    // ✅ Pagination
+    $fans = $query->paginate(15);
+
+    // Get active abonments
+    $abonments = Abonment::where('status', 'active')->get();
+
+    return view('backend.fans.inactive', compact('fans', 'abonments'));
+}
+
 }

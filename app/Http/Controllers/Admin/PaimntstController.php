@@ -142,7 +142,7 @@ public function deletePayment($id)
     // 4️⃣ If this was the only active payment, set fan to inactive
     if ($activePaymentsCount == 1) {
         $fan = fan::find($payment->id_fan);
-        $fan->status = 'inactive';
+        $fan->status = 'expired';
         $fan->save();
     }
 

@@ -49,6 +49,8 @@
                         <ul class="nav nav-sm flex-column">
                             <li class="nav-item"><a class="nav-link" href="{{ route('fans.index') }}">Fans Actifs</a></li>
                             <li class="nav-item"><a class="nav-link" href="{{ route('fans.expired') }}">Fans Supprimés</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{{ route('fansfans.inactive') }}">Fans inactive</a></li>
+
                         </ul>
                     </div>
                 </li>

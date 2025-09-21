@@ -60,7 +60,8 @@ Route::get('/fans/{fan}/card', [FanController::class, 'cardPdf'])->name('fans.ca
 
 // فورم تعديل فان
 Route::get('/fans/{fan}/edit', [FanController::class, 'edit'])->name('fans.edit');
-
+Route::get('/fansfans/inactive', [FanController::class, 'inactive'])
+    ->name('fansfans.inactive');
 // تحديث بيانات فان
 Route::put('/fans/{fan}', [FanController::class, 'update'])->name('fans.update');
 route::get('expired', [FanController::class, 'expired'])->name('fans.expired');
