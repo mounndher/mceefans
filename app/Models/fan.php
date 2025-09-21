@@ -35,5 +35,15 @@ public function abonment()
 {
     return $this->belongsTo(Abonment::class, 'id_abonment');
 }
+public function getRemainingMatchesAttribute()
+{
+    $totalMatches = $this->transactions()->sum('nbrmatch');
+
+    $usedMatches = Attendance::where('fan_id', $this->id)
+        ->whereIn('status', ['checked_in', 'absent'])
+        ->count();
+
+    return max($totalMatches - $usedMatches, 0);
+}
 
 }

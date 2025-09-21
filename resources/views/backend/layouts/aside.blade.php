@@ -5,7 +5,7 @@
         </button>
 
         <h1 class="navbar-brand navbar-brand-autodark">
-            <a href="{{ url('/') }}" class="text-decoration-none text-white">
+            <a href="#" class="text-decoration-none text-white">
                 <svg xmlns="http://www.w3.org/2000/svg" class="icon me-2" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
                     <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
                     <rect x="7" y="7" width="10" height="10" rx="1" ry="1" />
@@ -18,7 +18,7 @@
             <ul class="navbar-nav pt-lg-3">
                 <!-- Home -->
                 <li class="nav-item">
-                    <a class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}" href="{{ route('dashboard') }}">
+                    <a class="nav-link " href="{{ route('dashboard') }}">
                         <span class="nav-link-icon d-md-none d-lg-inline-block">
                             <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
                                 <path stroke="none" d="M0 0h24v24H0z" fill="none" />
@@ -27,7 +27,7 @@
                                 <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
                             </svg>
                         </span>
-                        <span class="nav-link-title">Home</span>
+                        <span class="nav-link-title">Dashboard</span>
                     </a>
                 </li>
 
@@ -193,6 +193,24 @@
                         <span class="nav-link-title">Tracking</span>
                     </a>
                 </li>
+
+                @auth
+                @if(auth()->user()->status === 'admin')
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('users.index') }}">
+                        <span class="nav-link-icon d-md-none d-lg-inline-block">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                <circle cx="12" cy="7" r="4" />
+                                <path d="M6 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2" />
+                            </svg>
+                        </span>
+                        <span class="nav-link-title">Users</span>
+                    </a>
+                </li>
+                @endif
+                @endauth
+
             </ul>
         </div>
     </div>
