@@ -5,6 +5,7 @@ namespace App\Http\Controllers\admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\TransactionPaimnt;
+use App\Models\fan;
 class PaimntstController extends Controller
 {
     /**
@@ -78,8 +79,8 @@ class PaimntstController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    
-    
+
+
     public function moveToHistorique($id)
 {
     $paimnt = TransactionPaimnt::findOrFail($id);
@@ -122,6 +123,55 @@ public function historique(Request $request)
     $paimnts = $query->paginate(15);
 
     return view('backend.paimnts.historique', compact('paimnts'));
+}
+
+public function deletePayment($id)
+{
+    // 1️⃣ Find the selected payment
+    $payment = TransactionPaimnt::findOrFail($id);
+
+    // 2️⃣ Count active payments for this fan (excluding already deleted)
+    $activePaymentsCount = TransactionPaimnt::where('id_fan', $payment->id_fan)
+                            ->where('status', '!=', 'supprime')
+                            ->count();
+
+    // 3️⃣ Update the payment status to 'supprime'
+    $payment->status = 'supprime';
+    $payment->save();
+
+    // 4️⃣ If this was the only active payment, set fan to inactive
+    if ($activePaymentsCount == 1) {
+        $fan = fan::find($payment->id_fan);
+        $fan->status = 'inactive';
+        $fan->save();
+    }
+
+    return redirect()->back()->with('success', 'Payment has been deleted successfully.');
+}
+
+public function supprime(Request $request)
+{
+    $query = TransactionPaimnt::with(['fan', 'abonment'])
+        ->where('status', 'supprime'); // ✅ only historique
+
+    // 🔍 Search
+    if ($request->filled('search')) {
+        $search = $request->input('search');
+
+        $query->where(function ($q) use ($search) {
+            $q->whereHas('fan', function ($q2) use ($search) {
+                $q2->where('nom', 'like', "%{$search}%")
+                   ->orWhere('prenom', 'like', "%{$search}%")
+                   ->orWhere('nin', 'like', "%{$search}%");
+            })->orWhereHas('abonment', function ($q2) use ($search) {
+                $q2->where('nom', 'like', "%{$search}%");
+            })->orWhere('prix', 'like', "%{$search}%");
+        });
+    }
+
+    $paimnts = $query->paginate(15);
+
+    return view('backend.paimnts.supprime', compact('paimnts'));
 }
 
 }

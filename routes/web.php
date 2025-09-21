@@ -77,11 +77,14 @@ Route::get('events/{id}/statistics', [EventController::class, 'statistics'])
 
 Route::delete('/abonments/{id}', [AbonmentsController::class, 'destroy'])->name('abonments.destroy');
 
+Route::get('/payments/delete/{id}', [PaimntstController::class, 'deletePayment'])
+    ->name('payments.delete');
 
 Route::resource('events', EventController::class);
 Route::resource('abonments', AbonmentsController::class);
 Route::resource('Paimnts', PaimntstController::class);
 Route::get('/paimnts/historique', [PaimntstController::class, 'historique'])->name('paimnts.historique');
+Route::get('/paimnts/supprime', [PaimntstController::class, 'supprime'])->name('paimnts.supprime');
 Route::get('/paimnts/{id}/historique', [PaimntstController::class, 'moveToHistorique'])
      ->name('paimnts.moveToHistorique');
 
