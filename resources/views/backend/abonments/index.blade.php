@@ -70,7 +70,7 @@
                                     <form action="{{ route('abonments.destroy', $abonment->id) }}" method="POST" style="display:inline;">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="btn-sm btn-danger" onclick="return confirm('Are you sure to delete this abonment?')">
+                                        <button type="submit" class="btn-sm btn-danger" onclick="return confirm('Etes-vous sûr de vouloir supprimer cet abonnement ?')">
                                             <!-- trash icon -->
                                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icon-tabler-trash-x">
                                                 <path stroke="none" d="M0 0h24v24H0z" fill="none" />

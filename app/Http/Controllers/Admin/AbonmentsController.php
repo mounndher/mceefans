@@ -23,6 +23,13 @@ class AbonmentsController extends Controller
         //dd($abonments); // اختبر لو تحب
         return view('backend.abonments.expired', compact('abonments'));
     }
+    public function supprime()
+    {
+
+        $abonments = Abonment::where('status', 'supprimé')->get(); // قائمة كل Abonments
+        //dd($abonments); // اختبر لو تحب
+        return view('backend.abonments.supprime', compact('abonments'));
+    }
 
     public function create()
     {
@@ -96,7 +103,7 @@ class AbonmentsController extends Controller
         return redirect()->route('abonments.index')->with('success', 'Abonment mis à jour avec succès.');
     }
 
-   
+
 
     public function toggle($id)
     {
@@ -109,5 +116,13 @@ class AbonmentsController extends Controller
             'status' => $abonment->status,
             'message' => 'Statut mis à jour avec succès'
         ]);
+    }
+    public function destroy($id)
+    {
+        $abonment = Abonment::findOrFail($id);
+        $abonment->status = 'supprimé';
+         $abonment->save();
+
+        return redirect()->route('abonments.index')->with('success', 'Abonment supprimé avec succès.');
     }
 }

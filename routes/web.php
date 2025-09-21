@@ -64,6 +64,7 @@ Route::get('/fans/{fan}/edit', [FanController::class, 'edit'])->name('fans.edit'
 // تحديث بيانات فان
 Route::put('/fans/{fan}', [FanController::class, 'update'])->name('fans.update');
 route::get('expired', [FanController::class, 'expired'])->name('fans.expired');
+route::get('supprime/abonments', [AbonmentsController::class, 'supprime'])->name('abonments.supprime');
 route::get('expired/abonments', [AbonmentsController::class, 'expired'])->name('abonments.expired');
 // حذف فان
 Route::delete('/fans/{fan}', [FanController::class, 'destroy'])->name('fans.destroy');
@@ -74,6 +75,7 @@ Route::post('/events/{id}/terminer', [EventController::class, 'terminer'])->name
 Route::get('events/{id}/statistics', [EventController::class, 'statistics'])
     ->name('events.statistics');
 
+Route::delete('/abonments/{id}', [AbonmentsController::class, 'destroy'])->name('abonments.destroy');
 
 
 Route::resource('events', EventController::class);

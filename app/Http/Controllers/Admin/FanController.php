@@ -68,7 +68,7 @@ public function toggleStatus(Request $request, $id)
         $fan = Fan::findOrFail($id);
 
         // ✅ force to string
-        $fan->status = (string) $request->status;  
+        $fan->status = (string) $request->status;
         $fan->save();
 
         return response()->json([
@@ -96,7 +96,7 @@ public function toggleStatus(Request $request, $id)
     }
     public function create()
     {
-        
+
         $abonments = Abonment::where('status','active')->get();
         return view('backend.fans.create', compact('abonments'));
     }
@@ -149,7 +149,7 @@ public function toggleStatus(Request $request, $id)
         'image'        => 'required|image|mimes:jpg,jpeg,png|max:2048',
         'imagecart'    => 'required|image|mimes:jpg,jpeg,png|max:2048',
         'id_abonment'  => 'required|exists:abonments,id',
-        
+
     ]);
 
     $uploadsFolder = public_path('uploads');
@@ -325,7 +325,7 @@ imagettftext($card, $fontSize, 0, $x, $y, $white, $fontRegular, $text);
         'nbrmatch'    => $abonment->nbrmatch,
     ]);
 
-    
+
     return response()->json([
     'success' => true,
     'message' => 'Fan créé avec succès avec carte virtuelle et transaction.',
@@ -347,7 +347,7 @@ public function cardPdftelecharger($id)
     $pdf = Pdf::loadView('backend.fans.card_pdf', compact('fan'))
         ->setPaper([0, 0, 240, 156], 'portrait'); // حجم 8.5cm × 5.5cm
 
-    return $pdf->download("card_{$fan->id}.pdf"); 
+    return $pdf->download("card_{$fan->id}.pdf");
     // أو stream() لو حابب يفتح مباشرة
 }
 

@@ -96,7 +96,7 @@
 
 <script>
 document.getElementById('fanForm').addEventListener('submit', function(e) {
-    e.preventDefault(); 
+    e.preventDefault();
 
     let formData = new FormData(this);
     let submitBtn = document.getElementById('submitBtn');
