@@ -16,6 +16,8 @@ use App\Http\Controllers\Admin\ContactController;
 use App\Http\Controllers\Admin\AboutController;
 use App\Http\Controllers\Admin\ContactMessageController;
 use App\Http\Controllers\Admin\SettingController;
+use App\Http\Controllers\Admin\MailController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -107,6 +109,12 @@ Route::get('/contact/display', [ContactMessageController::class, 'index'])->name
 // Mettre à jour les paramètres
 Route::post('/settings/{id}', [SettingController::class, 'update'])->name('settings.update');
 Route::get('/settings', [SettingController::class, 'index'])->name('settings.index');
+/////mail settings///////////////////////////////
+Route::get('mail-settings', [MailController::class, 'index'])
+    ->name('mail-settings.index');
+Route::put('mail-settings/{id}', [MailController::class, 'update'])
+    ->name('mail-settings.update');
+
 });
 
 
