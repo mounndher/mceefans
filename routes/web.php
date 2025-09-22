@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\IndexController;
 use App\Http\Controllers\Admin\AppareilController;
 use App\Http\Controllers\Admin\AttendanceController;
 use App\Http\Controllers\Admin\dashboardController;
+use App\Http\Controllers\Admin\HeroController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -86,7 +87,15 @@ Route::get('/paimnts/{id}/historique', [PaimntstController::class, 'moveToHistor
 Route::get('/attendances', [AttendanceController::class, 'index'])->name('attendances.index');
 /////////////////////dashboard///////////////////////////////
 Route::get('dashboard',[dashboardController::class,'dashboard'])->name('dashboard');
+////////heroo///////////////////////////////////
+Route::get('/hero', [HeroController::class, 'index'])->name('hero.index');
+Route::put('/hero/update/{id}', [HeroController::class, 'update'])->name('hero.update');
+////////about///////////////////////////////////
+Route::get('/about', [App\Http\Controllers\Admin\AboutController::class, 'index'])->name('about.index');
 });
+
+
+
 //Route::get('/fanss', [FansController::class, 'index'])->name('fan.index');
 //Route::get('/fanss/create', [FansController::class, 'create'])->name('fan.create');
 ///Route::post('/fanss', [FansController::class, 'store2'])->name('fan.store');
