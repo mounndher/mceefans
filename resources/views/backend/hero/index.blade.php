@@ -2,19 +2,19 @@
 
 @section('context')
 @if ($errors->any())
-    <div class="alert alert-danger">
-        <ul>
-            @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-            @endforeach
-        </ul>
-    </div>
+<div class="alert alert-danger">
+    <ul>
+        @foreach ($errors->all() as $error)
+        <li>{{ $error }}</li>
+        @endforeach
+    </ul>
+</div>
 @endif
 
 @if(session('success'))
-    <div class="alert alert-success">
-        {{ session('success') }}
-    </div>
+<div class="alert alert-success">
+    {{ session('success') }}
+</div>
 @endif
 
 <div class="page-body">
@@ -30,51 +30,46 @@
                     @method('PUT')
 
                     <div class="mb-3">
-                        <label class="form-label">Title</label>
-                        <input type="text" class="form-control" name="title"
-                               value="{{ old('title', $hero->title ?? '') }}"
-                               placeholder="Enter title">
+                        <label class="form-label">Titre</label>
+                        <input type="text" class="form-control" name="title" value="{{ old('title', $hero->title ?? '') }}" placeholder="Enter title">
                         @error('title')
-                            <div class="text-danger small">{{ $message }}</div>
+                        <div class="text-danger small">{{ $message }}</div>
                         @enderror
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label">Subtitle</label>
-                        <input type="text" class="form-control" name="subtitle"
-                               value="{{ old('subtitle', $hero->subtitle ?? '') }}"
-                               placeholder="Enter subtitle">
+                        <label class="form-label">Sous-titre</label>
+                        <input type="text" class="form-control" name="subtitle" value="{{ old('subtitle', $hero->subtitle ?? '') }}" placeholder="Enter subtitle">
                         @error('subtitle')
-                            <div class="text-danger small">{{ $message }}</div>
+                        <div class="text-danger small">{{ $message }}</div>
                         @enderror
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label">Button Text</label>
-                        <input type="text" class="form-control" name="button_text"
-                               value="{{ old('button_text', $hero->button_text ?? '') }}"
-                               placeholder="Enter button text">
+                        <label class="form-label">Texte du bouton</label>
+                        <input type="text" class="form-control" name="button_text" value="{{ old('button_text', $hero->button_text ?? '') }}" placeholder="Enter button text">
                         @error('button_text')
-                            <div class="text-danger small">{{ $message }}</div>
+                        <div class="text-danger small">{{ $message }}</div>
                         @enderror
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label">Hero Image</label>
+                        <label class="form-label">Image du héros</label>
                         <input type="file" class="form-control" name="image">
                         @if(!empty($hero->image))
-                            <div class="mt-2">
-                                <img src="{{ asset($hero->image) }}" alt="Hero Image" width="150">
-                            </div>
+                        <div class="mt-2">
+                            <img src="{{ asset($hero->image) }}" alt="Hero Image" width="150">
+                        </div>
                         @endif
                         @error('image')
-                            <div class="text-danger small">{{ $message }}</div>
+                        <div class="text-danger small">{{ $message }}</div>
                         @enderror
                     </div>
 
-                    <div class="mb-3">
-                        <button class="btn btn-primary" type="submit">Update Hero</button>
+                    <div class="mb-3 text-center">
+                        <button class="btn btn-primary" type="submit">Mettre à jour Hero</button>
                     </div>
+
                 </form>
             </div>
 

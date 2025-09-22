@@ -47,9 +47,12 @@
                     </a>
                     <div class="collapse" id="fansMenu">
                         <ul class="nav nav-sm flex-column">
-                            <li class="nav-item"><a class="nav-link" href="{{ route('fans.index') }}">Fans Actifs</a></li>
-                            <li class="nav-item"><a class="nav-link" href="{{ route('fans.expired') }}">Fans Supprimés</a></li>
-                            <li class="nav-item"><a class="nav-link" href="{{ route('fansfans.inactive') }}">Fans inactive</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{{ route('fans.index') }}">Fans Actifs</a>
+                            </li>
+                            <li class="nav-item"><a class="nav-link" href="{{ route('fans.expired') }}">Fans
+                                    Supprimés</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{{ route('fansfans.inactive') }}">Fans
+                                    inactive</a></li>
 
                         </ul>
                     </div>
@@ -102,7 +105,8 @@
                     </a>
                     <div class="collapse" id="eventsMenu">
                         <ul class="nav nav-sm flex-column">
-                            <li class="nav-item"><a class="nav-link" href="{{ route('events.index') }}">Liste des Events</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{{ route('events.index') }}">Liste des
+                                    Events</a></li>
                             <li class="nav-item"><a class="nav-link" href="#">Statistiques</a></li>
                         </ul>
                     </div>
@@ -212,24 +216,54 @@
                 @endauth
 
                 <li class="nav-item">
-    <span class="nav-link disabled" style="font-weight: bold; text-transform: uppercase; color: #6c757d; cursor: default;">
-        Home
-    </span>
-</li>
+                    <span class="nav-link disabled" style="font-weight: bold; text-transform: uppercase; color: #6c757d; cursor: default;">
+                        Home
+                    </span>
+                </li>
 
-<!-- Hero link -->
-<li class="nav-item">
-    <a class="nav-link " href="{{ route('hero.index') }}">
-        <span class="nav-link-icon d-md-none d-lg-inline-block">
-            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24"
-                stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                <path d="M12 3l2 6h6l-4.5 3.5l2 6l-5.5 -4l-5.5 4l2 -6l-4.5 -3.5h6z" />
-            </svg>
-        </span>
-        <span class="nav-link-title">Hero</span>
-    </a>
-</li>
+                <!-- Hero link -->
+                <li class="nav-item">
+                    <a class="nav-link " href="{{ route('hero.index') }}">
+                        <span class="nav-link-icon d-md-none d-lg-inline-block">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                <path d="M12 3l2 6h6l-4.5 3.5l2 6l-5.5 -4l-5.5 4l2 -6l-4.5 -3.5h6z" />
+                            </svg>
+                        </span>
+                        <span class="nav-link-title">Hero</span>
+                    </a>
+                </li>
+                <!-- Contact link-->
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->routeIs('contact.index') ? 'active' : '' }}" href="{{ route('contact.index') }}">
+                        <span class="nav-link-icon d-md-none d-lg-inline-block">
+                            <!-- Contact icon (Tabler mail icon) -->
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                <rect x="3" y="5" width="18" height="14" rx="2" />
+                                <polyline points="3 7 12 13 21 7" />
+                            </svg>
+                        </span>
+                        <span class="nav-link-title">Contact</span>
+                    </a>
+                </li>
+
+                <!-- About link-->
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->routeIs('about.index') ? 'active' : '' }}" href="{{ route('about.index') }}">
+                        <span class="nav-link-icon d-md-none d-lg-inline-block">
+                            <!-- About icon (Tabler info-circle icon) -->
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                <circle cx="12" cy="12" r="9" />
+                                <line x1="12" y1="8" x2="12.01" y2="8" />
+                                <polyline points="11 12 12 12 12 16 13 16" />
+                            </svg>
+                        </span>
+                        <span class="nav-link-title">About</span>
+                    </a>
+                </li>
+
 
             </ul>
         </div>

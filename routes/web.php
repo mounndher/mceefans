@@ -12,6 +12,10 @@ use App\Http\Controllers\Admin\AppareilController;
 use App\Http\Controllers\Admin\AttendanceController;
 use App\Http\Controllers\Admin\dashboardController;
 use App\Http\Controllers\Admin\HeroController;
+use App\Http\Controllers\Admin\ContactController;
+use App\Http\Controllers\Admin\AboutController;
+
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -91,7 +95,14 @@ Route::get('dashboard',[dashboardController::class,'dashboard'])->name('dashboar
 Route::get('/hero', [HeroController::class, 'index'])->name('hero.index');
 Route::put('/hero/update/{id}', [HeroController::class, 'update'])->name('hero.update');
 ////////about///////////////////////////////////
-Route::get('/about', [App\Http\Controllers\Admin\AboutController::class, 'index'])->name('about.index');
+Route::get('/admin/about', [AboutController::class, 'index'])->name('about.index');
+Route::post('/admin/about/{id}', [AboutController::class, 'update'])->name('about.update');
+
+/////contact///////////////////////////////
+Route::get('/admin/contact', [ContactController::class, 'index'])->name('contact.index');
+Route::post('/admin/contact/update/{id}', [ContactController::class, 'update'])->name('contact.update');
+
+
 });
 
 
