@@ -233,20 +233,8 @@
                         <span class="nav-link-title">Hero</span>
                     </a>
                 </li>
-                <!-- Contact link-->
-                <li class="nav-item">
-                    <a class="nav-link {{ request()->routeIs('contact.index') ? 'active' : '' }}" href="{{ route('contact.index') }}">
-                        <span class="nav-link-icon d-md-none d-lg-inline-block">
-                            <!-- Contact icon (Tabler mail icon) -->
-                            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                                <rect x="3" y="5" width="18" height="14" rx="2" />
-                                <polyline points="3 7 12 13 21 7" />
-                            </svg>
-                        </span>
-                        <span class="nav-link-title">Contact</span>
-                    </a>
-                </li>
+
+
 
                 <!-- About link-->
                 <li class="nav-item">
@@ -265,7 +253,47 @@
                 </li>
 
 
+                <!-- contact -->
+                <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="collapse" href="#contactsMenu" role="button" aria-expanded="false" aria-controls="contactsMenu">
+                        <span class="nav-link-icon d-md-none d-lg-inline-block">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                <rect x="3" y="5" width="18" height="14" rx="2" />
+                                <polyline points="3 7 12 13 21 7" />
+                            </svg>
+                        </span>
+                        <span class="nav-link-title">Contacts</span>
+                    </a>
+                    <div class="collapse" id="contactsMenu">
+                        <ul class="nav nav-sm flex-column">
+
+                            <li class="nav-item"><a class="nav-link" href="{{ route('contact.index') }}"> Contacts</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{{ route('contact.display') }}">Liste des contact
+                                </a></li>
+
+                        </ul>
+                    </div>
+                </li>
+                <!-- Settings link -->
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->routeIs('settings.index') ? 'active' : '' }}" href="{{ route('settings.index') }}">
+                        <span class="nav-link-icon d-md-none d-lg-inline-block">
+                            <!-- Tabler settings icon -->
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                <path d="M12 9a3 3 0 1 0 0 6a3 3 0 0 0 0 -6z" />
+                                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06 .06a2 2 0 1 1 -2.83 2.83l-.06 -.06a1.65 1.65 0 0 0 -1.82 -.33a1.65 1.65 0 0 0 -1 1.51v.09a2 2 0 1 1 -4 0v-.09a1.65 1.65 0 0 0 -1 -1.51a1.65 1.65 0 0 0 -1.82 .33l-.06 .06a2 2 0 1 1 -2.83 -2.83l.06 -.06a1.65 1.65 0 0 0 .33 -1.82a1.65 1.65 0 0 0 -1.51 -1h-.09a2 2 0 1 1 0 -4h.09a1.65 1.65 0 0 0 1.51 -1a1.65 1.65 0 0 0 -.33 -1.82l-.06 -.06a2 2 0 1 1 2.83 -2.83l.06 .06a1.65 1.65 0 0 0 1.82 .33h.09a1.65 1.65 0 0 0 1 -1.51v-.09a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51h.09a1.65 1.65 0 0 0 1.82 -.33l.06 -.06a2 2 0 1 1 2.83 2.83l-.06 .06a1.65 1.65 0 0 0 -.33 1.82v.09a1.65 1.65 0 0 0 1.51 1h.09a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0 -1.51 1z" />
+                            </svg>
+                        </span>
+                        <span class="nav-link-title">Settings</span>
+                    </a>
+                </li>
+
+
+
             </ul>
         </div>
     </div>
 </aside>
+

@@ -14,8 +14,8 @@ use App\Http\Controllers\Admin\dashboardController;
 use App\Http\Controllers\Admin\HeroController;
 use App\Http\Controllers\Admin\ContactController;
 use App\Http\Controllers\Admin\AboutController;
-
-
+use App\Http\Controllers\Admin\ContactMessageController;
+use App\Http\Controllers\Admin\SettingController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -101,8 +101,12 @@ Route::post('/admin/about/{id}', [AboutController::class, 'update'])->name('abou
 /////contact///////////////////////////////
 Route::get('/admin/contact', [ContactController::class, 'index'])->name('contact.index');
 Route::post('/admin/contact/update/{id}', [ContactController::class, 'update'])->name('contact.update');
+Route::post('/contact/send', [ContactMessageController::class, 'store'])->name('contact.send');
+Route::get('/contact/display', [ContactMessageController::class, 'index'])->name('contact.display');
 
-
+// Mettre à jour les paramètres
+Route::post('/settings/{id}', [SettingController::class, 'update'])->name('settings.update');
+Route::get('/settings', [SettingController::class, 'index'])->name('settings.index');
 });
 
 
