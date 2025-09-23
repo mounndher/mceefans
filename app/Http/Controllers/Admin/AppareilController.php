@@ -26,15 +26,20 @@ class AppareilController extends Controller
     }
 
     public function store(Request $request)
-    {
-        $request->validate([
-            'nom_utilisateur' => 'required|string|max:255',
-        ]);
+{
+    $request->validate([
+        'id' => 'required|integer|unique:appareils,id',
+        'nom_utilisateur' => 'required|string|max:255',
+    ]);
 
-        Appareil::create($request->except('_token'));
+    Appareil::create([
+        'id' => $request->id,
+        'nom_utilisateur' => $request->nom_utilisateur,
+    ]);
 
-        return redirect()->route('appareils.index')->with('success', 'Appareil ajouté avec succès');
-    }
+    return redirect()->route('appareils.index')->with('success', 'Appareil ajouté avec succès');
+}
+
 
     public function show(Appareil $appareil)
     {

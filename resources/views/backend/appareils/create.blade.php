@@ -36,7 +36,15 @@
             <div class="card-body">
                 <form action="{{ route('appareils.store') }}" method="POST">
                     @csrf
-
+  <div class="mb-3">
+        <label class="form-label">ID</label>
+        <input type="number" class="form-control" name="id"
+               value="{{ old('id') }}"
+               placeholder="Enter appareil ID" required>
+        @error('id')
+            <div class="text-danger small">{{ $message }}</div>
+        @enderror
+    </div>
                     <div class="mb-3">
                         <label class="form-label">Nom utilisateur</label>
                         <input type="text" class="form-control" name="nom_utilisateur"

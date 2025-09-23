@@ -8,9 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class Appareil extends Model
 {
     use HasFactory;
-    protected $fillable = [
-        'nom_utilisateur',
-        
-    ];
+    protected $fillable = ['id', 'nom_utilisateur']; // allow manual id
     
 }
