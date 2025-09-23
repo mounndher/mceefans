@@ -214,4 +214,4 @@ class EventController extends Controller
 
         return view('backend.event.statistics', compact('event', 'scannedTwiceFans', 'stats', 'fan', 'checkedIn', 'absent', 'percentagePresent', 'percentageAbsent','perAppareilStats'));
     }
-}
+} 
