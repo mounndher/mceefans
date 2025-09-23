@@ -8,7 +8,7 @@
                     <div class="page-pretitle">
                         Statistics
                     </div>
-                    
+
                 </div>
                 <!-- Page title actions -->
 
@@ -274,6 +274,45 @@
                 </script>
 
 
+                <div class="col-12 mt-4">
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Statistiques par appareil</h3>
+        </div>
+        <div class="table-responsive">
+            <table class="table card-table table-vcenter text-nowrap datatable">
+                <thead>
+                    <tr>
+                        <th>No.</th>
+                        <th>Utilisateur</th>
+                        <th>Présent</th>
+                        <th>QR invalide</th>
+                        <th>Scanné deux fois</th>
+                        <th>Expiré</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse($perAppareilStats as $index => $stat)
+                        <tr>
+                            <td>{{ $index + 1 }}</td>
+                            <td>{{ $stat->appareil->nom_utilisateur ?? 'Inconnu' }}</td>
+                            <td>{{ $stat->checked_in }}</td>
+                            <td>{{ $stat->qr_invalid }}</td>
+                            <td>{{ $stat->scanned_twice }}</td>
+                            <td>{{ $stat->expired }}</td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="6" class="text-center text-muted">
+                                Aucune statistique disponible pour les appareils.
+                            </td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
 
 
 
@@ -290,7 +329,7 @@
                                 <thead>
                                     <tr>
                                         <th>No.</th>
-                                       
+
                                         <th>Nom</th>
                                         <th>Événement</th>
                                         <th>Statut</th>
@@ -300,7 +339,7 @@
                                     @forelse($scannedTwiceFans as $index => $attendance)
                                         <tr>
                                             <td>{{ $index + 1 }}</td>
-                                           
+
                                             <td>{{ $attendance->fan->nom }}</td>
                                             <td>{{ $event->nom ?? 'N/A' }}</td>
                                             <td>

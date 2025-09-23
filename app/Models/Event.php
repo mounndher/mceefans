@@ -21,4 +21,5 @@ class Event extends Model
 {
     return $this->belongsToMany(Fan::class, 'attendances', 'id_event', 'fan_id');
 }
+ 
 }

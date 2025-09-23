@@ -158,7 +158,7 @@ class EventController extends Controller
     public function destroy($id)
     {
         // تحقق إذا عنده Paiements مرتبطة
-       
+
        $event = Event::findOrFail($id);
 
         // 1. Change status to "terminated"
@@ -166,7 +166,7 @@ class EventController extends Controller
         $event->save();
 
         // لو مافيش Paiements، نحذف الـ Event
-        
+
 
         return redirect()->route('events.index')
             ->with('success', 'Event deleted successfully!');
@@ -193,11 +193,25 @@ class EventController extends Controller
 
         $percentagePresent = $fan > 0 ? round(($checkedIn / $fan) * 100, 2) : 0;
         $percentageAbsent  = $fan > 0 ? round(($absent / $fan) * 100, 2) : 0;
+
+        $perAppareilStats = Attendance::where('id_event', $event->id)
+        ->selectRaw("
+            idappareil,
+            SUM(CASE WHEN status = 'checked_in' THEN 1 ELSE 0 END) as checked_in,
+            SUM(CASE WHEN status = 'qr_invalid' THEN 1 ELSE 0 END) as qr_invalid,
+            SUM(CASE WHEN status = 'scanned_twice' THEN 1 ELSE 0 END) as scanned_twice,
+            SUM(CASE WHEN status = 'expired' THEN 1 ELSE 0 END) as expired
+        ")
+        ->groupBy('idappareil')
+        ->with('appareil') // 🟢 eager load relation
+        ->get();
+
         $scannedTwiceFans = Attendance::where('id_event', $event->id)
             ->where('status', 'scanned_twice')
             ->with('fan') // لازم عندك relation في Attendance -> fan()
             ->get();
 
-        return view('backend.event.statistics', compact('event', 'scannedTwiceFans', 'stats', 'fan', 'checkedIn', 'absent', 'percentagePresent', 'percentageAbsent',));
+
+        return view('backend.event.statistics', compact('event', 'scannedTwiceFans', 'stats', 'fan', 'checkedIn', 'absent', 'percentagePresent', 'percentageAbsent','perAppareilStats'));
     }
 }
