@@ -19,6 +19,8 @@ use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\MailController;
 use App\Http\Controllers\Admin\ServicesController;
 use App\Http\Controllers\Admin\WhatwedoController;
+use App\Http\Controllers\Admin\FeaturesController;
+use App\Http\Controllers\Admin\MatchHighlightsController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -119,6 +121,15 @@ Route::put('mail-settings/{id}', [MailController::class, 'update'])
 // what-we-do------------------------
 Route::get('whatwedos', [WhatwedoController::class, 'index'])->name('whatwedos.index');
 Route::put('whatwedos/{id}', [WhatwedoController::class, 'update'])->name('whatwedos.update');
+
+Route::get('features', [FeaturesController::class, 'index'])->name('features.index');
+// Update a specific feature
+Route::put('features/{id}', [FeaturesController::class, 'update'])->name('features.update');
+
+
+//
+Route::resource('match_highlights', MatchHighlightsController::class);
+
 });
 
 
