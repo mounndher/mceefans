@@ -18,7 +18,7 @@ class HeroController extends Controller
    $request->validate([
     'title'       => 'required|string',
     'subtitle'    => 'required|string',
-    'image'       => 'required|image',
+    'image'       => 'nullable|image',
     'button_text' => 'nullable|string',
 ], [
     'title.required'    => 'Le titre est obligatoire.',

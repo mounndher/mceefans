@@ -44,14 +44,14 @@
 /************************************/
 
 :root{
-	--primary-color				: #ff1418;
+	--primary-color				: #015001;
 	--secondary-color			: #FFFFFF1A;
 	--text-color				: #999999;
-	--accent-color				: #004208;
+	--accent-color				: #f00001;
 	--white-color				: #FFFFFF;
 	--divider-color				: #0315211A;
 	--dark-divider-color		: #FFFFFF1A;
-	--error-color				: #ff1418;
+	--error-color				: rgb(230, 87, 87);
 	--default-font				: "Manrope", sans-serif;
 	--accent-font				: "Bebas Neue", sans-serif;
 }
@@ -778,20 +778,21 @@ header.main-header .header-sticky.active{
 /***        04. Hero css	      ***/
 /************************************/
 
-.hero {
-    position: relative;
-    background-image: url('../images/hero-image.png');
-    background-repeat: no-repeat;
-    background-position: center bottom;
-    background-size: cover;
-    padding: 195px 0 90px;
+.hero{
+	position: relative;
+
+	background-repeat: no-repeat;
+	background-position: center bottom;
+	background-size: cover;
+	padding: 195px 0 90px;
 }
+
 .hero::before{
 	content: '';
 	position: absolute;
 	top: 110px;
 	right: 10px;
-	background: url('../images/hero-bg-shape-1.svg') no-repeat;
+	background: url('/frontend/images/hero-bg-shape-1.svg') no-repeat;
 	background-size: cover;
 	background-position: center center;
 	width: 160px;
@@ -803,7 +804,7 @@ header.main-header .header-sticky.active{
 	position: absolute;
 	left: 20px;
 	bottom: 20px;
-	background: url('../images/hero-bg-shape-2.svg') no-repeat;
+	background: url('/frontend/images/hero-bg-shape-2.svg') no-repeat;
 	background-size: cover;
 	background-position: center center;
 	width: 160px;
@@ -826,7 +827,7 @@ header.main-header .header-sticky.active{
     bottom: 0;
     left: 0;
     right: 0;
-	background: var(--primary-color);
+	background: #031521;
     opacity: 80%;
     width: 100%;
     height: 100%;
