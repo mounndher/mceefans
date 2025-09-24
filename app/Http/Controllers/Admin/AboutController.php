@@ -28,8 +28,9 @@ class AboutController extends Controller
     'subtitle'    => 'nullable|string|max:255',
     'description' => 'nullable|string',
     'image'       => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
-    'button_text' => 'nullable|string|max:255',
-    'button_link' => 'nullable|string|max:255',
+    'button_text' => 'nullable|string',
+    'button_link' => 'nullable|string',
+    'phase'=>'nullable',
 ], [
     'title.required'      => 'Le champ titre est obligatoire.',
     'title.string'        => 'Le titre doit être une chaîne de caractères.',
@@ -63,6 +64,7 @@ class AboutController extends Controller
         $about->description = $request->description;
         $about->button_text = $request->button_text;
         $about->button_link = $request->button_link;
+        $about->phase=$request->phase;
 
         // ✅ Gestion de l'image
         if ($request->hasFile('image')) {

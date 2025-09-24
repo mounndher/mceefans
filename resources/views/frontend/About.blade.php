@@ -1,3 +1,6 @@
+@php
+$about = \App\Models\About::first();
+@endphp
 <div class="about-us">
         <div class="container">
             <div class="row align-items-center">
@@ -7,29 +10,35 @@
                         <!-- Section Title Start -->
                         <div class="section-title">
                             <div class="section-bg-title wow fadeInUp">
-                                <span>about us</span>
+                                <span>{{ $about->subtitle }}</span>
                             </div>
-                            <h3 class="wow fadeInUp" data-wow-delay="0.2s">About our club</h3>
-                            <h2 class="text-anime-style-2" data-cursor="-opaque">Nurturing young talent for a brighter <span>football future</span></h2>
-                            <p class="wow fadeInUp" data-wow-delay="0.4s">At our club, we believe the future of football starts with strong foundations. That's why we're dedicated to identifying and developing young talent through structured.</p>
+                            <h3 class="wow fadeInUp" data-wow-delay="0.2s">{{ $about->title_text }}</h3>
+                            <h2 class="text-anime-style-2" data-cursor="-opaque">{{ $about->title }}</h2>
+                            <p class="wow fadeInUp" data-wow-delay="0.4s"> {{ $about->description }}</p>
                         </div>
                         <!-- Section Title End -->
 
                         <!-- About Us Body Start -->
                         <div class="about-us-body">
                             <!-- About Us List Start -->
-                            <div class="about-us-list wow fadeInUp" data-wow-delay="0.6s">
+                            <div class="about-us-list wow fadeInUp" data-wow-delay="0.6s visibility: visible; animation-delay: 0.6s; animation-name: fadeInUp;">
                                 <ul>
-                                    <li>Fan Support and Membership Benefits</li>
-                                    <li>Professional Coaching Expert & Mentorship</li>
-                                    <li>Customize Training Plan For Skill Enhance</li>
+                                    @if ($about->button_text)
+                                     <li>{{ $about->button_text }}</li>
+                                    @endif
+                                    @if ($about->button_link)
+                                    <li>{{ $about->button_link }}</li>
+                                    @endIf
+                                     @if ($about->phase)
+                                    <li>{{ $about->phase }}</li>
+                                    @endIf
                                 </ul>
                             </div>
                             <!-- About Us List End -->
 
                             <!-- Contact Us Circle Start -->
                             <div class="contact-us-circle">
-                                <a href="contact.html">
+                                <a href="">
                                     <figure>
                                         <img src="{{ asset('frontend/images/contact-us-circle.svg') }}" alt="">
                                     </figure>
@@ -54,59 +63,13 @@
                         <!-- About Us Images Start -->
                         <div class="about-us-images">
                             <figure class="image-anime reveal">
-                                <img src="{{ asset('frontend/images/about-us-image.jpg')}}" alt="">
+                                <img src="{{ asset($about->image)}}" alt="">
                             </figure>
                         </div>
-                        <!-- About Us Images End -->
 
-                        <!-- About Coach Box Start -->
-                        <div class="about-coach-box">
-                            <!-- About Coach Images Start -->
-                            <div class="about-coach-images">
-                                <!-- Coach Image Start -->
-                                <div class="coach-image">
-                                    <figure class="image-anime reveal">
-                                        <img src="{{ asset('frontend/images/coach-1.jpg') }}" alt="">
-                                    </figure>
-                                </div>
-                                <!-- Coach Image End -->
-
-                                <!-- Coach Image Start -->
-                                <div class="coach-image">
-                                    <figure class="image-anime reveal">
-                                        <img src="{{ asset('frontend/images/coach-2.jpg') }}" alt="">
-                                    </figure>
-                                </div>
-                                <!-- Coach Image End -->
-
-                                <!-- Coach Image Start -->
-                                <div class="coach-image">
-                                    <figure class="image-anime reveal">
-                                        <img src="{{ asset('frontend/images/coach-3.jpg') }}" alt="">
-                                    </figure>
-                                </div>
-                                <!-- Coach Image End -->
-
-                                <!-- Coach Image Start -->
-                                <div class="coach-image">
-                                    <figure class="image-anime reveal">
-                                        <img src="{{ asset('frontend/images/coach-4.jpg') }}" alt="">
-                                    </figure>
-                                </div>
-                                <!-- Coach Image End -->
-                            </div>
-                            <!-- About Coach Images End -->
-
-                            <!-- About Coach Content Start -->
-                            <div class="about-coach-content">
-                                <h3>Experienced professional coaching staff</h3>
-                            </div>
-                            <!-- About Coach Content End -->
-                        </div>
-                        <!-- About Coach Box End -->
                     </div>
                     <!-- About Image Box End -->
                 </div>
             </div>
         </div>
-    </div>
+</div>

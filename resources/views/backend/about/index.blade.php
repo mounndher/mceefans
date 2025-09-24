@@ -64,19 +64,24 @@
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label">Texte du bouton</label>
+                        <label class="form-label">phrase 1</label>
                         <input type="text" class="form-control" name="button_text"
                                value="{{ old('button_text', $about->button_text ?? '') }}"
                                placeholder="Texte bouton">
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label">Lien du bouton</label>
+                        <label class="form-label">phrase 2</label>
                         <input type="text" class="form-control" name="button_link"
                                value="{{ old('button_link', $about->button_link ?? '') }}"
                                placeholder="Lien bouton">
                     </div>
-
+                    <div class="mb-3">
+                        <label class="form-label">phrase 3</label>
+                        <input type="text" class="form-control" name="phase"
+                               value="{{ old('phase', $about->phase ?? '') }}"
+                               placeholder="Lien bouton">
+                    </div>
                     <div class="mb-3 text-center">
                         <button class="btn btn-primary" type="submit">Mettre à jour</button>
                     </div>

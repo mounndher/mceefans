@@ -813,7 +813,7 @@ header.main-header .header-sticky.active{
 
 .hero.hero-bg-image{
 	position: relative;
-	background: url('../images/hero-bg.jpg') no-repeat;
+	background: no-repeat;
 	background-position: center center;
 	background-size: cover;
 	padding: 245px 0 140px;
@@ -938,6 +938,20 @@ header.main-header .header-sticky.active{
     object-fit: cover;
 }
 
+@media (max-width: 991px) {
+    .hero.hero-bg-image {
+        padding: 150px 0 100px;
+        background-position: center top;
+    }
+}
+
+@media (max-width: 575px) {
+    .hero.hero-bg-image {
+        padding: 100px 0 60px;
+        background-position: center center;
+    }
+}
+
 /************************************/
 /***   05. Scrolling Ticker css   ***/
 /************************************/
@@ -993,6 +1007,8 @@ header.main-header .header-sticky.active{
 /************************************/
 /***    	06. About Us css      ***/
 /************************************/
+
+/* Container styling */
 
 .about-us{
     padding: 100px 0;
