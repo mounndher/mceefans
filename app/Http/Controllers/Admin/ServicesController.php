@@ -44,7 +44,7 @@ class ServicesController extends Controller
         'iamge'    => $path,
     ]);
 
-    return redirect()->route('services.index')->with('success', 'Service created successfully');
+    return redirect()->route('services.index')->with('success', 'Service créé avec succès');
 }
 
 
@@ -87,7 +87,7 @@ class ServicesController extends Controller
 
     $service->update($data);
 
-    return redirect()->route('services.index')->with('success', 'Service updated successfully');
+    return redirect()->route('services.index')->with('success', 'Service mis à jour avec succès');
 }
 
 
@@ -100,6 +100,6 @@ class ServicesController extends Controller
 
     $service->delete();
 
-    return redirect()->route('services.index')->with('success', 'Service deleted successfully');
+    return redirect()->route('services.index')->with('success', 'Service supprimé avec succès');
 }
 }

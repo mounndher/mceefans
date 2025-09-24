@@ -12,11 +12,11 @@
                     <div class="service-item">
                         <!-- Service Image Start -->
                         <div class="service-image">
-                            <a href="service-single.html" data-cursor-text="View">
+
                                 <figure>
                                     <img src="{{ asset($service->iamge) }}" alt="{{ $service->title }}">
                                 </figure>
-                            </a>
+                            
                         </div>
                         <!-- Service Image End -->
 

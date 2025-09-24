@@ -18,6 +18,7 @@ use App\Http\Controllers\Admin\ContactMessageController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\MailController;
 use App\Http\Controllers\Admin\ServicesController;
+use App\Http\Controllers\Admin\WhatwedoController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -115,7 +116,9 @@ Route::get('mail-settings', [MailController::class, 'index'])
     ->name('mail-settings.index');
 Route::put('mail-settings/{id}', [MailController::class, 'update'])
     ->name('mail-settings.update');
-
+// what-we-do------------------------
+Route::get('whatwedos', [WhatwedoController::class, 'index'])->name('whatwedos.index');
+Route::put('whatwedos/{id}', [WhatwedoController::class, 'update'])->name('whatwedos.update');
 });
 
 
