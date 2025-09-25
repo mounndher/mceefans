@@ -21,6 +21,8 @@ use App\Http\Controllers\Admin\ServicesController;
 use App\Http\Controllers\Admin\WhatwedoController;
 use App\Http\Controllers\Admin\FeaturesController;
 use App\Http\Controllers\Admin\MatchHighlightsController;
+use App\Http\Controllers\SmsController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -146,5 +148,5 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
-
+ route::get('/sendsms',[SmsController::class,'sendsms']);
 require __DIR__.'/auth.php';
