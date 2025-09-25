@@ -1,3 +1,9 @@
+
+@php
+    $matchtext = \App\Models\MatchHighlightsText::first();
+    $match = \App\Models\MatchHighlights::all();
+@endphp
+
 <div class="match-highlights">
     <div class="container">
         <div class="row section-row">
@@ -5,10 +11,10 @@
                 <!-- Section Title Start -->
                 <div class="section-title">
                     <div class="section-bg-title wow fadeInUp">
-                        <span>highlights</span>
+                        <span>Points forts</span>
                     </div>
-                    <h3 class="wow fadeInUp" data-wow-delay="0.2s">Key moments uncovered</h3>
-                    <h2 class="text-anime-style-2" data-cursor="-opaque">Goals, wins & wows this weeks highlights</h2>
+                    <h3 class="wow fadeInUp" data-wow-delay="0.2s">{{ $matchtext->title ?? '' }}</h3>
+                    <h2 class="text-anime-style-2" data-cursor="-opaque">{{ $matchtext->subtitle ?? '' }}</h2>
                 </div>
                 <!-- Section Title End -->
             </div>
@@ -20,160 +26,36 @@
                 <div class="match-highlight-slider">
                     <div class="swiper">
                         <div class="swiper-wrapper">
-                            <!-- Match Highlight Slide Start -->
-                            <div class="swiper-slide">
-                                <!-- Match Highlight Item Start -->
-                                <div class="match-highlight-item">
-                                    <!-- Match Highlight Item Image Start -->
-                                    <div class="match-highlight-item-image">
-                                        <figure class="image-anime">
-                                            <img src="{{ asset('frontend/images/match-highlight-image-1.jpg') }}" alt="">
-                                        </figure>
-                                    </div>
-                                    <!-- Match Highlight Item Image End -->
 
-                                    <!-- Match Highlight Item Body Start -->
-                                    <div class="match-highlight-item-body">
-                                        <div class="match-highlight-item-content">
-                                            <h3>Epic Showdown! Thunder FC vs United - All the Goal & Drama!</h3>
+                            <!-- Dynamic Slides -->
+                            @foreach($match as $highlight)
+                                <div class="swiper-slide">
+                                    <div class="match-highlight-item">
+                                        <!-- Image -->
+                                        <div class="match-highlight-item-image">
+                                            <figure class="image-anime">
+                                                @if($highlight->image)
+                                                    <img src="{{ asset('storage/' . $highlight->image) }}" alt="Highlight Image">
+                                                @else
+                                                    <img src="{{ asset('frontend/images/default.jpg') }}" alt="Default Image">
+                                                @endif
+                                            </figure>
                                         </div>
-                                        <div class="match-highlight-video-btn">
-                                            <a href="https://www.youtube.com/watch?v=Y-x0efG1seA" class="popup-video" data-cursor-text="Play">
-                                                <i class="fa-solid fa-play"></i>
-                                            </a>
-                                            <p>5:27 mins</p>
+
+                                        <!-- Text -->
+                                        <div class="match-highlight-item-body">
+                                            <div class="match-highlight-item-content">
+                                                <h3>{{ $highlight->text }}</h3>
+                                            </div>
                                         </div>
                                     </div>
-                                    <!-- Match Highlight Item Body End -->
                                 </div>
-                                <!-- Match Highlight Item End -->
-                            </div>
-                            <!-- Match Highlight Slide End -->
+                            @endforeach
 
-                            <!-- Match Highlight Slide Start -->
-                            <div class="swiper-slide">
-                                <!-- Match Highlight Item Start -->
-                                <div class="match-highlight-item">
-                                    <!-- Match Highlight Item Image Start -->
-                                    <div class="match-highlight-item-image">
-                                        <figure class="image-anime">
-                                            <img src="{{ asset('frontend/images/match-highlight-image-2.jpg') }}" alt="">
-                                        </figure>
-                                    </div>
-                                    <!-- Match Highlight Item Image End -->
-
-                                    <!-- Match Highlight Item Body Start -->
-                                    <div class="match-highlight-item-body">
-                                        <div class="match-highlight-item-content">
-                                            <h3>Leo Storms Hat-Trick! Thunder FC vs Blaze United Highlights</h3>
-                                        </div>
-                                        <div class="match-highlight-video-btn">
-                                            <a href="https://www.youtube.com/watch?v=Y-x0efG1seA" class="popup-video" data-cursor-text="Play">
-                                                <i class="fa-solid fa-play"></i>
-                                            </a>
-                                            <p>5:27 mins</p>
-                                        </div>
-                                    </div>
-                                    <!-- Match Highlight Item Body End -->
-                                </div>
-                                <!-- Match Highlight Item End -->
-                            </div>
-                            <!-- Match Highlight Slide End -->
-
-                            <!-- Match Highlight Slide Start -->
-                            <div class="swiper-slide">
-                                <!-- Match Highlight Item Start -->
-                                <div class="match-highlight-item">
-                                    <!-- Match Highlight Item Image Start -->
-                                    <div class="match-highlight-item-image">
-                                        <figure class="image-anime">
-                                            <img src="images/match-highlight-image-3.jpg" alt="">
-                                        </figure>
-                                    </div>
-                                    <!-- Match Highlight Item Image End -->
-
-                                    <!-- Match Highlight Item Body Start -->
-                                    <div class="match-highlight-item-body">
-                                        <div class="match-highlight-item-content">
-                                            <h3>United Strikes Back: Drama Unfolds Against Thunder</h3>
-                                        </div>
-                                        <div class="match-highlight-video-btn">
-                                            <a href="https://www.youtube.com/watch?v=Y-x0efG1seA" class="popup-video" data-cursor-text="Play">
-                                                <i class="fa-solid fa-play"></i>
-                                            </a>
-                                            <p>5:27 mins</p>
-                                        </div>
-                                    </div>
-                                    <!-- Match Highlight Item Body End -->
-                                </div>
-                                <!-- Match Highlight Item End -->
-                            </div>
-                            <!-- Match Highlight Slide End -->
-
-                            <!-- Match Highlight Slide Start -->
-                            <div class="swiper-slide">
-                                <!-- Match Highlight Item Start -->
-                                <div class="match-highlight-item">
-                                    <!-- Match Highlight Item Image Start -->
-                                    <div class="match-highlight-item-image">
-                                        <figure class="image-anime">
-                                            <img src="{{ asset('frontend/images/match-highlight-image-4.jpg') }}" alt="">
-                                        </figure>
-                                    </div>
-                                    <!-- Match Highlight Item Image End -->
-
-                                    <!-- Match Highlight Item Body Start -->
-                                    <div class="match-highlight-item-body">
-                                        <div class="match-highlight-item-content">
-                                            <h3>Tension, Technique, and Triumph - Full Match Story</h3>
-                                        </div>
-                                        <div class="match-highlight-video-btn">
-                                            <a href="https://www.youtube.com/watch?v=Y-x0efG1seA" class="popup-video" data-cursor-text="Play">
-                                                <i class="fa-solid fa-play"></i>
-                                            </a>
-                                            <p>5:27 mins</p>
-                                        </div>
-                                    </div>
-                                    <!-- Match Highlight Item Body End -->
-                                </div>
-                                <!-- Match Highlight Item End -->
-                            </div>
-                            <!-- Match Highlight Slide End -->
-
-                            <!-- Match Highlight Slide Start -->
-                            <div class="swiper-slide">
-                                <!-- Match Highlight Item Start -->
-                                <div class="match-highlight-item">
-                                    <!-- Match Highlight Item Image Start -->
-                                    <div class="match-highlight-item-image">
-                                        <figure class="image-anime">
-                                            <img src="{{ asset('frontend/images/match-highlight-image-5.jpg')}}" alt="">
-                                        </figure>
-                                    </div>
-                                    <!-- Match Highlight Item Image End -->
-
-                                    <!-- Match Highlight Item Body Start -->
-                                    <div class="match-highlight-item-body">
-                                        <div class="match-highlight-item-content">
-                                            <h3>Blaze Ignites Late Comeback - A Match to Remember</h3>
-                                        </div>
-                                        <div class="match-highlight-video-btn">
-                                            <a href="https://www.youtube.com/watch?v=Y-x0efG1seA" class="popup-video" data-cursor-text="Play">
-                                                <i class="fa-solid fa-play"></i>
-                                            </a>
-                                            <p>5:27 mins</p>
-                                        </div>
-                                    </div>
-                                    <!-- Match Highlight Item Body End -->
-                                </div>
-                                <!-- Match Highlight Item End -->
-                            </div>
-                            <!-- Match Highlight Slide End -->
                         </div>
-                        <div class="match-highlight-btn">
-                            <div class="match-highlight-btn-prev"></div>
-                            <div class="match-highlight-btn-next"></div>
-                        </div>
+
+                        <!-- Slider Arrows -->
+                        
                     </div>
                 </div>
                 <!-- Match Highlight Slider End -->

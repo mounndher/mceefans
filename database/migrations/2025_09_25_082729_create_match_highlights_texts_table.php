@@ -11,10 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('match_highlights', function (Blueprint $table) {
+        Schema::create('match_highlights_texts', function (Blueprint $table) {
             $table->id();
-            $table->text('image');
-            $table->text('text');
+            $table->string('title');
+            $table->text('subtitle');
             $table->timestamps();
         });
     }
@@ -24,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('match_highlights');
+        Schema::dropIfExists('match_highlights_texts');
     }
 };

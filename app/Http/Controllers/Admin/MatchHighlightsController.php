@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\MatchHighlights;
+use Illuminate\Support\Facades\Storage;
 class MatchHighlightsController extends Controller
 {
     //
@@ -25,26 +26,32 @@ class MatchHighlightsController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
-    {
-        $request->validate([
-            'title' => 'required|string|max:255',
-            'subtitle' => 'required|string',
-            'image' => 'nullable|string',
-            'text' => 'required|string',
-        ]);
+   public function store(Request $request)
+{
+    $request->validate([
+        'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        'text' => 'required',
+    ]);
 
-        MatchHighlights::create($request->all());
+    $data = $request->all();
 
-        return redirect()->route('match_highlights.index')->with('success', 'Highlight created successfully.');
+    if ($request->hasFile('image')) {
+        // store the file in storage/app/public/match_highlights
+        $path = $request->file('image')->store('match_highlights', 'public');
+        $data['image'] = $path; // save path in DB
     }
 
+    MatchHighlights::create($data);
+
+    return redirect()->route('match_highlights.index')
+        ->with('success', 'Highlight created successfully.');
+}
     /**
      * Display the specified resource.
      */
     public function show(MatchHighlights $matchHighlight)
     {
-        return view('match_highlights.show', compact('matchHighlight'));
+
     }
 
     /**
@@ -52,25 +59,38 @@ class MatchHighlightsController extends Controller
      */
     public function edit(MatchHighlights $matchHighlight)
     {
-        return view('match_highlights.edit', compact('matchHighlight'));
+        return view('backend.match_highlights.edit', compact('matchHighlight'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, MatchHighlights $matchHighlight)
-    {
-        $request->validate([
-            'title' => 'required|string|max:255',
-            'subtitle' => 'required|string',
-            'image' => 'nullable|string',
-            'text' => 'required|string',
-        ]);
+   public function update(Request $request, MatchHighlights $matchHighlight)
+{
+    $request->validate([
+        'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        'text' => 'required',
+    ]);
 
-        $matchHighlight->update($request->all());
+    $data = $request->all();
 
-        return redirect()->route('match_highlights.index')->with('success', 'Highlight updated successfully.');
+    if ($request->hasFile('image')) {
+        // Delete old image if exists
+        if ($matchHighlight->image && Storage::disk('public')->exists($matchHighlight->image)) {
+            Storage::disk('public')->delete($matchHighlight->image);
+        }
+
+        // Upload new image
+        $path = $request->file('image')->store('match_highlights', 'public');
+        $data['image'] = $path;
     }
+
+    $matchHighlight->update($data);
+
+    return redirect()->route('match_highlights.index')
+        ->with('success', 'Highlight updated successfully.');
+}
+
 
     /**
      * Remove the specified resource from storage.

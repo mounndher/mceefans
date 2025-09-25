@@ -22,7 +22,7 @@ use App\Http\Controllers\Admin\WhatwedoController;
 use App\Http\Controllers\Admin\FeaturesController;
 use App\Http\Controllers\Admin\MatchHighlightsController;
 use App\Http\Controllers\SmsController;
-
+use App\Http\Controllers\Admin\MatchHighlightsTextController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -127,11 +127,11 @@ Route::put('whatwedos/{id}', [WhatwedoController::class, 'update'])->name('whatw
 Route::get('features', [FeaturesController::class, 'index'])->name('features.index');
 // Update a specific feature
 Route::put('features/{id}', [FeaturesController::class, 'update'])->name('features.update');
-
-
-//
+//match_highlights
 Route::resource('match_highlights', MatchHighlightsController::class);
-
+//highlights
+Route::get('match-highlights-text', [MatchHighlightsTextController::class, 'index'])->name('match_highlights_text.index');
+Route::post('match-highlights-text/update', [MatchHighlightsTextController::class, 'update'])->name('match_highlights_text.update');
 });
 
 

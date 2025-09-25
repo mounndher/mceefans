@@ -37,27 +37,11 @@
                 <form action="{{ route('match_highlights.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
 
-                    <div class="mb-3">
-                        <label class="form-label">Title</label>
-                        <input type="text" class="form-control" name="title"
-                               value="{{ old('title') }}" placeholder="Enter title" required>
-                        @error('title')
-                            <div class="text-danger small">{{ $message }}</div>
-                        @enderror
-                    </div>
 
-                    <div class="mb-3">
-                        <label class="form-label">Subtitle</label>
-                        <input type="text" class="form-control" name="subtitle"
-                               value="{{ old('subtitle') }}" placeholder="Enter subtitle" required>
-                        @error('subtitle')
-                            <div class="text-danger small">{{ $message }}</div>
-                        @enderror
-                    </div>
 
                     <div class="mb-3">
                         <label class="form-label">Image URL</label>
-                        <input type="text" class="form-control" name="image"
+                        <input type="file" class="form-control" name="image"
                                value="{{ old('image') }}" placeholder="Enter image path or URL">
                         @error('image')
                             <div class="text-danger small">{{ $message }}</div>
