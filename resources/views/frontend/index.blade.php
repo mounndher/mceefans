@@ -60,82 +60,10 @@
 <!-- Our Features Section End -->
 
 <!-- Why Choose Us Section Start -->
-<div class="why-choose-us">
-    <div class="container">
-        <div class="row align-items-center">
-            <div class="col-lg-6">
-                <!-- Why Choose Image Start -->
-                <div class="why-choose-image">
-                    <figure>
-                        <img src="{{ asset('frontend/images/why-choose-image.png')}}" alt="">
-                    </figure>
-                </div>
-                <!-- Why Choose Image End -->
-            </div>
-
-            <div class="col-lg-6">
-                <!-- Why Choose Content Start -->
-                <div class="why-choose-content">
-                    <!-- Section Title Start -->
-                    <div class="section-title">
-                        <div class="section-bg-title wow fadeInUp">
-                            <span>Why choose us</span>
-                        </div>
-                        <h3 class="wow fadeInUp" data-wow-delay="0.2s">Why choose us</h3>
-                        <h2 class="text-anime-style-2" data-cursor="-opaque">
-                            Dedicated to Every Players Growth and Greatness
-                        </h2>
-                        <p class="wow fadeInUp" data-wow-delay="0.4s">
-                            We personalize training, promote teamwork, and support overall development
-                            to ensure every athlete has the chance to improve.
-                        </p>
-                    </div>
-                    <!-- Section Title End -->
-
-                    <!-- ✅ Tracking Form Start -->
-                    <div class="tracking-form mt-4 p-3 border rounded shadow-sm bg-light">
-                        <h4 class="mb-3">Track Your Card</h4>
-                        <div class="tracking-form p-4 rounded shadow-sm bg-white wow fadeInUp" data-wow-delay="0.2s">
-                            <form action="{{ route('contact.send') }}" method="POST" data-toggle="validator">
-                                @csrf
-                                <div class="row">
-
-
-
-
-                                    <div class="form-group col-md-12 mb-4">
-                                        <input type="text" name="phone" class="form-control" id="phone" placeholder="Numéro de téléphone" required>
-                                        <div class="help-block with-errors"></div>
-                                    </div>
-
-                                    <div class="form-group col-md-12 mb-4">
-                                        <textarea name="message" class="form-control" id="message" rows="4" placeholder="Écrire un message..." required></textarea>
-                                        <div class="help-block with-errors"></div>
-                                    </div>
-
-                                    <div class="col-md-12">
-                                        <button type="submit" class="btn btn-primary w-100">
-                                            Ajouter un message
-                                        </button>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-
-                        <p class="text-muted small mt-2">Enter your phone and NIN to track your card status.</p>
-                    </div>
-                    <!-- ✅ Tracking Form End -->
-
-                </div>
-                <!-- Why Choose Content End -->
-            </div>
-        </div>
-    </div>
-</div>
+@include('frontend.cart')
 
 
 @include('frontend.succes')
-
 <!-- Match Highlights Section Start -->
 @include('frontend.match-highlights')
 <!-- Match Highlights Section End -->

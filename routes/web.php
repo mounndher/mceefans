@@ -24,6 +24,7 @@ use App\Http\Controllers\Admin\MatchHighlightsController;
 use App\Http\Controllers\SmsController;
 use App\Http\Controllers\Admin\MatchHighlightsTextController;
 use App\Http\Controllers\Admin\SucessController;
+use App\Http\Controllers\Admin\VotreCartController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -136,6 +137,13 @@ Route::post('match-highlights-text/update', [MatchHighlightsTextController::clas
 //
 Route::get('/success', [SucessController::class, 'index'])->name('success.index');
 Route::post('/success/update/{id}', [SucessController::class, 'update'])->name('success.update');
+
+Route::get('votrecart', [VotreCartController::class, 'index'])->name('votrecart.index');
+Route::put('votrecart/{id}', [VotreCartController::class, 'update'])->name('votrecart.update');
+
+
+
+
 });
 
 

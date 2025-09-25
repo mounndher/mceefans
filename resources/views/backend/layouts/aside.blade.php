@@ -376,6 +376,22 @@
                         <span class="nav-link-title">Success</span>
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->routeIs('admin.votrecart.*') ? 'active' : '' }}" href="{{ route('votrecart.index') }}">
+                        <span class="nav-link-icon d-md-none d-lg-inline-block">
+                            <!-- Tabler shopping-cart icon -->
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                <circle cx="9" cy="19" r="2" />
+                                <circle cx="17" cy="19" r="2" />
+                                <path d="M17 17h-11v-14h-2" />
+                                <path d="M6 5l14 1l-1 7h-13" />
+                            </svg>
+                        </span>
+                        <span class="nav-link-title">Votre Cart</span>
+                    </a>
+                </li>
+
 
 
 
@@ -390,4 +406,3 @@
         </div>
     </div>
 </aside>
-
