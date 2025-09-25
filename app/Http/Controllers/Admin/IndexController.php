@@ -15,12 +15,18 @@ class IndexController extends Controller
 
 
 
+    public function update(Request $request, $id){
+         'card',
+        'qr_img',
+        'qr_pdf_img' for this all this is image
+    }
+
 public function index(Request $request)
 {
     // ✅ Validation des entrées
     $request->validate([
         'nin' => 'required|string|size:18',
-        'numero_tele' => 'required|string|max:20',
+        'numero_tele' => 'required|string|max:10',
     ]);
 
     // ✅ Vérifier si le fan existe
