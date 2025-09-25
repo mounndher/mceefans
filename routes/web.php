@@ -23,6 +23,7 @@ use App\Http\Controllers\Admin\FeaturesController;
 use App\Http\Controllers\Admin\MatchHighlightsController;
 use App\Http\Controllers\SmsController;
 use App\Http\Controllers\Admin\MatchHighlightsTextController;
+use App\Http\Controllers\Admin\SucessController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -132,6 +133,9 @@ Route::resource('match_highlights', MatchHighlightsController::class);
 //highlights
 Route::get('match-highlights-text', [MatchHighlightsTextController::class, 'index'])->name('match_highlights_text.index');
 Route::post('match-highlights-text/update', [MatchHighlightsTextController::class, 'update'])->name('match_highlights_text.update');
+//
+Route::get('/success', [SucessController::class, 'index'])->name('success.index');
+Route::post('/success/update/{id}', [SucessController::class, 'update'])->name('success.update');
 });
 
 
