@@ -602,5 +602,38 @@ public function inactive(Request $request)
 
     return view('backend.fans.inactive', compact('fans', 'abonments'));
 }
+public function showcard(){
+    $fan=fan::all();
+ return view('backend.card.index');
+}
+
+public function createcard(){
+ $abonments = Abonment::where('status','active')->get();       
+ return view('backend.card.create',compact('abonments'));
+}
+
+public function storecard(Request $request){
+    //dd($request->all());
+     $validated = $request->validate([
+        'id_qrcode'    => 'required',
+        'id_abonment'  => 'required|exists:abonments,id',
+
+    ]);
+    $validated['status'] = 'active';
+    $abonment = Abonment::findOrFail($request->id_abonment);
+     $fan = Fan::create($validated);
+    TransactionPaimnt::create([
+        'id_fan'      => $fan->id,
+        'id_abonment' => $abonment->id,
+        'date'        => now(),
+        'prix'        => $abonment->prix,
+        'nbrmatch'    => $abonment->nbrmatch,
+    ]);
+   
+    return redirect()->route('fan.cardshow')->with('success','Card and transaction created successfully');
+    
+}
+
+
 
 }

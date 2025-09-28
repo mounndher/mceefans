@@ -144,6 +144,9 @@ Route::put('votrecart/{id}', [VotreCartController::class, 'update'])->name('votr
 Route::post('/generate-card-preview', [IndexController::class, 'index'])->name('generate.card.preview');
 
 
+Route::get('/fancardshow', [FanController::class, 'showcard'])->name('fan.cardshow');
+Route::get('/fancardcreate', [FanController::class, 'createcard'])->name('fan.cardcreate');
+Route::post('/fancardstore', [FanController::class, 'storecard'])->name('fan.cardstore');
 });
 
 
