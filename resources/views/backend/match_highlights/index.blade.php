@@ -38,7 +38,7 @@
 
                                 <td>
                                     @if($highlight->image)
-                                    <img src="{{ asset('storage/' . $highlight->image) }}" alt="Highlight Image" width="80">
+                                    <img src="{{ asset($highlight->image) }}" alt="Highlight Image" width="80">
                                     @endif
                                 </td>
                                 <td>{{ Str::limit($highlight->text, 50) }}</td>

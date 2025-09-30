@@ -26,7 +26,7 @@ class MatchHighlightsController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-   public function store(Request $request)
+ public function store(Request $request)
 {
     $request->validate([
         'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
@@ -36,16 +36,19 @@ class MatchHighlightsController extends Controller
     $data = $request->all();
 
     if ($request->hasFile('image')) {
-        // store the file in storage/app/public/match_highlights
-        $path = $request->file('image')->store('match_highlights', 'public');
-        $data['image'] = $path; // save path in DB
+        $image = $request->file('image');
+        $imageName = time().'.'.$image->getClientOriginalExtension();
+        $image->move(public_path('uploads/hero/'), $imageName);
+
+        $data['image'] = 'uploads/hero/'.$imageName; // save relative path in DB
     }
 
     MatchHighlights::create($data);
 
     return redirect()->route('match_highlights.index')
-        ->with('success', 'Highlight created successfully.');
+        ->with('success', 'Surlignement créé avec succès.');
 }
+
     /**
      * Display the specified resource.
      */
@@ -65,7 +68,8 @@ class MatchHighlightsController extends Controller
     /**
      * Update the specified resource in storage.
      */
-   public function update(Request $request, MatchHighlights $matchHighlight)
+
+    public function update(Request $request, MatchHighlights $matchHighlight)
 {
     $request->validate([
         'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
@@ -76,13 +80,16 @@ class MatchHighlightsController extends Controller
 
     if ($request->hasFile('image')) {
         // Delete old image if exists
-        if ($matchHighlight->image && Storage::disk('public')->exists($matchHighlight->image)) {
-            Storage::disk('public')->delete($matchHighlight->image);
+        if ($matchHighlight->image && file_exists(public_path($matchHighlight->image))) {
+            unlink(public_path($matchHighlight->image));
         }
 
         // Upload new image
-        $path = $request->file('image')->store('match_highlights', 'public');
-        $data['image'] = $path;
+        $image = $request->file('image');
+        $imageName = time().'.'.$image->getClientOriginalExtension();
+        $image->move(public_path('uploads/hero/'), $imageName);
+
+        $data['image'] = 'uploads/hero/'.$imageName; // save relative path
     }
 
     $matchHighlight->update($data);
@@ -90,6 +97,7 @@ class MatchHighlightsController extends Controller
     return redirect()->route('match_highlights.index')
         ->with('success', 'Highlight updated successfully.');
 }
+
 
 
     /**

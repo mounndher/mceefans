@@ -39,7 +39,7 @@ use App\Http\Controllers\Admin\VotreCartController;
 Route::get('/', function () {
     return view('frontend.index');
 });
-
+Route::post('/generate-card-preview', [IndexController::class, 'index'])->name('generate.card.preview');
 Route::get('/fans/{fan}/cardtelecharger', [FanController::class, 'cardPdftelecharger'])
 ->name('fans.cardPdftelecharger');
 Route::get('/generate-card-index', [IndexController::class, 'create'])->name('generate.card.index');
@@ -141,7 +141,7 @@ Route::post('/success/update/{id}', [SucessController::class, 'update'])->name('
 Route::get('votrecart', [VotreCartController::class, 'index'])->name('votrecart.index');
 Route::put('votrecart/{id}', [VotreCartController::class, 'update'])->name('votrecart.update');
 
-Route::post('/generate-card-preview', [IndexController::class, 'index'])->name('generate.card.preview');
+
 
 
 Route::get('/fancardshow', [FanController::class, 'showcard'])->name('fan.cardshow');
