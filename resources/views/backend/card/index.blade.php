@@ -18,6 +18,7 @@
                     </a>
                 </div>
             </div>
+            
 
             <div class="card-body">
                 <div class="table-responsive">
@@ -27,17 +28,17 @@
                                 <th>id</th>
                                 <th>id_qrcode</th>
                                 <th>action</th>
-                               
+
                             </tr>
                         </thead>
                         <tbody>
-                           
+
                             <tr>
                                 <td></td>
                                 <td>kk</td>
-                               
-                            
-                                
+
+
+
 
 
                                 <td>
@@ -67,7 +68,7 @@
                                     </form>
                                 </td>
                             </tr>
-                          
+
                         </tbody>
                     </table>
                 </div>

@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Admin;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Fan;
+use App\Models\fan;
 use App\Models\TransactionPaimnt;
 use App\Models\Abonment;
 use Illuminate\Support\Str;
@@ -16,30 +16,63 @@ class FanController extends Controller
 
 
     // Display all fans
-   public function index(Request $request)
-{
-    $query = Fan::where('status', 'active');
+  // public function index(Request $request)
+//{
+  //  $query = fan::where('status', 'active');
 
     // ✅ البحث
+    //if ($request->filled('search')) {
+    //    $search = $request->input('search');
+      //  $query->where(function($q) use ($search) {
+    //        $q->where('nom', 'LIKE', "%{$search}%")
+            //  ->orWhere('prenom', 'LIKE', "%{$search}%")
+          //    ->orWhere('numero_tele', 'LIKE', "%{$search}%")0
+        //      ->orWhere('nin', 'LIKE', "%{$search}%");
+      //  });
+    //}
+
+    // ✅ pagination
+    //$fans = $query->paginate(15);
+
+    // Abonnements actifs
+    //$abonments = Abonment::where('status','active')->get();
+
+   // return view('backend.fans.index', compact('fans','abonments'));
+
+public function index(Request $request)
+{
+    $requiredFields = [
+        'nom', 'prenom',
+         'numero_tele',
+    ];
+
+    $query = Fan::where('status', 'active');
+
+    // ✅ Ensure all required fields are filled
+    foreach ($requiredFields as $field) {
+        $query->whereNotNull($field)->where($field, '!=', '');
+    }
+
+    // 🔍 Search filter
     if ($request->filled('search')) {
         $search = $request->input('search');
-        $query->where(function($q) use ($search) {
+        $query->where(function ($q) use ($search) {
             $q->where('nom', 'LIKE', "%{$search}%")
               ->orWhere('prenom', 'LIKE', "%{$search}%")
               ->orWhere('numero_tele', 'LIKE', "%{$search}%")
-              ->orWhere('nin', 'LIKE', "%{$search}%");
+              ->orWhere('nin', 'LIKE', "%{$search}%")
+              ->orWhere('id_qrcode', 'LIKE', "%{$search}%");
         });
     }
 
-    // ✅ pagination
+    // 📄 Paginate
     $fans = $query->paginate(15);
 
-    // Abonnements actifs
+    // Active abonnements
     $abonments = Abonment::where('status','active')->get();
 
     return view('backend.fans.index', compact('fans','abonments'));
 }
-
  public function bulkPdf(Request $request)
 {
     // ✅ Get selected IDs from query string (?ids[]=1&ids[]=2)
@@ -47,9 +80,9 @@ class FanController extends Controller
 
     if (empty($ids)) {
         // If no IDs selected → get all fans
-        $fans = Fan::where('status','active')->get();
+        $fans = fan::where('status','active')->get();
     } else {
-        $fans = Fan::whereIn('id', $ids)->get();
+        $fans = fan::whereIn('id', $ids)->get();
     }
 
     if ($fans->isEmpty()) {
@@ -65,7 +98,7 @@ class FanController extends Controller
 public function toggleStatus(Request $request, $id)
 {
     try {
-        $fan = Fan::findOrFail($id);
+        $fan =fan::findOrFail($id);
 
         // ✅ force to string
         $fan->status = (string) $request->status;
@@ -89,7 +122,7 @@ public function toggleStatus(Request $request, $id)
 
     public function expired()
     {
-        $fans = Fan::where('status','expired')->get();
+        $fans = fan::where('status','expired')->get();
         $abonments = Abonment::where('status','active')->get(); // قائمة كل Abonments
         //dd($abonments); // اختبر لو تحب
         return view('backend.fans.expired', compact('fans','abonments'));
@@ -105,7 +138,7 @@ public function toggleStatus(Request $request, $id)
     public function renouvelerAbonment(Request $request, $fanId)
 {
     // 1. نجيب الـFan
-    $fan = Fan::findOrFail($fanId);
+    $fan = fan::findOrFail($fanId);
 
     // 2. نتحقق من الإدخال (abonment جديد)
     $validated = $request->validate([
@@ -150,8 +183,23 @@ public function toggleStatus(Request $request, $id)
         'imagecart'    => 'required|image|mimes:jpg,jpeg,png|max:2048',
         'id_abonment'  => 'required|exists:abonments,id',
 
-    ]);
-
+   ], [
+    'nom.required'         => 'Le nom est obligatoire.',
+    'prenom.required'      => 'Le prénom est obligatoire.',
+    'nin.required'         => 'Le NIN est obligatoire.',
+    'nin.size'             => 'Le NIN doit contenir exactement 18 caractères.',
+    'nin.unique'           => 'Ce NIN est déjà utilisé.',
+    'numero_tele.required' => 'Le numéro de téléphone est obligatoire.',
+    'date_de_nai.required' => 'La date de naissance est obligatoire.',
+    'date_de_nai.date'     => 'La date de naissance doit être une date valide.',
+    'image.required'       => 'L\'image est obligatoire.',
+    'image.image'          => 'Le fichier doit être une image.',
+    'image.mimes'          => 'L\'image doit être au format jpg, jpeg ou png.',
+    'image.max'            => 'L\'image ne doit pas dépasser 2 Mo.',
+    'imagecart.required'   => 'L\'image de la carte est obligatoire.',
+    'id_abonment.required' => 'L\'abonnement est obligatoire.',
+    'id_abonment.exists'   => 'L\'abonnement sélectionné n\'existe pas.',
+]);
     $uploadsFolder = public_path('uploads');
     if (!file_exists($uploadsFolder)) {
         mkdir($uploadsFolder, 0777, true);
@@ -322,6 +370,8 @@ imagettftext($card, $fontSize, 0, $x, $y, $white, $fontRegular, $text);
         'id_abonment' => $abonment->id,
         'date'        => now(),
         'prix'        => $abonment->prix,
+        'status'     =>'active',
+        'statusp'     =>'p',
         'nbrmatch'    => $abonment->nbrmatch,
     ]);
 
@@ -602,13 +652,40 @@ public function inactive(Request $request)
 
     return view('backend.fans.inactive', compact('fans', 'abonments'));
 }
-public function showcard(){
-    $fan=fan::all();
- return view('backend.card.index');
+
+public function showcard(Request $request)
+{
+    $query = Fan::with('latestTransaction')
+        ->whereNull('nom')
+        ->whereNull('prenom')
+        ->whereNull('image')
+        ->whereNull('imagecart')
+        ->whereNull('nin')
+        ->whereNull('numero_tele')
+        ->whereNull('date_de_nai')
+        ->whereNull('card')
+        ->whereNull('qr_img')
+        ->whereNull('qr_pdf_img')
+        ->whereNotNull('id_abonment')
+        ->whereNotNull('id_qrcode')
+        ->whereNotNull('status');
+
+    if ($request->filled('search')) {
+        $search = $request->input('search');
+        $query->where(function($q) use ($search) {
+            $q->where('id_qrcode', 'LIKE', "%{$search}%");
+        });
+    }
+
+    $fans = $query->paginate(20);
+    $abonments = Abonment::where('status','active')->get();
+    return view('backend.card.index', compact('fans','abonments'));
 }
 
+
+
 public function createcard(){
- $abonments = Abonment::where('status','active')->get();       
+ $abonments = Abonment::where('status','active')->get();
  return view('backend.card.create',compact('abonments'));
 }
 
@@ -619,19 +696,89 @@ public function storecard(Request $request){
         'id_abonment'  => 'required|exists:abonments,id',
 
     ]);
-    $validated['status'] = 'active';
+    $validated['status'] = 'inactive';
     $abonment = Abonment::findOrFail($request->id_abonment);
      $fan = Fan::create($validated);
     TransactionPaimnt::create([
         'id_fan'      => $fan->id,
         'id_abonment' => $abonment->id,
         'date'        => now(),
+        'statusp'     =>'nonp',
         'prix'        => $abonment->prix,
         'nbrmatch'    => $abonment->nbrmatch,
     ]);
-   
-    return redirect()->route('fan.cardshow')->with('success','Card and transaction created successfully');
-    
+    return redirect()->back()
+    ->withInput($request->only('id_abonment')) // keep only abonment
+    ->with('success', 'Card and transaction created successfully');
+}
+
+public function editcard($id){
+ $abonments = Abonment::where('status','active')->get();
+   $fan = Fan::findOrFail($id);
+ return view('backend.card.edit',compact('abonments','fan'));
+}
+
+
+
+public function updatecard(Request $request, $id)
+{
+    $fan = Fan::findOrFail($id);
+    $validated = $request->validate([
+            'nom'          => 'nullable|string|max:255',
+            'prenom'       => 'nullable|string|max:255',
+            'nin'          => 'nullable|string|size:18|unique:fan,nin,' . $fan->id,
+            'numero_tele'  => 'nullable|string|max:20',
+            'date_de_nai'  => 'nullable|date',
+            'image'        => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'imagecart'    => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'card'         => 'nullable|string',
+            'id_qrcode'    => 'nullable|string',
+            'qr_img'       => 'nullable|string',
+        ]);
+
+        $uploadsFolder = public_path('uploads');
+        if (!file_exists($uploadsFolder)) {
+            mkdir($uploadsFolder, 0777, true);
+        }
+
+        // Handle profile image upload if exists
+        if ($request->hasFile('image')) {
+            $file = $request->file('image');
+            $fileName = uniqid() . '_' . $file->getClientOriginalName();
+            $file->move($uploadsFolder, $fileName);
+            $validated['image'] = '/uploads/' . $fileName;
+        }
+        if ($request->hasFile('imagecart')) {
+            $file = $request->file('imagecart');
+            $fileName = uniqid() . '_' . $file->getClientOriginalName();
+            $file->move($uploadsFolder, $fileName);
+            $validated['imagecart'] = '/uploads/' . $fileName;
+        }
+
+        // Update fan
+        $fan->update($validated);
+
+
+    return redirect()->route('fan.cardshow')
+        ->with('success', 'Card and transaction updated successfully');
+}
+
+
+
+public function togglePayment($id)
+{
+    $fan = Fan::with('latestTransaction')->findOrFail($id);
+
+    if ($fan->latestTransaction) {
+        $fan->latestTransaction->statusp =
+            $fan->latestTransaction->statusp === 'p' ? 'nonp' : 'p';
+        $fan->latestTransaction->save();
+    }
+
+    return response()->json([
+        'success' => true,
+        'statusp' => $fan->latestTransaction->statusp
+    ]);
 }
 
 
