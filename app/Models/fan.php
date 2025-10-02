@@ -27,6 +27,15 @@ class fan extends Model
 {
     return $this->hasMany(TransactionPaimnt::class, 'id_fan');
 }
+public function latestTransaction()
+{
+    return $this->hasOne(TransactionPaimnt::class, 'id_fan')->latestOfMany();
+}
+public function getPaymentStatusAttribute()
+{
+    $lastTransaction = $this->latestTransaction;
+    return $lastTransaction ? $lastTransaction->statusp : 'nonp';
+}
 public function events()
 {
     return $this->belongsToMany(Event::class, 'attendances', 'fan_id', 'id_event');

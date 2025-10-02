@@ -22,6 +22,8 @@ return new class extends Migration
             // Relations (optional if you want foreign key constraints)
             $table->foreign('id_fan')->references('id')->on('fan')->onDelete('cascade');
             $table->foreign('id_abonment')->references('id')->on('abonments')->onDelete('cascade');
+            $table->string('statusp')->default('nonp'); // 'p' for paid, 'nonp' for not paid
+            $table->string('status'); // e.g., 'credit_card', 'paypal', etc.
             $table->timestamps();
         });
     }

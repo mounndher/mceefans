@@ -78,7 +78,7 @@ class EventController extends Controller
         $event->save();
 
         // 2. Get all fans (من transactions أو حسب نظامك)
-        $fans = Fan::all(); // أو Fan::whereHas('transactions')...
+        $fans = Fan::where('status','actif')->get(); // أو Fan::whereHas('transactions')...
 
         foreach ($fans as $fan) {
             $alreadyPresent = Attendance::where('fan_id', $fan->id)
@@ -214,4 +214,4 @@ class EventController extends Controller
 
         return view('backend.event.statistics', compact('event', 'scannedTwiceFans', 'stats', 'fan', 'checkedIn', 'absent', 'percentagePresent', 'percentageAbsent','perAppareilStats'));
     }
-} 
+}

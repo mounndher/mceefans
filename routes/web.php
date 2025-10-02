@@ -115,7 +115,7 @@ Route::get('/contact/display', [ContactMessageController::class, 'index'])->name
 //service///////////////////
 Route::resource('services', ServicesController::class);
 // Mettre à jour les paramètres
-Route::post('/settings/{id}', [SettingController::class, 'update'])->name('settings.update');
+Route::put('/settings/{id}', [SettingController::class, 'update'])->name('settings.update');
 Route::get('/settings', [SettingController::class, 'index'])->name('settings.index');
 /////mail settings///////////////////////////////
 Route::get('mail-settings', [MailController::class, 'index'])

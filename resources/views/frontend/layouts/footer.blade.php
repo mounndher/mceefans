@@ -40,28 +40,7 @@
         <div class="footer-box dark-section">
             <div class="container">
                 <div class="row">
-                    <div class="col-lg-12">
-                        <!-- Footer Header Start -->
-                        <div class="footer-header">
-                            <!-- Section Title Start -->
-                            <div class="section-title">
-                                <h2 class="text-anime-style-2" data-cursor="-opaque">Subscribe for Exclusive Match Updates, News & Events!</h2>
-                            </div>
-                            <!-- Section Title End -->
 
-                            <!-- Footer Newsletter Form Start -->
-                            <div class="footer-newsletter-form wow fadeInUp">
-                                <form id="newslettersForm" action="#" method="POST">
-                                    <div class="form-group">
-                                        <input type="email" name="mail" class="form-control"  id="mail" placeholder="Enter your email" required>
-                                        <button type="submit" class="btn-default btn-highlighted">subscribe</button>
-                                    </div>
-                                </form>
-                            </div>
-                            <!-- Footer Newsletter Form End -->
-                        </div>
-                        <!-- Footer Header End -->
-                    </div>
 
                     <div class="col-lg-4">
                         <!-- About Footer Start -->
@@ -74,7 +53,7 @@
 
                             <!-- About Footer Content Start -->
                             <div class="about-footer-content">
-                                <p>We Are More than just a team we're a Community United by Passion, Discipline, and the love of the game.</p>
+                                <p>{{ $settings->description }}</p>
                             </div>
                             <!-- About Footer Content End -->
 
@@ -82,10 +61,10 @@
                             <div class="footer-social-links">
                                 <h3>Follow Us On:</h3>
                                 <ul>
-                                    <li><a href="#"><i class="fa-brands fa-pinterest-p"></i></a></li>
-                                    <li><a href="#"><i class="fa-brands fa-x-twitter"></i></a></li>
-                                    <li><a href="#"><i class="fa-brands fa-facebook-f"></i></a></li>
-                                    <li><a href="#"><i class="fa-brands fa-instagram"></i></a></li>
+                             
+                                    <li><a href="{{ $settings->tiktok_link}}"><i class="fa-brands fa-x-twitter"></i></a></li>
+                                    <li><a href="{{ $settings->facebook_link}}"><i class="fa-brands fa-facebook-f"></i></a></li>
+                                    <li><a href="{{ $settings->instagram_link }}"><i class="fa-brands fa-instagram"></i></a></li>
                                 </ul>
                             </div>
                             <!-- Footer Social Link End -->
@@ -98,10 +77,10 @@
                         <div class="footer-links footer-menu">
                             <h3>quick links</h3>
                             <ul>
-                                <li><a href="index.html">home</a></li>
-                                <li><a href="about.html">about us</a></li>
-                                <li><a href="services.html">services</a></li>
-                                <li><a href="blog.html">Blog</a></li>
+                                <li><a href="">home</a></li>
+                                <li><a href="">about us</a></li>
+                                <li><a href="">services</a></li>
+
                             </ul>
                         </div>
                         <!-- Footer Links End -->
@@ -112,10 +91,10 @@
                         <div class="footer-links">
                             <h3>Services</h3>
                             <ul>
-                                <li><a href="service-single.html">Professional Training</a></li>
-                                <li><a href="service-single.html">Indoor Training</a></li>
-                                <li><a href="service-single.html">Fitness & Conditioning</a></li>
-                                <li><a href="service-single.html">Video Analysis</a></li>
+                                <li><a href="">Professional Training</a></li>
+                                <li><a href="">Indoor Training</a></li>
+                                <li><a href="">Fitness & Conditioning</a></li>
+                                <li><a href="">Video Analysis</a></li>
                             </ul>
                         </div>
                         <!-- Footer Links End -->
@@ -131,8 +110,8 @@
                                     <img src="{{ asset('frontend/images/icon-location-white.svg')}}" alt="">
                                 </div>
                                 <div class="footer-contact-item-content">
-                                    <h3>Our Location</h3>
-                                    <p>JI. Raya Pakisaji, No.78 Bendo, Pakisajin Malang</p>
+                                    <h3>{{ $contact->location_text}}</h3>
+                                    <p>{{ $contact->location }}</p>
                                 </div>
                             </div>
                             <!-- Footer Contact Item End -->
@@ -143,8 +122,8 @@
                                     <img src="images/icon-phone-white.svg" alt="">
                                 </div>
                                 <div class="footer-contact-item-content">
-                                    <h3>Phone Number</h3>
-                                    <p><a href="tel:+91123456789">+(91) - 123 456 789</a></p>
+                                    <h3>{{ $contact->phone_text}}</h3>
+                                    <p><a href="tel:{{ $contact->phone }}">{{ $contact->phone }}</a></p>
                                 </div>
                             </div>
                             <!-- Footer Contact Item End -->
