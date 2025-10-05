@@ -227,6 +227,7 @@ public function toggleStatus(Request $request, $id)
     $cartFileName = uniqid() . '_' . $cartFile->getClientOriginalName();
     $cartFile->move($uploadsFolder, $cartFileName);
     $validated['imagecart'] = '/uploads/' . $cartFileName;
+    $validated['created_by'] = auth()->id();
 
     // ✅ Fetch abonment (with template path)
     $abonment = Abonment::findOrFail($request->id_abonment);

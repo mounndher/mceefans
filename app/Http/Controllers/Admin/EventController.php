@@ -69,37 +69,45 @@ class EventController extends Controller
     /**
      * Display the specified resource.
      */
-    public function terminer($id)
-    {
-        $event = Event::findOrFail($id);
 
-        // 1. Change status to "terminated"
-        $event->status = 'terminated';
-        $event->save();
+public function terminer($id)
+{
+    $event = Event::findOrFail($id);
 
-        // 2. Get all fans (من transactions أو حسب نظامك)
-        $fans = Fan::all(); // أو Fan::whereHas('transactions')...
+    // 1. Change status to "terminated"
+    $event->status = 'terminated';
+    $event->save();
 
-        foreach ($fans as $fan) {
-            $alreadyPresent = Attendance::where('fan_id', $fan->id)
-                ->where('id_event', $event->id)
-                ->where('status', 'checked_in')
-                ->exists();
+    // 2. Get only active fans whose latest transaction is paid
+    $fans = Fan::where('status', 'active')
+        ->whereHas('latestTransaction', function ($q) {
+            $q->where('statusp', 'p');
+        })
+        ->with('latestTransaction')
+        ->get();
 
-            // 3. If not present, mark as absent
-            if (!$alreadyPresent) {
-                Attendance::create([
-                    'fan_id'     => $fan->id,
-                    'id_event'   => $event->id,
-                    'idappareil' => null,
-                    'status'     => 'absent',
-                ]);
-            }
+    foreach ($fans as $fan) {
+        $alreadyPresent = Attendance::where('fan_id', $fan->id)
+            ->where('id_event', $event->id)
+            ->where('status', 'checked_in')
+            ->exists();
+
+        if (!$alreadyPresent) {
+            Attendance::create([
+                'fan_id'     => $fan->id,
+                'id_event'   => $event->id,
+                'idappareil' => null,
+                'status'     => 'absent',
+            ]);
         }
-
-        return redirect()->route('events.index')
-            ->with('success', 'Event terminated successfully! Absentees recorded.');
     }
+
+    return redirect()->route('events.index')
+        ->with('success', 'Event terminated successfully! Absentees recorded.');
+}
+
+
+
 
     /**
      * Show the form for editing the specified resource.
@@ -147,7 +155,7 @@ class EventController extends Controller
 
         $event->update($data);
 
-        return redirect()->route('events.index')->with('success', 'Event updated successfully!');
+        return redirect()->route('events.index')->with('success', "Événement mis à jour avec succès ! ");
     }
 
 
@@ -169,32 +177,46 @@ class EventController extends Controller
 
 
         return redirect()->route('events.index')
-            ->with('success', 'Event deleted successfully!');
+            ->with('success', "L'événement a été supprimé avec succès");
     }
 
 
-    public function statistics($id)
-    {
-        $event = Event::findOrFail($id);
-        $fan = Fan::count();
+   public function statistics($id)
+{
+    $event = Event::findOrFail($id);
 
-        // نحسب الإحصائيات
-        $stats = Attendance::where('id_event', $event->id)
-            ->selectRaw("
+    // 🔹 عدد كل الفانز (ممكن يكون active + paid لو تحبنعدلها)
+    //$fan = fan::count();
+    $fans = fan::where('status', 'active')
+    ->whereHas('transactions', function($q) {
+        $q->where('statusp', 'p');
+    })
+    ->get();
+
+
+$fan = $fans->count();
+
+    // 🔹 الإحصائيات الأساسية
+    $stats = Attendance::where('id_event', $event->id)
+        ->selectRaw("
             SUM(CASE WHEN status = 'checked_in' THEN 1 ELSE 0 END) as checked_in,
             SUM(CASE WHEN status = 'absent' THEN 1 ELSE 0 END) as absent,
             SUM(CASE WHEN status = 'qr_invalid' THEN 1 ELSE 0 END) as qr_invalid,
             SUM(CASE WHEN status = 'scanned_twice' THEN 1 ELSE 0 END) as scanned_twice,
             SUM(CASE WHEN status = 'expired' THEN 1 ELSE 0 END) as expired
         ")
-            ->first();
-        $checkedIn = $stats->checked_in ?? 0;
-        $absent = $stats->absent ?? ($fan - $checkedIn);
+        ->first();
 
-        $percentagePresent = $fan > 0 ? round(($checkedIn / $fan) * 100, 2) : 0;
-        $percentageAbsent  = $fan > 0 ? round(($absent / $fan) * 100, 2) : 0;
+    // 🔹 قيم آمنة
+    $checkedIn = $stats->checked_in ?? 0;
+    $absent    = $stats->absent ?? ($fan - $checkedIn);
 
-        $perAppareilStats = Attendance::where('id_event', $event->id)
+    // 🔹 النسب %
+    $percentagePresent = $fan > 0 ? round(($checkedIn / $fan) * 100, 2) : 0;
+    $percentageAbsent  = $fan > 0 ? round(($absent / $fan) * 100, 2) : 0;
+
+    // 🔹 إحصائيات لكل جهاز
+    $perAppareilStats = Attendance::where('id_event', $event->id)
         ->selectRaw("
             idappareil,
             SUM(CASE WHEN status = 'checked_in' THEN 1 ELSE 0 END) as checked_in,
@@ -203,15 +225,26 @@ class EventController extends Controller
             SUM(CASE WHEN status = 'expired' THEN 1 ELSE 0 END) as expired
         ")
         ->groupBy('idappareil')
-        ->with('appareil') // 🟢 eager load relation
+        ->with('appareil') // لازم تكون عندك علاقة Attendance -> appareil
         ->get();
 
-        $scannedTwiceFans = Attendance::where('id_event', $event->id)
-            ->where('status', 'scanned_twice')
-            ->with('fan') // لازم عندك relation في Attendance -> fan()
-            ->get();
+    // 🔹 الفانز اللي اتعمل لهم scan مرتين
+    $scannedTwiceFans = Attendance::where('id_event', $event->id)
+        ->where('status', 'scanned_twice')
+        ->with('fan') // لازم تكون عندك علاقة Attendance -> fan
+        ->get();
 
+    return view('backend.event.statistics', compact(
+        'event',
+        'stats',
+        'fan',
+        'checkedIn',
+        'absent',
+        'percentagePresent',
+        'percentageAbsent',
+        'perAppareilStats',
+        'scannedTwiceFans'
+    ));
+}
 
-        return view('backend.event.statistics', compact('event', 'scannedTwiceFans', 'stats', 'fan', 'checkedIn', 'absent', 'percentagePresent', 'percentageAbsent','perAppareilStats'));
-    }
 } 

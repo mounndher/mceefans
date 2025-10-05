@@ -1,3 +1,9 @@
+@php
+    use App\Models\Setting;
+    use App\Models\Contact;
+    $contact = Contact::first();
+    $settings = Setting::first();
+@endphp
 <!DOCTYPE html>
 <html lang="zxx">
 <head>
@@ -5,11 +11,11 @@
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
-	<meta name="description" content="Footclub - Soccer and Football Club">
-	<meta name="keywords" content="football, soccer, club, sports">
+	<meta name="description" content="{{ $settings->description_site ?? 'Default description' }}">
+	<meta name="keywords" content="{{ $settings->keywords}}">
 	<meta name="author" content="Awaiken">
 	<!-- Page Title -->
-    <title>Footclub - Soccer and Football Club HTML Template</title>
+    <title>{{ $settings->title ?? 'Default description' }}</title>
 	<!-- Favicon Icon -->
 	<link rel="shortcut icon" type="image/x-icon" href="{{ asset('frontend/images/favicon.png') }}">
 	<!-- Google Fonts Css-->

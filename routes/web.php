@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Admin\TicketController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\FanController;
@@ -115,7 +116,7 @@ Route::get('/contact/display', [ContactMessageController::class, 'index'])->name
 //service///////////////////
 Route::resource('services', ServicesController::class);
 // Mettre à jour les paramètres
-Route::post('/settings/{id}', [SettingController::class, 'update'])->name('settings.update');
+Route::put('/settings/{id}', [SettingController::class, 'update'])->name('settings.update');
 Route::get('/settings', [SettingController::class, 'index'])->name('settings.index');
 /////mail settings///////////////////////////////
 Route::get('mail-settings', [MailController::class, 'index'])
@@ -137,17 +138,17 @@ Route::post('match-highlights-text/update', [MatchHighlightsTextController::clas
 //
 Route::get('/success', [SucessController::class, 'index'])->name('success.index');
 Route::post('/success/update/{id}', [SucessController::class, 'update'])->name('success.update');
-
+////////////////////votre cart
 Route::get('votrecart', [VotreCartController::class, 'index'])->name('votrecart.index');
 Route::put('votrecart/{id}', [VotreCartController::class, 'update'])->name('votrecart.update');
-
-
-
-
-
+/////////////////////card fan/////////////////////////////////////////////////////////////////////////
 Route::get('/fancardshow', [FanController::class, 'showcard'])->name('fan.cardshow');
 Route::get('/fancardcreate', [FanController::class, 'createcard'])->name('fan.cardcreate');
 Route::post('/fancardstore', [FanController::class, 'storecard'])->name('fan.cardstore');
+///////////////////////////ticket
+Route::get('/tickets', [TicketController::class, 'index'])->name('tickets.index');
+Route::get('/tickets/create', [TicketController::class, 'create'])->name('tickets.create');
+Route::post('/tickets/store', [TicketController::class, 'store'])->name('tickets.store');
 });
 
 

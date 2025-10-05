@@ -21,11 +21,17 @@ class fan extends Model
         'date_de_nai',
         'card',
         'qr_img',
-        'qr_pdf_img'
+        'qr_pdf_img',
+        'created_by'
     ];
     public function transactions()
 {
     return $this->hasMany(TransactionPaimnt::class, 'id_fan');
+}
+public function latestTransaction()
+{
+    return $this->hasOne(TransactionPaimnt::class, 'id_fan')->latestOfMany();
+
 }
 public function events()
 {
@@ -45,5 +51,26 @@ public function getRemainingMatchesAttribute()
 
     return max($totalMatches - $usedMatches, 0);
 }
+
+public function getPaymentStatusAttribute()
+
+
+{
+
+
+    $lastTransaction = $this->latestTransaction;
+
+
+    return $lastTransaction ? $lastTransaction->statusp : 'nonp';
+
+
+}
+
+
+public function creator()
+{
+    return $this->belongsTo(User::class, 'created_by');
+}
+
 
 }

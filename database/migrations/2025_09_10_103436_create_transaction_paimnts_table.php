@@ -19,6 +19,8 @@ return new class extends Migration
             $table->date('date');
             $table->text('prix');   // 10 digits total, 2 after decimal
             $table->integer('nbrmatch');
+             $table->string('statusp')->default('nonp'); // 'p' for paid, 'nonp' for not paid
+            $table->string('status'); 
             // Relations (optional if you want foreign key constraints)
             $table->foreign('id_fan')->references('id')->on('fan')->onDelete('cascade');
             $table->foreign('id_abonment')->references('id')->on('abonments')->onDelete('cascade');

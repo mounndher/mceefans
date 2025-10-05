@@ -16,7 +16,7 @@ class QrcodeScannerController extends Controller
         $request->validate([
             'id_qrcode'  => 'required|string',
             'id_event'   => 'required|integer',
-            'idappareil' => 'required|integer'
+            'idappareil' => 'required|string'
         ]);
 
         $status  = 'checked_in';
