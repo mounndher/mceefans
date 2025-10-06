@@ -8,4 +8,13 @@ use Illuminate\Database\Eloquent\Model;
 class Ticket extends Model
 {
     use HasFactory;
+    protected $fillable = [
+        'count',
+        'id_qrcode',
+        'id_event',
+        'card_temp',
+        'qr_image',
+        'imgticket',
+
+    ];
 }
