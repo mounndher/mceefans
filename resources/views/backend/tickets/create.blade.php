@@ -70,7 +70,6 @@ document.getElementById('ticketForm').addEventListener('submit', async function 
     const btn = document.getElementById('submitBtn');
     const btnText = document.getElementById('btnText');
     const spinner = document.getElementById('btnSpinner');
-    const resultArea = document.getElementById('resultArea');
 
     btn.disabled = true;
     spinner.classList.remove('d-none');
@@ -86,9 +85,8 @@ document.getElementById('ticketForm').addEventListener('submit', async function 
         const data = await response.json();
 
         if (data.success) {
-            resultArea.classList.remove('d-none');
-            document.getElementById('totalTickets').textContent = data.total;
-            document.getElementById('pdfLink').href = data.pdf_path;
+            // ✅ Open PDF in new tab automatically
+            window.open(data.pdf_path, '_blank');
         } else {
             alert('Erreur : ' + (data.message || 'Quelque chose a mal tourné.'));
         }
@@ -101,4 +99,5 @@ document.getElementById('ticketForm').addEventListener('submit', async function 
     btnText.textContent = "Générer les tickets";
 });
 </script>
+
 @endsection

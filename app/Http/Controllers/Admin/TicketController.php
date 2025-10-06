@@ -23,7 +23,7 @@ class TicketController extends Controller
 }
 
 
- public function store(Request $request)
+ public function store1(Request $request)
 {
     try {
         $validated = $request->validate([
@@ -106,6 +106,68 @@ class TicketController extends Controller
 
     } catch (\Throwable $e) {
         // ✅ Capture propre des erreurs PHP/Laravel
+        return response()->json([
+            'success' => false,
+            'message' => $e->getMessage(),
+            'line'    => $e->getLine(),
+        ], 500);
+    }
+}
+public function store(Request $request)
+{
+    try {
+        $validated = $request->validate([
+            'count'    => 'required|integer|min:1|max:100',
+            'id_event' => 'required|exists:events,id',
+        ]);
+
+        $uploadsFolder = public_path('uploads/tickets');
+        if (!file_exists($uploadsFolder)) {
+            mkdir($uploadsFolder, 0777, true);
+        }
+
+        $event = Event::findOrFail($validated['id_event']);
+        $tickets = [];
+
+        for ($i = 1; $i <= $validated['count']; $i++) {
+            $ticketCode = 'TICKET-' . strtoupper(Str::random(8));
+
+            // Generate QR code image
+            $qrFileName = $ticketCode . '_qr.png';
+            $qrPath = $uploadsFolder . '/' . $qrFileName;
+            QrCode::format('png')->size(200)->generate($ticketCode, $qrPath);
+
+            // Insert ticket in DB
+            $ticket = Ticket::create([
+                'count'      => $validated['count'],
+                'id_event'   => $validated['id_event'],
+                'id_qrcode'  => $ticketCode,
+                'qr_image'   => '/uploads/tickets/' . $qrFileName,
+                'imgticket'  => '/uploads/tickets/' . $qrFileName, // same QR as ticket image
+            ]);
+
+            $tickets[] = $ticket;
+        }
+
+        // Generate PDF
+        $pdfFileName = 'tickets_batch_' . time() . '.pdf';
+        $pdfPath = $uploadsFolder . '/' . $pdfFileName;
+
+        $pdf = Pdf::loadView('backend.tickets.pdf', [
+            'tickets' => $tickets,
+            'event'   => $event,
+        ]);
+
+        $pdf->save($pdfPath);
+
+        return response()->json([
+            'success'  => true,
+            'message'  => 'Tickets générés avec succès.',
+            'total'    => count($tickets),
+            'pdf_path' => '/uploads/tickets/' . $pdfFileName,
+        ]);
+
+    } catch (\Throwable $e) {
         return response()->json([
             'success' => false,
             'message' => $e->getMessage(),
