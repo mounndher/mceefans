@@ -185,38 +185,56 @@ public function store2(Request $request)
 
 public function store(Request $request)
 {
-    $events = Event::all();
+    // Validate the input
+    $validated = $request->validate([
+        'count'    => 'required|integer|min:1|max:1000',
+        'id_event' => 'required|exists:events,id',
+        'price'    => 'required|numeric|min:0',
+    ]);
+
+    $count = (int) $validated['count'];
+    $price = (float) $validated['price'];
+    $event = Event::findOrFail($validated['id_event']);
+
     $tickets = [];
-    $event = null;
 
-    if ($request->filled('count') && $request->filled('id_event') && $request->filled('price')) {
-        $count = (int) $request->count;
-        $price = (float) $request->price;
-        $event = Event::findOrFail($request->id_event);
+    for ($i = 1; $i <= $count; $i++) {
 
-        for ($i = 1; $i <= $count; $i++) {
-            $ticketCode = 'TICKET-' . strtoupper(Str::random(8));
+        // Generate a unique ticket code
+        $ticketCode = 'TICKET-' . strtoupper(Str::random(8));
 
-            $qrSvg = QrCode::format('svg')
-                ->size(80)
-                ->errorCorrection('H')
-                ->generate($ticketCode);
+        // Generate QR code (SVG)
+        $qrSvg = QrCode::format('svg')
+            ->size(80)
+            ->errorCorrection('H')
+            ->generate($ticketCode);
 
-            // Encode SVG as base64 data URI
-            $qrSvgBase64 = 'data:image/svg+xml;base64,' . base64_encode($qrSvg);
+        // Encode QR as base64 for PDF
+        $qrSvgBase64 = 'data:image/svg+xml;base64,' . base64_encode($qrSvg);
 
-            $tickets[] = [
-                'code' => $ticketCode,
-                'price' => $price,
-                'qr_svg_base64' => $qrSvgBase64,
-            ];
-        }
+        // Insert into database
+        $ticket = Ticket::create([
+            'count'    => 1,            // Each row = 1 ticket
+            'id_qrcode'=> $ticketCode,  // unique ticket code
+            'id_event' => $event->id,
+            'id_user'  => auth()->id(),
+            'price'    => $price,
+            'qr_svg'   => $qrSvgBase64,
+        ]);
+
+        // Add to array for PDF
+        $tickets[] = [
+            'code' => $ticketCode,
+            'price' => $price,
+            'qr_svg_base64' => $qrSvgBase64,
+        ];
     }
 
+    // Generate PDF
+    $pdf = Pdf::loadView('backend.tickets.pdf', compact('tickets', 'event'))
+        ->setPaper([0, 0, 283.46, 425.20], 'portrait');
 
-    $pdf = PDF::loadView('backend.tickets.pdf', compact('tickets', 'event'))
-          ->setPaper([0, 0, 283.46, 425.20], 'portrait');
-return $pdf->stream('tickets.pdf');
+    return $pdf->stream('tickets.pdf');
 }
 
 
