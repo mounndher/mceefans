@@ -147,7 +147,7 @@ public function toggleStatus(Request $request, $id)
 
     // 3. نجيب الـAbonment
     $abonment = Abonment::findOrFail($validated['id_abonment']);
-    $dd=$abonment;
+    //$dd=$abonment;
     //dd($dd);
     // 4. نضيف TransactionPaimnt جديد (ما نغير id_qrcode)
     TransactionPaimnt::create([

@@ -196,7 +196,7 @@ public function store(Request $request)
             $ticketCode = 'TICKET-' . strtoupper(Str::random(8));
 
             $qrSvg = QrCode::format('svg')
-                ->size(150)
+                ->size(80)
                 ->errorCorrection('H')
                 ->generate($ticketCode);
 
@@ -211,8 +211,10 @@ public function store(Request $request)
         }
     }
 
-    $pdf = Pdf::loadView('backend.tickets.pdf', compact('tickets', 'event'));
-    return $pdf->stream('tickets.pdf');
+
+    $pdf = PDF::loadView('backend.tickets.pdf', compact('tickets', 'event'))
+          ->setPaper([0, 0, 283.46, 425.20], 'portrait');
+return $pdf->stream('tickets.pdf');
 }
 
 
