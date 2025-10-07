@@ -48,7 +48,7 @@
                                 <td>{{ $event->stade }}</td>
                                 <td>{{ $event->status }}</td>
                                 <td>
-                                    @if ($event->status !== 'terminated')
+                                    @if($event->status !== 'terminated')
                                     <!-- Edit -->
                                     <a href="{{ route('events.edit', $event->id) }}" class="btn-sm btn-primary">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icon-tabler-edit">
@@ -74,6 +74,7 @@
                                         </button>
                                     </form>
 
+
                                     <!-- Terminer -->
                                     <form action="{{ route('events.terminer', $event->id) }}" method="POST" style="display:inline;">
                                         @csrf
@@ -84,11 +85,21 @@
                                             </svg>
                                         </button>
                                     </form>
-                                    @else
-                                    <a href="{{ route('events.statistics', $event->id) }}" class="btn-sm btn-primary">
-                                        statique
-                                    </a>
                                     @endif
+
+                                    <a href="{{ route('events.statistics', $event->id) }}" class="btn-sm btn-primary">
+                                        Statistics
+                                    </a>
+                                    <a href="{{ route('tickets.create', $event->id) }}" class="btn-sm btn-info" title="Statistics">
+                                        <!-- Ticket icon -->
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="20" height="20" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                            <path d="M15 5v2a1 1 0 0 0 1 1h2v8h-2a1 1 0 0 0 -1 1v2h-6v-2a1 1 0 0 0 -1 -1h-2v-8h2a1 1 0 0 0 1 -1v-2z" />
+                                            <path d="M9 12h6" />
+                                        </svg>
+                                        Tickets
+                                    </a>
+
                                 </td>
 
                             </tr>
@@ -106,4 +117,3 @@
     </div>
 </div>
 @endsection
-

@@ -74,8 +74,6 @@ public function terminer($id)
 {
     $event = Event::findOrFail($id);
 
-        // 2. Get all fans (من transactions أو حسب نظامك)
-        $fans = Fan::where('status','actif')->get(); // أو Fan::whereHas('transactions')...
     // 1. Change status to "terminated"
     $event->status = 'terminated';
     $event->save();
@@ -189,7 +187,7 @@ public function terminer($id)
 
     // 🔹 عدد كل الفانز (ممكن يكون active + paid لو تحبنعدلها)
     //$fan = fan::count();
-    $fans = fan::where('status', 'active')
+    $fans = \App\Models\fan::where('status', 'active')
     ->whereHas('transactions', function($q) {
         $q->where('statusp', 'p');
     })
@@ -231,10 +229,15 @@ $fan = $fans->count();
         ->get();
 
     // 🔹 الفانز اللي اتعمل لهم scan مرتين
-    $scannedTwiceFans = Attendance::where('id_event', $event->id)
-        ->where('status', 'scanned_twice')
-        ->with('fan') // لازم تكون عندك علاقة Attendance -> fan
-        ->get();
+    //$scannedTwiceFans = Attendance::where('id_event', $event->id)
+       // ->where('status', 'scanned_twice')
+       // ->with('fan') // لازم تكون عندك علاقة Attendance -> fan
+       // ->get();
+      // 🔹 الفانز اللي اتعمل لهم scan مرتين (أو كل الحضور لهذا الحدث فقط)
+$allAttendances = Attendance::where('id_event', $event->id)
+    ->with(['fan', 'event'])
+    ->get();
+
 
     return view('backend.event.statistics', compact(
         'event',
@@ -245,13 +248,8 @@ $fan = $fans->count();
         'percentagePresent',
         'percentageAbsent',
         'perAppareilStats',
-        'scannedTwiceFans'
+       'allAttendances'
     ));
 }
 
-
-
-
-
 }
-

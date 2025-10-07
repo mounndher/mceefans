@@ -16,10 +16,12 @@ class TicketController extends Controller
         $Ticket=Ticket::All();
         return view('backend.tickets.index',compact('Ticket'));
     }
-    public function create()
+  public function create($id)
 {
-    $events = Event::where('status', 'active')->get();
-    return view('backend.tickets.create', compact('events'));
+    $event = Event::findOrFail($id);
+    $tickets = \App\Models\Ticket::where('id_event', $event->id)->get();
+
+    return view('backend.tickets.create', compact('event', 'tickets'));
 }
 
 

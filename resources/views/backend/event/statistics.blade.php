@@ -301,43 +301,66 @@
             </div>
 
             {{-- Doublons --}}
-            <div class="col-12 mt-4">
-                <div class="card">
-                    <div class="card-header">
-                        <h3 class="card-title">Doublons </h3>
-                    </div>
-                    <div class="table-responsive">
-                        <table class="table card-table table-vcenter text-nowrap datatable">
-                            <thead>
-                                <tr>
-                                    <th>No.</th>
-                                    <th>Nom</th>
-                                    <th>Événement</th>
-                                    <th>Statut</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @forelse($scannedTwiceFans as $index => $attendance)
-                                <tr>
-                                    <td>{{ $index + 1 }}</td>
-                                    <td>{{ $attendance->fan->nom }}</td>
-                                    <td>{{ $attendance->event->nom ?? 'N/A' }}</td>
-                                    <td>
-                                        <span class="badge bg-info">Scanné deux fois</span>
-                                    </td>
-                                </tr>
-                                @empty
-                                <tr>
-                                    <td colspan="4" class="text-center text-muted">
-                                        No fans scanned twice.
-                                    </td>
-                                </tr>
-                                @endforelse
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
+          <div class="col-12 mt-4">
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Liste de présence</h3>
+        </div>
+        <div class="table-responsive">
+            <table class="table card-table table-vcenter text-nowrap datatable">
+                <thead>
+                    <tr>
+                        <th>No.</th>
+                        <th>Nom</th>
+                        <th>prenom</th>
+                        <th>téléphone</th>
+                        <th>id_qr</th>
+                        <th>Événement</th>
+                        <th>Statut</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse($allAttendances as $index => $attendance)
+                    <tr>
+                        <td>{{ $index + 1 }}</td>
+                        <td>{{ $attendance->fan->nom ?? 'N/A' }}</td>
+                        <td>{{ $attendance->fan->prenom ?? 'N/A' }}</td>
+                        <td>{{ $attendance->fan->numero_tele ?? 'N/A' }}</td>
+                        <td>{{ $attendance->fan->id_qrcode ?? 'N/A' }}</td>
+                        <td>{{ $attendance->event->nom ?? 'N/A' }}</td>
+                        <td>
+                            @php
+                                $status = $attendance->status ?? 'absent';
+                            @endphp
+
+                            @if($status === 'checked_in')
+                                <span class="badge bg-success">Présent</span>
+                            @elseif($status === 'scanned_twice')
+                                <span class="badge bg-warning text-dark">Scanné deux fois</span>
+                            @elseif($status === 'expired')
+                                <span class="badge bg-info">Expiré</span>
+                            @elseif($status === 'qr_invalid')
+                                <span class="badge bg-danger">QR invalide</span>
+                            @elseif($status === 'absent')
+                                <span class="badge bg-danger">Absent</span>
+                            @else
+                                <span class="badge bg-info">{{ ucfirst($status) }}</span>
+                            @endif
+                        </td>
+                    </tr>
+                    @empty
+                    <tr>
+                        <td colspan="4" class="text-center text-muted">
+                            No attendance records.
+                        </td>
+                    </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
 
         </div> {{-- row --}}
     </div>
