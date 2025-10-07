@@ -19,4 +19,8 @@ class Ticket extends Model
 
 
     ];
+    public function attendanceTickets()
+{
+    return $this->hasMany(AttendanceTicket::class, 'ticket_id');
+}
 }

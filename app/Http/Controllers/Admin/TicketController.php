@@ -230,6 +230,7 @@ public function store(Request $request)
                 'id_user'  => auth()->id(),
                 'price'    => $price,
                 'qr_svg'   => $qrSvgBase64,
+                
             ]);
 
             $tickets[] = [
@@ -237,6 +238,7 @@ public function store(Request $request)
                 'code' => $ticketCode,
                 'price' => $price,
                 'qr_svg_base64' => $qrSvgBase64,
+                'created_at' => $ticket->created_at->format('d/m/Y H:i:s'),
             ];
         }
     });

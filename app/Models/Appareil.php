@@ -9,5 +9,11 @@ class Appareil extends Model
 {
     use HasFactory;
     protected $fillable = ['id', 'nom_utilisateur']; // allow manual id
+
+    public function attendanceTickets()
+{
+    return $this->hasMany(AttendanceTicket::class, 'idappareil');
+}
+
     
 }

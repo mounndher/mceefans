@@ -25,4 +25,9 @@ class Event extends Model
     {
         return $this->hasMany(Attendance::class, 'id_event'); // adjust FK if needed
     }
+    public function attendanceTickets()
+{
+    return $this->hasMany(AttendanceTicket::class, 'id_event');
+}
+
 }

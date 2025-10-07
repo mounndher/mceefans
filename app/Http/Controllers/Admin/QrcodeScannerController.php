@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Attendance;
 use App\Models\fan;
 use App\Models\Event;
+use App\Models\Ticket;
 
 class QrcodeScannerController extends Controller
 {
@@ -151,5 +152,123 @@ class QrcodeScannerController extends Controller
 
 
 
-    public function index() {}
+    
+    public function verifyTicket(Request $request)
+{
+    $request->validate([
+        'id_qrcode'  => 'required|string',
+        'id_event'   => 'required|integer',
+        'idappareil' => 'required|string'
+    ]);
+
+    $status  = 'checked_in';
+    $message = '1';
+
+    // 🔹 1. Find Ticket by QR
+    $ticket = Ticket::where('id_qrcode', $request->id_qrcode)
+        ->with('event')
+        ->first();
+
+    // ===== 1. Invalid QR =====
+    if (!$ticket) {
+        $status  = 'qr_invalid';
+        $message = '2';
+
+        Attendance::create([
+            'ticket_id'  => null,
+            'id_event'   => $request->id_event,
+            'idappareil' => $request->idappareil,
+            'status'     => $status,
+        ]);
+
+        return response()->json([
+            'status'  => 'error',
+            'message' => $message,
+        ], 404);
+    }
+
+    // ===== 2. Check Event Validity =====
+    $event = Event::where('id', $request->id_event)
+        ->where('status', 'active')
+        ->first();
+
+    if (!$event) {
+        $status  = 'invalid_event';
+        $message = 'الحدث غير صالح أو غير نشط';
+
+        Attendance::create([
+            'ticket_id'  => $ticket->id,
+            'id_event'   => $request->id_event,
+            'idappareil' => $request->idappareil,
+            'status'     => $status,
+        ]);
+
+        return response()->json([
+            'status'  => 'error',
+            'message' => $message,
+        ], 404);
+    }
+
+    // ===== 3. Check if already scanned =====
+    $alreadyChecked = Attendance::where('ticket_id', $ticket->id)
+        ->where('id_event', $event->id)
+        ->where('status', 'checked_in')
+        ->exists();
+
+    if ($alreadyChecked) {
+        $status  = 'scanned_twice';
+        $message = '3';
+
+        Attendance::create([
+            'ticket_id'  => $ticket->id,
+            'id_event'   => $event->id,
+            'idappareil' => $request->idappareil,
+            'status'     => $status,
+        ]);
+
+        return response()->json([
+            'status'  => 'error',
+            'message' => $message,
+        ], 409);
+    }
+
+    // ===== 4. Check if ticket is active =====
+    if ($ticket->status === 'inactive') {
+        $status  = 'inactive_ticket';
+        $message = '4';
+
+        Attendance::create([
+            'ticket_id'  => $ticket->id,
+            'id_event'   => $request->id_event,
+            'idappareil' => $request->idappareil,
+            'status'     => $status,
+        ]);
+
+        return response()->json([
+            'status'  => 'error',
+            'message' => $message,
+        ], 403);
+    }
+
+    // ===== 5. Register attendance =====
+    Attendance::create([
+        'ticket_id'  => $ticket->id,
+        'id_event'   => $event->id,
+        'idappareil' => $request->idappareil,
+        'status'     => $status,
+    ]);
+
+    // Optionally update ticket status
+    $ticket->update(['status' => 'used']);
+
+    return response()->json([
+        'status'  => 'success',
+        'message' => $message,
+        'ticket_id' => $ticket->id,
+        'event_id'  => $event->id,
+        'price'     => $ticket->price,
+        
+    ]);
+}
+
 }

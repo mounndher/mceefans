@@ -55,10 +55,14 @@
 @foreach ($tickets as $ticket)
     <div class="ticket">
         <h1>{{ $event->nom ?? 'Événement' }}</h1>
-        <strong>Ticket ID:</strong> {{ $ticket['code'] }}
-        <strong>Prix:</strong> {{ number_format($ticket['price'], 2) }} €
+       
+        <p> Ticket n°{{ $ticket['number'] }}</p>
+        <strong>Prix:</strong> {{ number_format($ticket['price'], 2) }} DZ
         <div class="qr">
             <img src="{{ $ticket['qr_svg_base64'] }}" alt="QR Code">
+        </div>
+        <div class="date-time">
+            Date creation {{ $ticket['created_at'] }}
         </div>
     </div>
 
