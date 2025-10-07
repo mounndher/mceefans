@@ -21,7 +21,8 @@ class fan extends Model
         'date_de_nai',
         'card',
         'qr_img',
-        'qr_pdf_img'
+        'qr_pdf_img',
+        'created_by'
     ];
     public function transactions()
 {
@@ -30,12 +31,9 @@ class fan extends Model
 public function latestTransaction()
 {
     return $this->hasOne(TransactionPaimnt::class, 'id_fan')->latestOfMany();
+
 }
-public function getPaymentStatusAttribute()
-{
-    $lastTransaction = $this->latestTransaction;
-    return $lastTransaction ? $lastTransaction->statusp : 'nonp';
-}
+
 public function events()
 {
     return $this->belongsToMany(Event::class, 'attendances', 'fan_id', 'id_event');
@@ -54,5 +52,26 @@ public function getRemainingMatchesAttribute()
 
     return max($totalMatches - $usedMatches, 0);
 }
+
+public function getPaymentStatusAttribute()
+
+
+{
+
+
+    $lastTransaction = $this->latestTransaction;
+
+
+    return $lastTransaction ? $lastTransaction->statusp : 'nonp';
+
+
+}
+
+
+public function creator()
+{
+    return $this->belongsTo(User::class, 'created_by');
+}
+
 
 }

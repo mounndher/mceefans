@@ -25,7 +25,7 @@
             </div>
 
             <div class="card-body">
-                <form action="{{ route('settings.update', $setting->id ?? 1) }}" method="POST" enctype="multipart/form-data">
+                <form action="{{ route('settings.update',  1) }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     @method('PUT') <!-- ⚠️ utiliser PUT pour update -->
 
@@ -38,6 +38,32 @@
                         @error('site_name')
                         <div class="text-danger small">{{ $message }}</div>
                         @enderror
+                    </div>
+                    <div class="mb-3">
+
+
+
+                        <label class="form-label">Titre du site</label>
+
+
+                        <input type="text" class="form-control" name="title"
+
+
+                               value="{{ old('title', $setting->title ?? '') }}"
+
+
+                               placeholder="Titre du site">
+
+
+                        @error('title')
+
+
+                        <div class="text-danger small">{{ $message }}</div>
+
+
+                        @enderror
+
+
                     </div>
 
                     <!-- Title -->
@@ -53,12 +79,192 @@
 
                     <!-- Description -->
                     <div class="mb-3">
+<<<<<<< HEAD
                         <label class="form-label">Description (SEO)</label>
+=======
+                         <label class="form-label">Description (SEO)</label>
+>>>>>>> 8415a7a69cbf01bf272a3eff5ceae7bf7c11af48
                         <textarea class="form-control" name="description" rows="3"
                                   placeholder="Description">{{ old('description', $setting->description ?? '') }}</textarea>
                         @error('description')
                         <div class="text-danger small">{{ $message }}</div>
                         @enderror
+                    </div>
+                     <div class="mb-3">
+
+
+
+                        <label class="form-label">Description du site (contenu)</label>
+
+
+                        <textarea class="form-control" name="description_site" rows="3"
+
+
+                                  placeholder="Description du site">{{ old('description_site', $setting->description_site ?? '') }}</textarea>
+
+
+                        @error('description_site')
+
+
+                        <div class="text-danger small">{{ $message }}</div>
+
+
+                        @enderror
+
+
+                    </div>
+
+
+
+
+
+                    <!-- Keywords -->
+
+
+                    <div class="mb-3">
+
+
+                        <label class="form-label">Mots-clés (SEO)</label>
+
+
+                        <textarea class="form-control" name="keywords" rows="2"
+
+
+                                  placeholder="ex: ecommerce, boutique, vêtements">{{ old('keywords', $setting->keywords ?? '') }}</textarea>
+
+
+                        @error('keywords')
+
+
+                        <div class="text-danger small">{{ $message }}</div>
+
+
+                        @enderror
+
+
+                    </div>
+
+
+
+
+
+                    <!-- Liens sociaux -->
+
+
+                    <div class="mb-3">
+
+
+                        <label class="form-label">Lien Facebook</label>
+
+
+                        <input type="url" class="form-control" name="facebook_link"
+
+
+                               value="{{ old('facebook_link', $setting->facebook_link ?? '') }}"
+
+
+                               placeholder="https://facebook.com/...">
+
+
+                        @error('facebook_link')
+
+
+                        <div class="text-danger small">{{ $message }}</div>
+
+
+                        @enderror
+
+
+                    </div>
+
+
+
+
+
+                    <div class="mb-3">
+
+
+                        <label class="form-label">Lien Instagram</label>
+
+
+                        <input type="url" class="form-control" name="instagram_link"
+
+
+                               value="{{ old('instagram_link', $setting->instagram_link ?? '') }}"
+
+
+                               placeholder="https://instagram.com/...">
+
+
+                        @error('instagram_link')
+
+
+                        <div class="text-danger small">{{ $message }}</div>
+
+
+                        @enderror
+
+
+                    </div>
+
+
+
+
+
+                    <div class="mb-3">
+
+
+                        <label class="form-label">Lien TikTok</label>
+
+
+                        <input type="url" class="form-control" name="tiktok_link"
+
+
+                               value="{{ old('tiktok_link', $setting->tiktok_link ?? '') }}"
+
+
+                               placeholder="https://tiktok.com/@...">
+
+
+                        @error('tiktok_link')
+
+
+                        <div class="text-danger small">{{ $message }}</div>
+
+
+                        @enderror
+
+
+                    </div>
+
+
+
+
+
+                    <!-- Maps -->
+
+
+                    <div class="mb-3">
+
+
+                        <label class="form-label">Google Maps (iframe ou lien)</label>
+
+
+                        <textarea class="form-control" name="maps" rows="3"
+
+
+                                  placeholder="Lien ou code embed Google Maps">{{ old('maps', $setting->maps ?? '') }}</textarea>
+
+
+                        @error('maps')
+
+
+                        <div class="text-danger small">{{ $message }}</div>
+
+
+                        @enderror
+
+
                     </div>
 
                     <!-- Description du site -->

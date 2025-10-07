@@ -21,5 +21,8 @@ class Event extends Model
 {
     return $this->belongsToMany(Fan::class, 'attendances', 'id_event', 'fan_id');
 }
- 
+  public function attendances()
+    {
+        return $this->hasMany(Attendance::class, 'id_event'); // adjust FK if needed
+    }
 }

@@ -61,9 +61,15 @@
                             <div class="footer-social-links">
                                 <h3>Follow Us On:</h3>
                                 <ul>
-                             
-                                    <li><a href="{{ $settings->tiktok_link}}"><i class="fa-brands fa-x-twitter"></i></a></li>
+
+                                    @if ($settings->tiktok_link)
+                                         <li><a href="{{ $settings->tiktok_link}}"><i class="fa-brands fa-x-twitter"></i></a></li>
+                                    @endif
+
                                     <li><a href="{{ $settings->facebook_link}}"><i class="fa-brands fa-facebook-f"></i></a></li>
+
+
+
                                     <li><a href="{{ $settings->instagram_link }}"><i class="fa-brands fa-instagram"></i></a></li>
                                 </ul>
                             </div>
@@ -111,6 +117,7 @@
                                 </div>
                                 <div class="footer-contact-item-content">
                                     <h3>{{ $contact->location_text}}</h3>
+
                                     <p>{{ $contact->location }}</p>
                                 </div>
                             </div>
@@ -119,10 +126,15 @@
                             <!-- Footer Contact Item Start -->
                             <div class="footer-contact-item">
                                 <div class="icon-box">
-                                    <img src="images/icon-phone-white.svg" alt="">
+                                    <img src="{{ asset('frontend/images/icon-phone-white.svg') }}" alt="">
                                 </div>
                                 <div class="footer-contact-item-content">
-                                    <h3>{{ $contact->phone_text}}</h3>
+
+                                     <h3>{{ $contact->phone_text}}</h3>
+
+
+
+
                                     <p><a href="tel:{{ $contact->phone }}">{{ $contact->phone }}</a></p>
                                 </div>
                             </div>

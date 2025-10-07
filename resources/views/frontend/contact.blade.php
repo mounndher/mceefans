@@ -1,5 +1,7 @@
 @php
+
 $contact = \App\Models\Contact::first();
+
 use App\Models\Setting;
  $settings = Setting::first();
 @endphp
@@ -80,7 +82,7 @@ use App\Models\Setting;
                     <!-- Google Map Iframe Start -->
                     <div class="google-map order-lg-1 order-2">
 
-                        {!! $settings->maps !!}
+                          {!! $settings->maps !!}
 
                     </div>
                     <!-- Google Map Iframe End -->
