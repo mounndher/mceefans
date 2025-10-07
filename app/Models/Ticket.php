@@ -13,6 +13,7 @@ class Ticket extends Model
         'id_qrcode',
         'id_event',
         'price',
+        'ticket_number',
         'qr_svg',
         'id_user'
 

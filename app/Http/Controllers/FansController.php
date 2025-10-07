@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Fans;
+use App\Models\Fan;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Carbon\Carbon;
@@ -15,7 +15,7 @@ class FansController extends Controller
     //
     public function index()
 {
-    $fans = Fans::latest()->get();
+    $fans = Fan::latest()->get();
     return view('fans.index', compact('fans'));
 }
     public function create()

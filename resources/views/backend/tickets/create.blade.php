@@ -10,7 +10,7 @@
                 <h3 class="card-title">🎟️ Create Tickets for Event: <strong>{{ $event->nom }}</strong></h3>
             </div>
             <div class="card-body">
-                <form action="{{ route('tickets.store') }}" method="POST">
+                <form id="ticketForm"  action="{{ route('tickets.store') }}" method="POST" target="_blank">
                     @csrf
                     <input type="hidden" name="id_event" value="{{ $event->id }}">
 
@@ -54,7 +54,7 @@
                         <thead>
                             <tr>
                                 <th>ID</th>
-                                <th>Code</th>
+                            
                                 <th>Price</th>
                                 <th>QR Code</th>
                                 <th>Status</th>
@@ -65,14 +65,18 @@
                             @foreach($tickets as $ticket)
                             <tr>
                                 <td>{{ $ticket->id }}</td>
-                                <td>{{ $ticket->code }}</td>
+                               
                                 <td>{{ $ticket->price }} DA</td>
                                 <td>
-                                    @if($ticket->qr_svg)
-                                        {!! $ticket->qr_svg !!}
-                                    @else
-                                        <span class="text-muted">N/A</span>
-                                    @endif
+                                @if($ticket->qr_svg)
+    <div style="width: 100px; height: 100px;">
+        {!! base64_decode(str_replace('data:image/svg+xml;base64,', '', $ticket->qr_svg)) !!}
+    </div>
+@else
+    <span class="text-muted">No QR available</span>
+@endif
+
+
                                 </td>
                                 <td>
                                     <span class="badge bg-{{ $ticket->status == 'used' ? 'danger' : 'success' }}">
@@ -91,4 +95,12 @@
 
     </div>
 </div>
+<script>
+document.getElementById('ticketForm').addEventListener('submit', function() {
+    // Wait a moment to allow PDF to open, then reload the page
+    setTimeout(() => {
+        window.location.reload();
+    }, 1000);
+});
+</script>
 @endsection

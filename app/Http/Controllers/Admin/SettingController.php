@@ -20,7 +20,7 @@ class SettingController extends Controller
     // Mettre à jour les paramètres
 
     public function update(Request $request, $id)
-<<<<<<< HEAD
+
 {
     $setting = Setting::findOrFail($id);
 
@@ -65,7 +65,7 @@ class SettingController extends Controller
         $logoName = time().'_logo.'.$logo->getClientOriginalExtension();
         $logo->move(public_path('uploads/settings/'), $logoName);
         $setting->site_logo = 'uploads/settings/'.$logoName;
-=======
+
     {
         $setting = Setting::findOrFail($id);
 
@@ -204,7 +204,7 @@ class SettingController extends Controller
 
 
 
->>>>>>> 8415a7a69cbf01bf272a3eff5ceae7bf7c11af48
+
     }
 
     // ✅ Gestion du favicon
@@ -219,5 +219,4 @@ class SettingController extends Controller
 
     return redirect()->back()->with('success', 'Paramètres mis à jour avec succès.');
 }
-
-}
+}}

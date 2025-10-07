@@ -9,6 +9,7 @@ use App\Models\Ticket;
 use App\Models\Event;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\DB;
 class TicketController extends Controller
 {
     //
@@ -19,7 +20,7 @@ class TicketController extends Controller
   public function create($id)
 {
     $event = Event::findOrFail($id);
-    $tickets = \App\Models\Ticket::where('id_event', $event->id)->get();
+    $tickets = Ticket::where('id_event', $event->id)->get();
 
     return view('backend.tickets.create', compact('event', 'tickets'));
 }
@@ -183,9 +184,10 @@ public function store2(Request $request)
     }
 }
 
+
+
 public function store(Request $request)
 {
-    // Validate the input
     $validated = $request->validate([
         'count'    => 'required|integer|min:1|max:1000',
         'id_event' => 'required|exists:events,id',
@@ -198,37 +200,46 @@ public function store(Request $request)
 
     $tickets = [];
 
-    for ($i = 1; $i <= $count; $i++) {
+    DB::transaction(function () use ($count, $price, $event, &$tickets) {
 
-        // Generate a unique ticket code
-        $ticketCode = 'TICKET-' . strtoupper(Str::random(8));
+        // Lock the table or the event row to prevent race conditions
+        $lastTicketNumber = Ticket::where('id_event', $event->id)
+            ->lockForUpdate()
+            ->max('ticket_number') ?? 0;
 
-        // Generate QR code (SVG)
-        $qrSvg = QrCode::format('svg')
-            ->size(80)
-            ->errorCorrection('H')
-            ->generate($ticketCode);
+        for ($i = 1; $i <= $count; $i++) {
+            $ticketNumber = $lastTicketNumber + $i;
 
-        // Encode QR as base64 for PDF
-        $qrSvgBase64 = 'data:image/svg+xml;base64,' . base64_encode($qrSvg);
+            // Generate unique ticket code
+            $ticketCode = 'TICKET-' . strtoupper(Str::random(8));
 
-        // Insert into database
-        $ticket = Ticket::create([
-            'count'    => 1,            // Each row = 1 ticket
-            'id_qrcode'=> $ticketCode,  // unique ticket code
-            'id_event' => $event->id,
-            'id_user'  => auth()->id(),
-            'price'    => $price,
-            'qr_svg'   => $qrSvgBase64,
-        ]);
+            // Generate QR code SVG
+            $qrSvg = QrCode::format('svg')
+                ->size(80)
+                ->errorCorrection('H')
+                ->generate($ticketCode);
 
-        // Add to array for PDF
-        $tickets[] = [
-            'code' => $ticketCode,
-            'price' => $price,
-            'qr_svg_base64' => $qrSvgBase64,
-        ];
-    }
+            $qrSvgBase64 = 'data:image/svg+xml;base64,' . base64_encode($qrSvg);
+
+            // Insert ticket
+            $ticket = Ticket::create([
+                'ticket_number' => $ticketNumber,
+                'count'    => 1,
+                'id_qrcode'=> $ticketCode,
+                'id_event' => $event->id,
+                'id_user'  => auth()->id(),
+                'price'    => $price,
+                'qr_svg'   => $qrSvgBase64,
+            ]);
+
+            $tickets[] = [
+                'number' => $ticketNumber,
+                'code' => $ticketCode,
+                'price' => $price,
+                'qr_svg_base64' => $qrSvgBase64,
+            ];
+        }
+    });
 
     // Generate PDF
     $pdf = Pdf::loadView('backend.tickets.pdf', compact('tickets', 'event'))
@@ -236,6 +247,7 @@ public function store(Request $request)
 
     return $pdf->stream('tickets.pdf');
 }
+
 
 
 }
