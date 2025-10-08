@@ -10,6 +10,7 @@ use App\Models\Event;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 class TicketController extends Controller
 {
     //
@@ -248,7 +249,19 @@ public function store(Request $request)
     $pdf = Pdf::loadView('backend.tickets.pdf', compact('tickets', 'event'))
         ->setPaper([0, 0, 283.46, 425.20], 'portrait');
 
-    return $pdf->stream('tickets.pdf');
+   
+
+ $pdf = Pdf::loadView('backend.tickets.pdf', compact('tickets', 'event'))
+    ->setPaper([0, 0, 283.46, 425.20], 'portrait');
+
+$pdfPath = storage_path('app/public/tickets.pdf');
+$pdf->save($pdfPath);
+
+
+// Redirect to a view that loads the PDF and auto-prints
+return view('backend.tickets.print', [
+    'pdfUrl' => asset('storage/tickets.pdf'),
+]);
 }
 
 

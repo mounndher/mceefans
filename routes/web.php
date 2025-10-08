@@ -154,7 +154,11 @@ Route::post('/tickets/store', [TicketController::class, 'store'])->name('tickets
 
 ///
 Route::get('/attendance-tickets', [AttendanceTicketController::class, 'index'])->name('attendanceTickets.index');
-
+Route::get('/tickets/print/{file}', function ($file) {
+    return view('backend.tickets.print', [
+        'pdfUrl' => asset('storage/' . $file),
+    ]);
+})->name('tickets.print');
 });
 
 
