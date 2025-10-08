@@ -8,7 +8,8 @@ use App\Models\Attendance;
 use App\Models\fan;
 use App\Models\Event;
 use App\Models\Ticket;
-
+use App\Models\AttendanceTicket;
+use Illuminate\Support\Facades\DB;
 class QrcodeScannerController extends Controller
 {
     //
@@ -152,123 +153,121 @@ class QrcodeScannerController extends Controller
 
 
 
-    
-    public function verifyTicket(Request $request)
+
+ public function verifyTicket(Request $request)
 {
-    $request->validate([
+    $validated = $request->validate([
         'id_qrcode'  => 'required|string',
         'id_event'   => 'required|integer',
-        'idappareil' => 'required|string'
+        'idappareil' => 'required|integer'
     ]);
 
-    $status  = 'checked_in';
-    $message = '1';
+    // 1️⃣ Find Ticket by QR
+    $ticket = Ticket::where('id_qrcode', $validated['id_qrcode'])->first();
 
-    // 🔹 1. Find Ticket by QR
-    $ticket = Ticket::where('id_qrcode', $request->id_qrcode)
-        ->with('event')
-        ->first();
-
-    // ===== 1. Invalid QR =====
     if (!$ticket) {
-        $status  = 'qr_invalid';
-        $message = '2';
-
-        Attendance::create([
+        // Store failed attempt
+        DB::table('attendance_tickets')->insert([
             'ticket_id'  => null,
-            'id_event'   => $request->id_event,
-            'idappareil' => $request->idappareil,
-            'status'     => $status,
+            'id_event'   => $validated['id_event'],
+            'idappareil' => $validated['idappareil'],
+            'status'     => 'qr_invalid',
+            'created_at' => now(),
+            'updated_at' => now(),
         ]);
 
         return response()->json([
             'status'  => 'error',
-            'message' => $message,
+            //'message' => '2',
+            'message' => 'رمز الاستجابة السريعة غير صالح',
         ], 404);
     }
 
-    // ===== 2. Check Event Validity =====
-    $event = Event::where('id', $request->id_event)
+    // 2️⃣ Ticket cancelled? (CHECK THIS FIRST!)
+    if ($ticket->status === 'annuler') {
+        DB::table('attendance_tickets')->insert([
+            'ticket_id'  => $ticket->id,
+            'id_event'   => $validated['id_event'],
+            'idappareil' => $validated['idappareil'],
+            'status'     => 'annuler_ticket',
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        return response()->json([
+            'status'  => 'error',
+            //'message' => '3',
+            'message' => 'التذكرة annuler',
+        ], 403);
+    }
+
+    // 3️⃣ Check if Event is valid
+    $event = Event::where('id', $validated['id_event'])
         ->where('status', 'active')
         ->first();
 
     if (!$event) {
-        $status  = 'invalid_event';
-        $message = 'الحدث غير صالح أو غير نشط';
-
-        Attendance::create([
+        DB::table('attendance_tickets')->insert([
             'ticket_id'  => $ticket->id,
-            'id_event'   => $request->id_event,
-            'idappareil' => $request->idappareil,
-            'status'     => $status,
+            'id_event'   => $validated['id_event'],
+            'idappareil' => $validated['idappareil'],
+            'status'     => 'invalid_event',
+            'created_at' => now(),
+            'updated_at' => now(),
         ]);
 
         return response()->json([
             'status'  => 'error',
-            'message' => $message,
+            'message' => 'الحدث غير صالح أو غير نشط',
         ], 404);
     }
 
-    // ===== 3. Check if already scanned =====
-    $alreadyChecked = Attendance::where('ticket_id', $ticket->id)
+    // 4️⃣ Already checked in?
+    $alreadyChecked = DB::table('attendance_tickets')
+        ->where('ticket_id', $ticket->id)
         ->where('id_event', $event->id)
         ->where('status', 'checked_in')
         ->exists();
 
     if ($alreadyChecked) {
-        $status  = 'scanned_twice';
-        $message = '3';
-
-        Attendance::create([
+        DB::table('attendance_tickets')->insert([
             'ticket_id'  => $ticket->id,
             'id_event'   => $event->id,
-            'idappareil' => $request->idappareil,
-            'status'     => $status,
+            'idappareil' => $validated['idappareil'],
+            'status'     => 'scanned_twice',
+            'created_at' => now(),
+            'updated_at' => now(),
         ]);
 
         return response()->json([
             'status'  => 'error',
-            'message' => $message,
+            //'message' => '4',
+            'message' => 'تم مسح التذكرة ضوئياً مرتين',
         ], 409);
     }
 
-    // ===== 4. Check if ticket is active =====
-    if ($ticket->status === 'inactive') {
-        $status  = 'inactive_ticket';
-        $message = '4';
-
-        Attendance::create([
+    // 5️⃣ Success - Record attendance and update ticket
+    DB::transaction(function () use ($ticket, $event, $validated) {
+        DB::table('attendance_tickets')->insert([
             'ticket_id'  => $ticket->id,
-            'id_event'   => $request->id_event,
-            'idappareil' => $request->idappareil,
-            'status'     => $status,
+            'id_event'   => $event->id,
+            'idappareil' => $validated['idappareil'],
+            'status'     => 'checked_in',
+            'created_at' => now(),
+            'updated_at' => now(),
         ]);
 
-        return response()->json([
-            'status'  => 'error',
-            'message' => $message,
-        ], 403);
-    }
-
-    // ===== 5. Register attendance =====
-    Attendance::create([
-        'ticket_id'  => $ticket->id,
-        'id_event'   => $event->id,
-        'idappareil' => $request->idappareil,
-        'status'     => $status,
-    ]);
-
-    // Optionally update ticket status
-    $ticket->update(['status' => 'used']);
+        $ticket->update(['status' => 'used']);
+    });
 
     return response()->json([
-        'status'  => 'success',
-        'message' => $message,
+        'status'    => 'success',
+        'message'   => '1',
         'ticket_id' => $ticket->id,
         'event_id'  => $event->id,
         'price'     => $ticket->price,
-        
     ]);
 }
+
 
 }

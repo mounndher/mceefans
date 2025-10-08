@@ -229,8 +229,9 @@ public function store(Request $request)
                 'id_event' => $event->id,
                 'id_user'  => auth()->id(),
                 'price'    => $price,
+                'status'   =>'active',
                 'qr_svg'   => $qrSvgBase64,
-                
+
             ]);
 
             $tickets[] = [

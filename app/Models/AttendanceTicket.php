@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class AttendanceTicket extends Model
 {
+      protected $table = 'attendance_tickets';
+
     use HasFactory;
      protected $fillable = [
         'ticket_id',

@@ -30,4 +30,7 @@ class AttendanceController extends Controller
     return view('backend.attendance.index', compact('attendances'));
 }
 
+
+
+
 }

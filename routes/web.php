@@ -23,6 +23,7 @@ use App\Http\Controllers\Admin\WhatwedoController;
 use App\Http\Controllers\Admin\FeaturesController;
 use App\Http\Controllers\Admin\MatchHighlightsController;
 use App\Http\Controllers\SmsController;
+use App\Http\Controllers\Admin\AttendanceTicketController;
 use App\Http\Controllers\Admin\MatchHighlightsTextController;
 use App\Http\Controllers\Admin\SucessController;
 use App\Http\Controllers\Admin\VotreCartController;
@@ -149,6 +150,10 @@ Route::post('/fancardstore', [FanController::class, 'storecard'])->name('fan.car
 Route::get('/tickets', [TicketController::class, 'index'])->name('tickets.index');
 Route::get('/tickets/create/{id}', [TicketController::class, 'create'])->name('tickets.create');
 Route::post('/tickets/store', [TicketController::class, 'store'])->name('tickets.store');
+
+///
+Route::get('/attendance-tickets', [AttendanceTicketController::class, 'index'])->name('attendanceTickets.index');
+
 });
 
 
