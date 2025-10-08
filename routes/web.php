@@ -100,6 +100,7 @@ Route::get('/paimnts/{id}/historique', [PaimntstController::class, 'moveToHistor
      ->name('paimnts.moveToHistorique');
 /////////////////////Attendance///////////////////////////////
 Route::get('/attendances', [AttendanceController::class, 'index'])->name('attendances.index');
+Route::get('/attendancesticket', [AttendanceTicketController::class, 'index'])->name('attendancesticket.index');
 /////////////////////dashboard///////////////////////////////
 Route::get('dashboard',[dashboardController::class,'dashboard'])->name('dashboard');
 ////////heroo///////////////////////////////////
