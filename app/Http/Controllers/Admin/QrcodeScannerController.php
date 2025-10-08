@@ -178,8 +178,8 @@ class QrcodeScannerController extends Controller
 
         return response()->json([
             'status'  => 'error',
-            //'message' => '2',
-            'message' => 'رمز الاستجابة السريعة غير صالح',
+            'message' => '2',
+            
         ], 404);
     }
 
@@ -196,8 +196,8 @@ class QrcodeScannerController extends Controller
 
         return response()->json([
             'status'  => 'error',
-            //'message' => '3',
-            'message' => 'التذكرة annuler',
+            'message' => '4',
+            //'message' => 'التذكرة annuler',
         ], 403);
     }
 
@@ -241,8 +241,8 @@ class QrcodeScannerController extends Controller
 
         return response()->json([
             'status'  => 'error',
-            //'message' => '4',
-            'message' => 'تم مسح التذكرة ضوئياً مرتين',
+            'message' => '3',
+            //'message' => 'تم مسح التذكرة ضوئياً مرتين',
         ], 409);
     }
 
