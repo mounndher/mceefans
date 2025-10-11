@@ -159,7 +159,7 @@ class QrcodeScannerController extends Controller
     $validated = $request->validate([
         'id_qrcode'  => 'required|string',
         'id_event'   => 'required|integer',
-        'idappareil' => 'required|string'
+        'idappareil' => 'required'
     ]);
 
     // 1️⃣ Find Ticket by QR

@@ -60,6 +60,7 @@
                                         <th>Price</th>
                                         <th>QR Code</th>
                                         <th>Status</th>
+                                         <th>User</th> {{-- ✅ New column --}}
                                         <th>Created At</th>
                                     </tr>
                                 </thead>
@@ -81,11 +82,24 @@
 
                                             </td>
                                             <td>
-                                                <span
-                                                    class="badge bg-{{ $ticket->status == 'used' ? 'danger' : 'success' }}">
-                                                    {{ ucfirst($ticket->status ?? 'active') }}
-                                                </span>
-                                            </td>
+    <button 
+        class="btn btn-sm toggle-status 
+            {{ $ticket->status === 'active' ? 'btn-success' : 'btn-danger' }}" 
+        data-id="{{ $ticket->id }}">
+        {{ ucfirst($ticket->status) }}
+    </button>
+</td>
+<td>
+                    @if ($ticket->user)
+                        <div>
+                            <strong>{{ $ticket->user->name }}</strong><br>
+                            <small class="text-muted">{{ $ticket->user->email }}</small>
+                        </div>
+                    @else
+                        <span class="text-muted">No user assigned</span>
+                    @endif
+                </td>
+
                                             <td>{{ $ticket->created_at->format('Y-m-d H:i') }}</td>
                                         </tr>
                                     @endforeach
@@ -106,4 +120,47 @@
             }, 1000);
         });
     </script>
+
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const buttons = document.querySelectorAll('.toggle-status');
+
+    buttons.forEach(button => {
+        button.addEventListener('click', function () {
+            const ticketId = this.dataset.id;
+            const btn = this;
+
+            fetch(`/tickets/${ticketId}/toggle-status`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                    'Accept': 'application/json'
+                }
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    // Update button appearance
+                    if (data.new_status === 'active') {
+                        btn.classList.remove('btn-danger');
+                        btn.classList.add('btn-success');
+                        btn.textContent = 'Active';
+                    } else {
+                        btn.classList.remove('btn-success');
+                        btn.classList.add('btn-danger');
+                        btn.textContent = 'Annuler';
+                    }
+
+                    // ✅ Show success message
+                    alert(data.message);
+                }
+            })
+            .catch(err => console.error('Error:', err));
+        });
+    });
+});
+</script>
+
+
 @endsection

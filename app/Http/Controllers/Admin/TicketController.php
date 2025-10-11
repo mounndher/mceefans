@@ -14,17 +14,38 @@ use Illuminate\Support\Facades\Storage;
 class TicketController extends Controller
 {
     //
-    public function index(){
-        $Ticket=Ticket::All();
-        return view('backend.tickets.index',compact('Ticket'));
-    }
+    
   public function create($id)
 {
     $event = Event::findOrFail($id);
-    $tickets = Ticket::where('id_event', $event->id)->get();
+   
+    $tickets = Ticket::with('user')->where('id_event', $event->id)->get();
+
 
     return view('backend.tickets.create', compact('event', 'tickets'));
 }
+
+
+public function toggleStatus($id)
+{
+    $ticket = Ticket::findOrFail($id);
+
+    // Toggle the status
+    $ticket->status = $ticket->status === 'active' ? 'annuler' : 'active';
+    $ticket->save();
+
+    // Define message based on new status
+    $message = $ticket->status === 'active'
+        ? 'Le ticket a été activé avec succès ✅'
+        : 'Le ticket a été annulé avec succès ❌';
+
+    return response()->json([
+        'success' => true,
+        'new_status' => $ticket->status,
+        'message' => $message,
+    ]);
+}
+
 
 
  public function store1(Request $request)

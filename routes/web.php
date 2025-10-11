@@ -153,6 +153,9 @@ Route::get('/tickets/create/{id}', [TicketController::class, 'create'])->name('t
 Route::post('/tickets/store', [TicketController::class, 'store'])->name('tickets.store');
 
 ///
+Route::post('/tickets/{id}/toggle-status', [TicketController::class, 'toggleStatus'])
+    ->name('tickets.toggleStatus');
+
 Route::get('/attendance-tickets', [AttendanceTicketController::class, 'index'])->name('attendanceTickets.index');
 Route::get('/tickets/print/{file}', function ($file) {
     return view('backend.tickets.print', [
