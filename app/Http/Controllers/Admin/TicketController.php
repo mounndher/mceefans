@@ -11,6 +11,9 @@ use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Mike42\Escpos\Printer;
+use Mike42\Escpos\PrintConnectors\WindowsPrintConnector;
+use Mike42\Escpos\EscposImage;
 class TicketController extends Controller
 {
     //
@@ -208,42 +211,34 @@ public function store2(Request $request)
 
 
 
-public function store(Request $request)
+public function storetext(Request $request)
 {
     $validated = $request->validate([
         'count'    => 'required|integer|min:1|max:1000',
         'id_event' => 'required|exists:events,id',
         'price'    => 'required|numeric|min:0',
     ]);
-
+    
     $count = (int) $validated['count'];
     $price = (float) $validated['price'];
     $event = Event::findOrFail($validated['id_event']);
-
     $tickets = [];
-
+    
     DB::transaction(function () use ($count, $price, $event, &$tickets) {
-
-        // Lock the table or the event row to prevent race conditions
         $lastTicketNumber = Ticket::where('id_event', $event->id)
             ->lockForUpdate()
             ->max('ticket_number') ?? 0;
-
+            
         for ($i = 1; $i <= $count; $i++) {
             $ticketNumber = $lastTicketNumber + $i;
-
-            // Generate unique ticket code
             $ticketCode = 'TICKET-' . strtoupper(Str::random(8));
-
-            // Generate QR code SVG
+            
             $qrSvg = QrCode::format('svg')
                 ->size(80)
                 ->errorCorrection('H')
                 ->generate($ticketCode);
-
             $qrSvgBase64 = 'data:image/svg+xml;base64,' . base64_encode($qrSvg);
-
-            // Insert ticket
+            
             $ticket = Ticket::create([
                 'ticket_number' => $ticketNumber,
                 'count'    => 1,
@@ -253,9 +248,8 @@ public function store(Request $request)
                 'price'    => $price,
                 'status'   =>'active',
                 'qr_svg'   => $qrSvgBase64,
-
             ]);
-
+            
             $tickets[] = [
                 'number' => $ticketNumber,
                 'code' => $ticketCode,
@@ -265,26 +259,224 @@ public function store(Request $request)
             ];
         }
     });
-
+    
+    // Convert event image to base64 for PDF
+    $eventImageBase64 = null;
+    if ($event->image_post) {
+        $imagePath = public_path('uploads/event/' . $event->image_post);
+        
+        // Check if file exists
+        if (file_exists($imagePath)) {
+            $imageData = base64_encode(file_get_contents($imagePath));
+            $imageExtension = pathinfo($imagePath, PATHINFO_EXTENSION);
+            
+            // Determine correct MIME type
+            $mimeTypes = [
+                'jpg' => 'image/jpeg',
+                'jpeg' => 'image/jpeg',
+                'png' => 'image/png',
+                'gif' => 'image/gif',
+                'webp' => 'image/webp'
+            ];
+            
+            $mimeType = $mimeTypes[strtolower($imageExtension)] ?? 'image/jpeg';
+            $eventImageBase64 = 'data:' . $mimeType . ';base64,' . $imageData;
+        }
+    }
+    
     // Generate PDF
-    $pdf = Pdf::loadView('backend.tickets.pdf', compact('tickets', 'event'))
-        ->setPaper([0, 0, 283.46, 425.20], 'portrait');
-
-   
-
- $pdf = Pdf::loadView('backend.tickets.pdf', compact('tickets', 'event'))
-    ->setPaper([0, 0, 283.46, 425.20], 'portrait');
-
-$pdfPath = storage_path('app/public/tickets.pdf');
-$pdf->save($pdfPath);
-
-
-// Redirect to a view that loads the PDF and auto-prints
-return view('backend.tickets.print', [
-    'pdfUrl' => asset('storage/tickets.pdf'),
-]);
+   $pdf = Pdf::loadView('backend.tickets.pdf', compact('tickets', 'event', 'eventImageBase64'))
+    ->setPaper([0, 0, 226.77, 226.77], 'portrait'); // 80mm x 80mm
+    
+    $pdfPath = storage_path('app/public/tickets.pdf');
+    $pdf->save($pdfPath);
+    
+    return view('backend.tickets.print', [
+        'pdfUrl' => asset('storage/tickets.pdf'),
+    ]);
 }
 
+
+
+
+
+
+
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'count'    => 'required|integer|min:1|max:1000',
+            'id_event' => 'required|exists:events,id',
+            'price'    => 'required|numeric|min:0',
+        ]);
+       
+        $count = (int) $validated['count'];
+        $price = (float) $validated['price'];
+        $event = Event::findOrFail($validated['id_event']);
+        $tickets = [];
+       
+        DB::transaction(function () use ($count, $price, $event, &$tickets) {
+            $lastTicketNumber = Ticket::where('id_event', $event->id)
+                ->lockForUpdate()
+                ->max('ticket_number') ?? 0;
+               
+            for ($i = 1; $i <= $count; $i++) {
+                $ticketNumber = $lastTicketNumber + $i;
+                $ticketCode = 'TICKET-' . strtoupper(Str::random(8));
+               
+                $qrSvg = QrCode::format('svg')
+                    ->size(200)
+                    ->errorCorrection('H')
+                    ->generate($ticketCode);
+                $qrSvgBase64 = 'data:image/svg+xml;base64,' . base64_encode($qrSvg);
+               
+                $ticket = Ticket::create([
+                    'ticket_number' => $ticketNumber,
+                    'count'    => 1,
+                    'id_qrcode'=> $ticketCode,
+                    'id_event' => $event->id,
+                    'id_user'  => auth()->id(),
+                    'price'    => $price,
+                    'status'   =>'active',
+                    'qr_svg'   => $qrSvgBase64,
+                ]);
+               
+                $tickets[] = [
+                    'id' => $ticket->id,
+                    'number' => $ticketNumber,
+                    'code' => $ticketCode,
+                    'price' => $price,
+                    'qr_svg' => $qrSvgBase64,
+                    'created_at' => $ticket->created_at->format('d/m/Y H:i:s'),
+                ];
+            }
+        });
+
+        // Get event image
+        $eventImage = null;
+        if ($event->image_post && file_exists(public_path('uploads/event/' . $event->image_post))) {
+            $eventImage = asset('uploads/event/' . $event->image_post);
+        }
+
+        // Show thermal ticket preview
+        return view('backend.tickets.thermal-preview', compact('tickets', 'event', 'eventImage'));
+    }
+
+
+    private function printTickets($tickets, $event)
+    {
+        // Configure your printer name (adjust this to match your Xprint 410 printer name)
+        $printerName = "XPrint 410"; // Change this to your actual printer name in Windows
+        
+        try {
+            $connector = new WindowsPrintConnector($printerName);
+            $printer = new Printer($connector);
+            
+            foreach ($tickets as $ticket) {
+                $this->printSingleTicket($printer, $ticket, $event);
+                
+                // Add spacing between tickets
+                if (!end($tickets) || $ticket !== end($tickets)) {
+                    $printer->feed(3);
+                    $printer->cut();
+                }
+            }
+            
+            $printer->close();
+        } catch (\Exception $e) {
+            throw new \Exception("Printer error: " . $e->getMessage());
+        }
+    }
+
+    private function printSingleTicket($printer, $ticket, $event)
+    {
+        // Header line
+        $printer->setEmphasis(true);
+        $printer->setJustification(Printer::JUSTIFY_CENTER);
+        $printer->text("================================\n");
+        $printer->setEmphasis(false);
+        
+        // Event name
+        $printer->setEmphasis(true);
+        $printer->setTextSize(2, 2);
+        $printer->text($this->centerText($event->nom, 16) . "\n");
+        $printer->setTextSize(1, 1);
+        $printer->setEmphasis(false);
+        
+        $printer->text("================================\n");
+        $printer->feed(1);
+        
+        // Ticket number
+        $printer->setJustification(Printer::JUSTIFY_CENTER);
+        $printer->text("NUMERO DE TICKET\n");
+        $printer->setEmphasis(true);
+        $printer->setTextSize(2, 1);
+        $printer->text("#" . str_pad($ticket['number'], 4, '0', STR_PAD_LEFT) . "\n");
+        $printer->setTextSize(1, 1);
+        $printer->setEmphasis(false);
+        $printer->feed(1);
+        
+        // Price
+        $printer->text("--------------------------------\n");
+        $printer->text("PRIX DU BILLET\n");
+        $printer->setEmphasis(true);
+        $printer->setTextSize(2, 2);
+        $printer->text(number_format($ticket['price'], 2) . " DZD\n");
+        $printer->setTextSize(1, 1);
+        $printer->setEmphasis(false);
+        $printer->text("--------------------------------\n");
+        $printer->feed(1);
+        
+        // QR Code
+        $printer->setJustification(Printer::JUSTIFY_CENTER);
+        $this->printQRCode($printer, $ticket['code']);
+        $printer->feed(1);
+        $printer->text("Scannez pour valider\n");
+        $printer->feed(1);
+        
+        // Footer
+        $printer->text("--------------------------------\n");
+        $printer->setTextSize(1, 1);
+        $printer->text("Cree le: " . $ticket['created_at'] . "\n");
+        $printer->text("Valable une fois\n");
+        $printer->text("================================\n");
+        $printer->feed(2);
+    }
+
+    private function printQRCode($printer, $ticketCode)
+    {
+        try {
+            // Generate QR code as PNG
+            $qrImage = QrCode::format('png')
+                ->size(200)
+                ->errorCorrection('H')
+                ->generate($ticketCode);
+            
+            // Save temporarily
+            $tempPath = storage_path('app/temp_qr.png');
+            file_put_contents($tempPath, $qrImage);
+            
+            // Print image
+            $image = EscposImage::load($tempPath);
+            $printer->bitImage($image);
+            
+            // Clean up
+            @unlink($tempPath);
+        } catch (\Exception $e) {
+            // Fallback: print ticket code as text
+            $printer->text($ticketCode . "\n");
+        }
+    }
+
+    private function centerText($text, $width)
+    {
+        $textLength = mb_strlen($text);
+        if ($textLength >= $width) {
+            return mb_substr($text, 0, $width);
+        }
+        $padding = floor(($width - $textLength) / 2);
+        return str_repeat(' ', $padding) . $text;
+    }
 
 
 }
