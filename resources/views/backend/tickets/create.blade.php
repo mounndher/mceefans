@@ -59,7 +59,7 @@
                                     <th>Price</th>
                                     <th>QR Code</th>
                                     <th>Status</th>
-                                    <th>Attendance</th> {{-- ✅ New column --}}
+                                    <th>Présent</th> {{-- ✅ New column --}}
                                     <th>User</th>
                                     <th>Created At</th>
                                 </tr>
@@ -91,9 +91,9 @@
 
                                         <td>
                                             @if ($ticket->attendanceTickets->where('status', 'checked_in')->isNotEmpty())
-                                                <span class="badge ">Checked In</span>
+                                                <span class="badge bg-info">Présent</span>
                                             @else
-                                                <span class="badge ">Not Used</span>
+                                                <span class="badge bg-warning text-darky">Non utilisé</span>
                                             @endif
                                         </td>
 

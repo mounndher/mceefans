@@ -87,7 +87,6 @@ public function terminer($id)
         })
         ->with('latestTransaction')
         ->get();
-
     foreach ($fans as $fan) {
         $alreadyPresent = Attendance::where('fan_id', $fan->id)
             ->where('id_event', $event->id)
@@ -103,6 +102,27 @@ public function terminer($id)
             ]);
         }
     }
+
+    $tickets = Ticket::where('id_event', $event->id)->get();
+
+    // 3️⃣ Loop through tickets and check if they already have a "checked_in" record
+    foreach ($tickets as $ticket) {
+        $alreadyPresent = AttendanceTicket::where('ticket_id', $ticket->id)
+            ->where('id_event', $event->id)
+            ->where('status', 'checked_in')
+            ->exists();
+
+        // 4️⃣ If the ticket hasn't been checked in, mark it as absent
+        if (!$alreadyPresent) {
+            AttendanceTicket::create([
+                'ticket_id'  => $ticket->id,
+                'id_event'   => $event->id,
+                'idappareil' => null,
+                'status'     => 'absent', // mark as absent
+            ]);
+        }
+    }
+
 
     return redirect()->route('events.index')
         ->with('success', 'Event terminated successfully! Absentees recorded.');
