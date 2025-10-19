@@ -1,131 +1,141 @@
+<style>
+    @page {
+        margin: 0;
+        size: 80mm 150mm;
+    }
 
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
 
-    <style>
-        @page {
-            margin: 0;
-            size: 80mm 130mm;
-        }
+    body {
+        font-family: "DejaVu Sans", Arial, sans-serif;
+        background: #fff;
+    }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+    .ticket {
+        width: 80mm;
+        height: 150mm;
+        padding: 6mm 4mm;
+        background: #fff;
+        display: table;
+        page-break-after: always;
+        page-break-inside: avoid;
+    }
 
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: "DejaVu Sans", Arial, sans-serif;
-            background: #fff;
-        }
+    .ticket-inner {
+        display: table-cell;
+        vertical-align: top;
+        text-align: center;
+    }
 
-        .ticket {
-            width: 80mm;
-            height: 130mm;
-            background: #fff;
-            padding: 6mm 4mm;
-            display: table;
-            page-break-after: always;
-            page-break-inside: avoid;
-        }
+    .header {
+        text-align: center;
+        margin-bottom: 3mm;
+    }
 
-        .ticket:last-child {
-            page-break-after: auto;
-        }
+    .header-text {
+        font-size: 9pt;
+        font-weight: bold;
+        text-transform: uppercase;
+        line-height: 1.4;
+        color: #000;
+    }
 
-        .ticket-inner {
-            display: table-cell;
-            vertical-align: middle;
-            text-align: center;
-        }
+    .event-image {
+        width: 60mm;
+        height: 30mm;
+        object-fit: cover;
+        margin: 0 auto 4mm auto;
+        border-radius: 2mm;
+        display: block;
+    }
 
-        .event-name {
-            font-size: 12pt;
-            font-weight: bold;
-            text-transform: uppercase;
-            color: #222;
-            text-align: center;
-            margin-bottom: 5mm;
-            border-bottom: 1px dashed #aaa;
-            padding-bottom: 3mm;
-        }
+    .event-name {
+        font-size: 11pt;
+        font-weight: bold;
+        text-transform: uppercase;
+        color: #222;
+        text-align: center;
+        margin-bottom: 4mm;
+        border-bottom: 1px dashed #aaa;
+        padding-bottom: 2mm;
+    }
 
-        .ticket-number {
-            font-size: 13pt;
-            font-weight: bold;
-            color: #000;
-            margin: 3mm 0;
-        }
+    /* ✅ Ticket number + price on same line */
+    .ticket-info {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 12pt;
+        font-weight: bold;
+        color: #000;
+        margin: 4mm auto;
+        width: 65mm;
+        text-transform: uppercase;
+    }
 
-        .price-box {
-            text-align: center;
-            border: 1px solid #000;
-            border-radius: 2mm;
-            padding: 3mm 6mm;
-            width: 50mm;
-            background: #fafafa;
-            margin: 6mm auto;
-            display: inline-block;
-        }
+    .ticket-info span {
+        display: inline-block;
+    }
 
-        .price-label {
-            font-size: 6pt;
-            color: #666;
-            letter-spacing: 0.4px;
-            text-transform: uppercase;
-        }
+    .qr {
+        margin: 4mm auto;
+        text-align: center;
+    }
 
-        .price-amount {
-            font-size: 13pt;
-            font-weight: bold;
-            margin-top: 1mm;
-            color: #000;
-        }
+    .qr img {
+        width: 32mm;
+        height: 32mm;
+        display: inline-block;
+    }
 
-        .qr {
-            margin: 3mm auto;
-            text-align: center;
-        }
+    .scan-text {
+        font-size: 6pt;
+        color: #777;
+        margin-top: 1mm;
+        text-transform: uppercase;
+    }
 
-        .qr img {
-            width: 35mm;
-            height: 35mm;
-            display: inline-block;
-        }
-
-        .scan-text {
-            font-size: 6pt;
-            color: #777;
-            margin-top: 1mm;
-            text-transform: uppercase;
-        }
-
-        .footer {
-            text-align: center;
-            border-top: 1px dashed #aaa;
-            font-size: 6pt;
-            color: #777;
-            margin-top: 5mm;
-            padding-top: 3mm;
-            line-height: 1.3;
-        }
-    </style>
-
+    .footer {
+        text-align: center;
+        border-top: 1px dashed #aaa;
+        font-size: 6pt;
+        color: #777;
+        margin-top: 5mm;
+        padding-top: 3mm;
+        line-height: 1.3;
+    }
+</style>
 
 @foreach($tickets as $ticket)
 <div class="ticket">
     <div class="ticket-inner">
+
+        <!-- ✅ Header -->
+        <div class="header">
+            <div class="header-text">
+                Fédération Algérienne de Football <br>
+                Ligue Interrégions de Football
+            </div>
+        </div>
+
+        <!-- ✅ Event image -->
+        @if(!empty($event->image_post))
+            <img src="{{ asset('uploads/event/' . $event->image_post) }}" alt="Event Image" class="event-image">
+        @endif
+
         <div class="event-name">{{ Str::limit($event->nom, 40) }}</div>
 
-        <div class="ticket-number">
-            Ticket #{{ str_pad($ticket['number'], 4, '0', STR_PAD_LEFT) }}
+        <!-- ✅ Ticket number + price same line -->
+        <div class="ticket-info">
+            <span>Ticket #{{ str_pad($ticket['number'], 4, '0', STR_PAD_LEFT) }}</span>
+            <span>{{ number_format($ticket['price'], 2) }} DZD</span>
         </div>
 
-        <div class="price-box">
-            <div class="price-label">Prix du billet</div>
-            <div class="price-amount">{{ number_format($ticket['price'], 2) }} DZD</div>
-        </div>
-
+        <!-- ✅ QR code -->
         <div class="qr">
             <img src="{{ $ticket['qr_svg'] }}" alt="QR Code">
             <div class="scan-text">Scannez pour valider</div>
@@ -135,16 +145,16 @@
             <div>Créé le : {{ $ticket['created_at'] }}</div>
             <div>Valable une seule fois</div>
         </div>
+
     </div>
 </div>
 @endforeach
+
 <script>
-    // Auto print when page loads
     window.onload = function() {
         window.print();
-
-        // Redirect back after print dialog closes
-       
+    };
+    window.onafterprint = function() {
+        window.location.href = "{{ route('tickets.create', $event->id) }}";
     };
 </script>
-

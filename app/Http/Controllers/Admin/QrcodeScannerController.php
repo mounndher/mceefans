@@ -179,7 +179,7 @@ class QrcodeScannerController extends Controller
         return response()->json([
             'status'  => 'error',
             'message' => '2',
-            
+
         ], 404);
     }
 

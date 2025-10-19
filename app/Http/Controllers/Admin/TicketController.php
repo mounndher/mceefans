@@ -22,7 +22,11 @@ class TicketController extends Controller
 {
     $event = Event::findOrFail($id);
 
-    $tickets = Ticket::with('user')->where('id_event', $event->id)->get();
+   $tickets = Ticket::with(['user', 'attendanceTickets' => function($q) use ($event) {
+        $q->where('id_event', $event->id);
+    }])
+    ->where('id_event', $event->id)
+    ->get();
 
 
     return view('backend.tickets.create', compact('event', 'tickets'));
@@ -48,7 +52,6 @@ public function toggleStatus($id)
         'message' => $message,
     ]);
 }
-
 
 
 
@@ -117,6 +120,9 @@ public function toggleStatus($id)
         // Show thermal ticket preview
         return view('backend.tickets.thermal-preview', compact('tickets', 'event', 'eventImage'));
     }
+
+
+
 
 
 
