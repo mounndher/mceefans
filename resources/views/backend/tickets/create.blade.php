@@ -67,7 +67,7 @@
                             <tbody>
                                 @foreach ($tickets as $ticket)
                                     <tr>
-                                        <td>{{ $ticket->id }}</td>
+                                        <td>{{ $ticket->ticket_number }}</td>
 
                                         <td>{{ $ticket->price }} DA</td>
 

@@ -1,7 +1,8 @@
 <style>
     @page {
         margin: 0;
-        size: 80mm 150mm;
+        size: 80mm 170mm;
+        /* increased height */
     }
 
     * {
@@ -17,11 +18,13 @@
 
     .ticket {
         width: 80mm;
-        height: 150mm;
-        padding: 6mm 4mm;
+        height: 170mm;
+        /* match page height */
+        padding: 4mm 3mm;
+        /* less padding */
         background: #fff;
         display: table;
-        page-break-after: always;
+        page-break-after: avoid;
         page-break-inside: avoid;
     }
 
@@ -46,49 +49,44 @@
 
     .event-image {
         width: 60mm;
-        height: 30mm;
+        height: 28mm;
         object-fit: cover;
-        margin: 0 auto 4mm auto;
+        margin: 0 auto 3mm auto;
         border-radius: 2mm;
         display: block;
     }
 
     .event-name {
-        font-size: 11pt;
+        font-size: 10pt;
         font-weight: bold;
         text-transform: uppercase;
         color: #222;
         text-align: center;
-        margin-bottom: 4mm;
+        margin-bottom: 3mm;
         border-bottom: 1px dashed #aaa;
         padding-bottom: 2mm;
     }
 
-    /* ✅ Ticket number + price on same line */
     .ticket-info {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        font-size: 12pt;
+        font-size: 8pt;
         font-weight: bold;
         color: #000;
-        margin: 4mm auto;
+        margin: 3mm auto;
         width: 65mm;
         text-transform: uppercase;
     }
 
-    .ticket-info span {
-        display: inline-block;
-    }
-
     .qr {
-        margin: 4mm auto;
+        margin: 2mm auto;
         text-align: center;
     }
 
     .qr img {
-        width: 32mm;
-        height: 32mm;
+        width: 25mm;
+        height: 25mm;
         display: inline-block;
     }
 
@@ -102,19 +100,22 @@
     .footer {
         text-align: center;
         border-top: 1px dashed #aaa;
-        font-size: 6pt;
-        color: #777;
-        margin-top: 5mm;
-        padding-top: 3mm;
+        font-size: 7pt;
+        /* smaller */
+        font-weight: bold;
+        color: #000;
+        margin-top: 1.5mm;
+        padding-top: 1.5mm;
         line-height: 1.3;
+        white-space: pre-line;
     }
+
 </style>
 
 @foreach($tickets as $ticket)
 <div class="ticket">
     <div class="ticket-inner">
 
-        <!-- ✅ Header -->
         <div class="header">
             <div class="header-text">
                 Fédération Algérienne de Football <br>
@@ -122,28 +123,34 @@
             </div>
         </div>
 
-        <!-- ✅ Event image -->
         @if(!empty($event->image_post))
-            <img src="{{ asset('uploads/event/' . $event->image_post) }}" alt="Event Image" class="event-image">
+        <img src="{{ asset('uploads/event/' . $event->image_post) }}" alt="Event Image" class="event-image">
         @endif
 
         <div class="event-name">{{ Str::limit($event->nom, 40) }}</div>
 
-        <!-- ✅ Ticket number + price same line -->
         <div class="ticket-info">
-            <span>Ticket #{{ str_pad($ticket['number'], 4, '0', STR_PAD_LEFT) }}</span>
+            <span>Ticket {{ str_pad($ticket['number'], 4, '0', STR_PAD_LEFT) }}</span>
             <span>{{ number_format($ticket['price'], 2) }} DZD</span>
         </div>
 
-        <!-- ✅ QR code -->
         <div class="qr">
             <img src="{{ $ticket['qr_svg'] }}" alt="QR Code">
-            <div class="scan-text">Scannez pour valider</div>
         </div>
 
         <div class="footer">
             <div>Créé le : {{ $ticket['created_at'] }}</div>
-            <div>Valable une seule fois</div>
+
+            <div>
+                هذه التذكرة فردية يجب تقديمها عند مدخل الملعب.<br>
+                - ممنوع دخول القصر أقل من 18 سنة دون مرافق.<br>
+                - يتعهد حامل التذكرة بـ:<br>
+                * التحلي بالروح الرياضية مهما كانت نتيجة المقابلة.<br>
+                * المحافظة على الممتلكات العامة والمرافق الموجودة داخل الملعب.<br>
+                * احترام الآداب العامة.<br>
+                (كل مخالفة لهذا النظام يعاقب عليها القانون والتشريع الجزائري).<br>
+                تستعمل هذه التذكرة مرة واحدة من طرف شخص واحد.
+            </div>
         </div>
 
     </div>
@@ -157,4 +164,5 @@
     window.onafterprint = function() {
         window.location.href = "{{ route('tickets.create', $event->id) }}";
     };
+
 </script>
