@@ -39,8 +39,25 @@ public function print($id)
     $event = $ticket->event;
 
     return view('backend.tickets.pdf', compact('ticket', 'event'));
+    //in hots print not pdf
 }
 
+
+
+public function printMultiple(Request $request)
+{
+    $ids = $request->input('ids', []);
+    if (empty($ids)) {
+        return back()->with('error', 'No tickets selected.');
+    }
+
+    $tickets = Ticket::with('event')->whereIn('id', $ids)->get();
+
+    // Use the event from the first ticket (assuming all same event)
+    $event = $tickets->first()->event ?? null;
+
+    return view('backend.tickets.print-multiple', compact('tickets', 'event'));
+}
 
 
 

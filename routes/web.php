@@ -154,6 +154,7 @@ Route::post('/tickets/store', [TicketController::class, 'store'])->name('tickets
 
 
 Route::get('/tickets/{id}/print', [TicketController::class, 'print'])->name('tickets.print');
+Route::post('/tickets/print-multiple', [TicketController::class, 'printMultiple'])->name('tickets.printMultiple');
 
 ///
 Route::post('/tickets/{id}/toggle-status', [TicketController::class, 'toggleStatus'])
