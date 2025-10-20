@@ -1,225 +1,163 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <meta charset="utf-8">
-    <title>Tickets PDF</title>
+    <meta charset="UTF-8">
+    <title>Ticket #{{ str_pad($ticket->number, 4, '0', STR_PAD_LEFT) }}</title>
     <style>
         @page {
-            size: 80mm 80mm;
             margin: 0;
+            size: 80mm 170mm;
         }
-        body {
-            font-family: DejaVu Sans, sans-serif;
+
+        * {
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
         }
+
+        body {
+            font-family: "DejaVu Sans", Arial, sans-serif;
+            background: #fff;
+        }
+
         .ticket {
             width: 80mm;
-            height: 80mm;
-            box-sizing: border-box;
-            background: #ffffff;
-            position: relative;
-            overflow: hidden;
+            height: 170mm;
+            padding: 4mm 3mm;
+            background: #fff;
+            display: table;
+            page-break-after: avoid;
+            page-break-inside: avoid;
         }
-        
-        .ticket::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 2mm;
-            background: linear-gradient(90deg, #FF6B6B 0%, #FFE66D 25%, #4ECDC4 50%, #556270 75%, #FF6B6B 100%);
-        }
-        
-        .event-image-container {
-            width: 70%;
-            height: 12mm;
-            overflow: hidden;
-            position: relative;
-            margin: 3mm auto 0 auto;
-            border-radius: 2mm;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
-        }
-        
-        .event-image {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        
-        .ticket-body {
-            padding: 1.5mm 3mm;
+
+        .ticket-inner {
+            display: table-cell;
+            vertical-align: top;
             text-align: center;
         }
-        
-        .event-name {
-            background: #000000;
-            color: white;
-            padding: 1.5mm 2.5mm;
-            margin: 2mm auto 1mm auto;
-            border-radius: 2mm;
-            font-size: 6pt;
+
+        .header {
+            text-align: center;
+            margin-bottom: 3mm;
+        }
+
+        .header-text {
+            font-size: 9pt;
             font-weight: bold;
             text-transform: uppercase;
-            width: 65mm;
+            line-height: 1.4;
+            color: #000;
         }
-        
-        .divider {
-            width: 40mm;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, #4ECDC4, transparent);
-            margin: 0.8mm auto;
-        }
-        
-        .ticket-number-container {
-            margin: 0.8mm 0;
-        }
-        
-        .ticket-label {
-            font-size: 6pt;
-            color: #999;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 0.5mm;
-        }
-        
-        .ticket-number {
-            font-size: 10pt;
-            font-weight: bold;
-            color: #333;
-            letter-spacing: 1px;
-        }
-        
-        .price-section {
-            background: #f8f9fa;
-            border: 1.5px solid #000000;
-            border-radius: 3mm;
-            padding: 1.2mm;
-            margin: 0.8mm auto;
-            width: 55mm;
-        }
-        
-        .price-label {
-            font-size: 6pt;
-            color: #666;
-            margin-bottom: 0.3mm;
-        }
-        
-        .price-amount {
-            font-size: 12pt;
-            font-weight: bold;
-            color: #000000;
-        }
-        
-        .qr-section {
-            background: #f8f9fa;
-            padding: 1.2mm;
+
+        .event-image {
+            width: 60mm;
+            height: 28mm;
+            object-fit: cover;
+            margin: 0 auto 3mm auto;
             border-radius: 2mm;
-            display: inline-block;
-            margin: 0.8mm 0;
-            border: 1px dashed #ddd;
-        }
-        
-        .qr-section img {
-            width: 14mm;
-            height: 14mm;
             display: block;
         }
-        
-        .scan-text {
-            font-size: 5pt;
-            color: #999;
-            margin-top: 0.5mm;
+
+        .event-name {
+            font-size: 10pt;
+            font-weight: bold;
             text-transform: uppercase;
-            letter-spacing: 0.3px;
+            color: #222;
+            text-align: center;
+            margin-bottom: 3mm;
+            border-bottom: 1px dashed #aaa;
+            padding-bottom: 2mm;
         }
-        
-        .ticket-footer {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: #2d3748;
-            color: white;
-            padding: 1mm;
+
+        .ticket-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 8pt;
+            font-weight: bold;
+            color: #000;
+            margin: 3mm auto;
+            width: 65mm;
+            text-transform: uppercase;
+        }
+
+        .qr {
+            margin: 2mm auto;
             text-align: center;
         }
-        
-        .footer-text {
-            font-size: 4.5pt;
-            margin: 0;
-            opacity: 0.8;
+
+        .qr img {
+            width: 25mm;
+            height: 25mm;
+            display: inline-block;
         }
-        
-        .decorative-dots {
-            position: absolute;
-            width: 2.5mm;
-            height: 2.5mm;
-            border-radius: 50%;
-            background: #4ECDC4;
-            opacity: 0.3;
+
+        .scan-text {
+            font-size: 6pt;
+            color: #777;
+            margin-top: 1mm;
+            text-transform: uppercase;
         }
-        
-        .dot1 { top: 8mm; left: 2.5mm; }
-        .dot2 { top: 12mm; right: 2.5mm; }
-        .dot3 { top: 55mm; left: 3.5mm; }
-        .dot4 { top: 52mm; right: 3mm; }
-        
-        .page-break {
-            page-break-after: always;
+
+        .footer {
+            text-align: center;
+            border-top: 1px dashed #aaa;
+            font-size: 7pt;
+            font-weight: bold;
+            color: #000;
+            margin-top: 1.5mm;
+            padding-top: 1.5mm;
+            line-height: 1.3;
+            white-space: pre-line;
         }
     </style>
 </head>
-<body>
-@foreach ($tickets as $ticket)
+<body onload="window.print()">
     <div class="ticket">
-        <div class="decorative-dots dot1"></div>
-        <div class="decorative-dots dot2"></div>
-        <div class="decorative-dots dot3"></div>
-        <div class="decorative-dots dot4"></div>
-        
-        <div class="event-image-container">
-            @if($eventImageBase64)
-                <img src="{{ $eventImageBase64 }}" alt="Event Image" class="event-image">
-            @else
-                <div style="background: linear-gradient(135deg, #4ECDC4, #556270); height: 100%; display: flex; align-items: center; justify-content: center; border-radius: 2mm;">
-                    <span style="color: white; font-size: 7pt; font-weight: bold;">IMAGE</span>
+        <div class="ticket-inner">
+            <div class="header">
+                <div class="header-text">
+                    Fédération Algérienne de Football <br>
+                    Ligue Interrégions de Football
                 </div>
+            </div>
+
+            @if(!empty($event->image_post))
+                <img src="{{ asset('uploads/event/' . $event->image_post) }}" alt="Event Image" class="event-image">
             @endif
-        </div>
-        
-        <div class="ticket-body">
-            <div class="event-name">
-                {{ $event->nom ?? 'Événement' }}
+
+            <div class="event-name">{{ Str::limit($event->nom, 40) }}</div>
+
+            <div class="ticket-info">
+                <span>Ticket {{ str_pad($ticket->number, 4, '0', STR_PAD_LEFT) }}</span>
+                <span>{{ number_format($ticket->price, 2) }} DZD</span>
             </div>
-            
-            <div class="divider"></div>
-            
-            <div class="ticket-number-container">
-                <div class="ticket-label">Numéro de Ticket</div>
-                <div class="ticket-number">#{{ str_pad($ticket['number'], 4, '0', STR_PAD_LEFT) }}</div>
+
+            <div class="qr">
+                <img src="{{ $ticket->qr_svg }}" alt="QR Code">
             </div>
-            
-            <div class="price-section">
-                <div class="price-label">PRIX DU BILLET</div>
-                <div class="price-amount">{{ number_format($ticket['price'], 2) }}</div>
-                <div class="price-label">DZD</div>
+
+            <div class="footer">
+                <div>Créé le : {{ $ticket->created_at->format('Y-m-d H:i') }}</div>
+
+                <div>
+                    هذه البطاقة فردية يجب تقديمها عند مدخل الملعب.<br>
+                    - ممنوع دخول القصر أقل من 18 سنة دون مرافق.<br>
+                    - يتعهد حامل البطاقة بـ:<br>
+                    * التحلي بالروح الرياضية مهما كانت نتيجة المقابلة.<br>
+                    * المحافظة على الممتلكات العامة والمرافق الموجودة داخل الملعب.<br>
+                    * احترام الآداب العامة.<br>
+                    (كل مخالفة لهذا النظام يعاقب عليها القانون والتشريع الجزائري).<br>
+                    تستعمل هذه البطاقة مرة واحدة من طرف شخص واحد.
+                </div>
             </div>
-            
-            <div class="qr-section">
-                <img src="{{ $ticket['qr_svg_base64'] }}" alt="QR Code">
-                <div class="scan-text">Scannez pour valider</div>
-            </div>
-        </div>
-        
-        <div class="ticket-footer">
-            <p class="footer-text">Créé le {{ $ticket['created_at'] }} • Valable une fois</p>
         </div>
     </div>
-    @if(!$loop->last)
-        <div class="page-break"></div>
-    @endif
-@endforeach
+
+    <script>
+        window.onafterprint = function() {
+            window.location.href = "{{ route('tickets.create', $event->id) }}";
+        };
+    </script>
 </body>
 </html>

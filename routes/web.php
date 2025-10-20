@@ -152,16 +152,15 @@ Route::get('/tickets', [TicketController::class, 'index'])->name('tickets.index'
 Route::get('/tickets/create/{id}', [TicketController::class, 'create'])->name('tickets.create');
 Route::post('/tickets/store', [TicketController::class, 'store'])->name('tickets.store');
 
+
+Route::get('/tickets/{id}/print', [TicketController::class, 'print'])->name('tickets.print');
+
 ///
 Route::post('/tickets/{id}/toggle-status', [TicketController::class, 'toggleStatus'])
     ->name('tickets.toggleStatus');
 
 Route::get('/attendance-tickets', [AttendanceTicketController::class, 'index'])->name('attendanceTickets.index');
-Route::get('/tickets/print/{file}', function ($file) {
-    return view('backend.tickets.print', [
-        'pdfUrl' => asset('storage/' . $file),
-    ]);
-})->name('tickets.print');
+
 });
 
 

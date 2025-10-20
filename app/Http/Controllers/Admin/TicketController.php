@@ -33,6 +33,17 @@ class TicketController extends Controller
 }
 
 
+public function print($id)
+{
+    $ticket = Ticket::with('event')->findOrFail($id);
+    $event = $ticket->event;
+
+    return view('backend.tickets.pdf', compact('ticket', 'event'));
+}
+
+
+
+
 public function toggleStatus($id)
 {
     $ticket = Ticket::findOrFail($id);

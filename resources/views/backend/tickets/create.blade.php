@@ -58,6 +58,7 @@
                                     <th>ID</th>
                                     <th>Price</th>
                                     <th>QR Code</th>
+                                    <th></th>
                                     <th>Status</th>
                                     <th>Présent</th> {{-- ✅ New column --}}
                                     <th>User</th>
@@ -80,6 +81,14 @@
                                                 <span class="text-muted">No QR available</span>
                                             @endif
                                         </td>
+                                        <td>
+    <a href="{{ route('tickets.print', $ticket->id) }}"
+       target="_blank"
+       class="btn btn-sm btn-secondary">
+        🖨️ Print
+    </a>
+</td>
+
 
                                         <td>
                                             <button

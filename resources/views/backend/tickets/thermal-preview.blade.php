@@ -1,7 +1,7 @@
 <style>
     @page {
         margin: 0;
-        size: 80mm 170mm;
+        size: 80mm 150mm;
         /* increased height */
     }
 
@@ -18,7 +18,7 @@
 
     .ticket {
         width: 80mm;
-        height: 170mm;
+        height: 150mm;
         /* match page height */
         padding: 4mm 3mm;
         /* less padding */
