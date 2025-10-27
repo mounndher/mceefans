@@ -4,33 +4,33 @@
             <!-- Scrolling Ticker Start -->
             <div class="scrolling-ticker-box">
                 <div class="scrolling-content">
-                    <span><img src="{{ asset('frontend/images/icon-football.svg')}}" alt="">explore now</span>
-                    <span><img src="{{ asset('frontend/images/icon-football.svg')}}" alt="">purchese now</span>
-                    <span><img src="{{ asset('frontend/images/icon-football.svg')}}" alt="">limited time deal</span>
-                    <span><img src="{{ asset('frontend/images/icon-football.svg')}}" alt="">buy theme</span>
-                    <span><img src="{{ asset('frontend/images/icon-football.svg')}}" alt="">explore now</span>
-                    <span><img src="{{ asset('frontend/images/icon-football.svg')}}" alt="">purchese now</span>
-                    <span><img src="{{ asset('frontend/images/icon-football.svg')}}" alt="">limited time deal</span>
-                    <span><img src="{{ asset('frontend/images/icon-football.svg')}}" alt="">buy theme</span>
-                    <span><img src="{{ asset('frontend/images/icon-football.svg')}}" alt="">explore now</span>
-                    <span><img src="{{ asset('frontend/images/icon-football.svg')}}" alt="">purchese now</span>
-                    <span><img src="{{ asset('frontend/images/icon-football.svg')}}" alt="">limited time deal</span>
-                    <span><img src="{{ asset('frontend/images/icon-football.svg')}}" alt="">buy theme</span>
+                    <span><img src="" alt="">explore now</span>
+                    <span><img src="" alt="">purchese now</span>
+                    <span><img src="" alt="">limited time deal</span>
+                    <span><img src="" alt="">buy theme</span>
+                    <span><img src="" alt="">explore now</span>
+                    <span><img src="" alt="">purchese now</span>
+                    <span><img src="" alt="">limited time deal</span>
+                    <span><img src="" alt="">buy theme</span>
+                    <span><img src="" alt="">explore now</span>
+                    <span><img src="" alt="">purchese now</span>
+                    <span><img src="" alt="">limited time deal</span>
+                    <span><img src="" alt="">buy theme</span>
                 </div>
 
                 <div class="scrolling-content">
-                    <span><img src="{{ asset('frontend/images/icon-football.svg')}}" alt="">explore now</span>
-                    <span><img src="{{ asset('frontend/images/icon-football.svg')}}" alt="">purchese now</span>
-                    <span><img src="{{ asset('frontend/images/icon-football.svg')}}" alt="">limited time deal</span>
-                    <span><img src="{{ asset('frontend/images/icon-football.svg')}}" alt="">buy theme</span>
-                    <span><img src="{{ asset('frontend/images/icon-football.svg')}}" alt="">explore now</span>
-                    <span><img src="{{ asset('frontend/images/icon-football.svg')}}" alt="">purchese now</span>
-                    <span><img src="{{ asset('frontend/images/icon-football.svg')}}" alt="">limited time deal</span>
-                    <span><img src="{{ asset('frontend/images/icon-football.svg')}}" alt="">buy theme</span>
-                    <span><img src="{{ asset('frontend/images/icon-football.svg')}}" alt="">explore now</span>
-                    <span><img src="{{ asset('frontend/images/icon-football.svg')}}" alt="">purchese now</span>
-                    <span><img src="{{ asset('frontend/images/icon-football.svg')}}" alt="">limited time deal</span>
-                    <span><img src="{{ asset('frontend/images/icon-football.svg')}}" alt="">buy theme</span>
+                    <span><img src="" alt="">explore now</span>
+                    <span><img src="" alt="">purchese now</span>
+                    <span><img src="" alt="">limited time deal</span>
+                    <span><img src="" alt="">buy theme</span>
+                    <span><img src="" alt="">explore now</span>
+                    <span><img src="" alt="">purchese now</span>
+                    <span><img src="" alt="">limited time deal</span>
+                    <span><img src="" alt="">buy theme</span>
+                    <span><img src="" alt="">explore now</span>
+                    <span><img src="" alt="">purchese now</span>
+                    <span><img src="" alt="">limited time deal</span>
+                    <span><img src="" alt="">buy theme</span>
                 </div>
             </div>
         </div>

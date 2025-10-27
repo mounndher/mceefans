@@ -235,7 +235,7 @@ body{
     width: 40px;
     height: 40px;
 	background-color: var(--accent-color);
-    background-image: url('../images/arrow-white.svg');
+    background-image: url('');
     background-repeat: no-repeat;
     background-position: center center;
     background-size: 12px auto;
@@ -427,7 +427,7 @@ body{
 	letter-spacing: 0.1em;
     text-transform: uppercase;
     color: var(--primary-color);
-    background: url('../images/icon-sub-heading.svg') no-repeat;
+    background: url('') no-repeat;
     background-position: left top 2px;
     background-size: 20px auto;
 	padding-left: 30px;
@@ -1267,7 +1267,7 @@ header.main-header .header-sticky.active{
 
 .what-we-do{
 	position: relative;
-	background: url('../images/section-bg-imgae-1.svg') no-repeat;
+	background: url('') no-repeat;
 	background-position: left top 100px;
 	background-size: 358px auto;
 	padding: 100px 0;
@@ -1278,7 +1278,7 @@ header.main-header .header-sticky.active{
 	position: absolute;
 	bottom: 17%;
 	right: 0;
-	background: url('../images/section-bg-imgae-2.svg') no-repeat;
+	background: url('') no-repeat;
 	background-position: top center;
 	background-size: cover;
 	width: 332px;
@@ -1459,7 +1459,7 @@ header.main-header .header-sticky.active{
 
 .feature-image-content{
 	position: relative;
-	background: url('../images/feature-bg-image.jpg') no-repeat;
+	background: url('') no-repeat;
 	background-size: cover;
 	background-position: center center;
 	height: 100%;
@@ -1578,7 +1578,7 @@ header.main-header .header-sticky.active{
 
 .why-choose-us{
 	position: relative;
-	background: url('../images/section-bg-imgae-1.svg') no-repeat;
+	background: url('') no-repeat;
 	background-position: top 100px left -50px;
 	background-size: 250px auto;
 	padding: 100px 0;
@@ -1589,7 +1589,7 @@ header.main-header .header-sticky.active{
 	position: absolute;
 	bottom: 100px;
 	right: -30px;
-	background: url('../images/section-bg-imgae-2.svg') no-repeat;
+	background: url('') no-repeat;
 	background-position: top center;
 	background-size: cover;
 	width: 230px;
@@ -1896,7 +1896,7 @@ header.main-header .header-sticky.active{
 
 .match-highlights{
 	position: relative;
-    background: url('../images/section-bg-imgae-1.svg') no-repeat;
+    background: url('') no-repeat;
     background-position: top 100px left -50px;
     background-size: 250px auto;
 	padding: 100px 0;
@@ -1907,7 +1907,7 @@ header.main-header .header-sticky.active{
 	position: absolute;
 	bottom: 0;
 	right: -30px;
-	background: url('../images/section-bg-imgae-2.svg') no-repeat;
+	background: url('') no-repeat;
 	background-position: top center;
 	background-size: cover;
 	width: 230px;
@@ -2041,7 +2041,7 @@ header.main-header .header-sticky.active{
 /************************************/
 
 .club-success{
-	background-image: url('../images/club-success-bg-circle.svg');
+	background-image: url('');
 	background-repeat: no-repeat;
 	background-size: auto;
 	background-position: right top;
@@ -2123,7 +2123,7 @@ header.main-header .header-sticky.active{
 
 .our-testimonial{
 	position: relative;
-    background: url('../images/section-bg-imgae-1.svg') no-repeat;
+    background: url('') no-repeat;
     background-position: top 100px left -50px;
     background-size: 250px auto;
 	padding: 100px 0;
@@ -2134,7 +2134,7 @@ header.main-header .header-sticky.active{
 	position: absolute;
 	bottom: 100px;
 	right: -30px;
-	background: url('../images/section-bg-imgae-2.svg') no-repeat;
+	background: url('') no-repeat;
 	background-position: top center;
 	background-size: cover;
 	width: 230px;
@@ -2612,7 +2612,7 @@ header.main-header .header-sticky.active{
 }
 
 .footer-links ul li{
-	background: url('../images/icon-sub-heading.svg') no-repeat;
+	background: url('') no-repeat;
 	background-position: left center;
 	background-size: 14px auto;
 	text-transform: capitalize;
@@ -3097,7 +3097,7 @@ header.main-header .header-sticky.active{
 }
 
 .our-talent{
-	background: url('../images/section-bg-imgae-1.svg') no-repeat;
+	background: url('') no-repeat;
     background-position: top 100px left -50px;
     background-size: 250px auto;
 	padding: 100px 0;
@@ -3176,7 +3176,7 @@ header.main-header .header-sticky.active{
 }
 
 .our-experience{
-	background: url('../images/section-bg-imgae-1.svg') no-repeat;
+	background: url('') no-repeat;
     background-position: top 100px left -50px;
     background-size: 250px auto;
 	padding: 100px 0;
@@ -3379,7 +3379,7 @@ header.main-header .header-sticky.active{
 }
 
 .our-faqs{
-	background: url('../images/section-bg-imgae-1.svg') no-repeat;
+	background: url('') no-repeat;
     background-position: top 100px left -50px;
     background-size: 250px auto;
 	padding: 100px 0;
@@ -3591,7 +3591,7 @@ header.main-header .header-sticky.active{
 
 .page-service-single{
 	position: relative;
-	background: url('../images/section-bg-imgae-1.svg') no-repeat;
+	background: url('') no-repeat;
     background-position: bottom 100px left -50px;
     background-size: 250px auto;
 	padding: 100px 0;
@@ -3602,7 +3602,7 @@ header.main-header .header-sticky.active{
 	position: absolute;
 	top: 100px;
 	right: -30px;
-	background: url('../images/section-bg-imgae-2.svg') no-repeat;
+	background: url('') no-repeat;
 	background-position: top center;
 	background-size: cover;
 	width: 230px;
@@ -3672,7 +3672,7 @@ header.main-header .header-sticky.active{
     right: 20px;
     top: 50%;
     transform: translateY(-50%);
-    background: url('../images/arrow-white.svg');
+    background: url('');
     background-repeat: no-repeat;
     background-position: center center;
     background-size: cover;
@@ -4700,7 +4700,7 @@ header.main-header .header-sticky.active{
 
 .page-contact-us{
 	position: relative;
-	background: url('../images/section-bg-imgae-1.svg') no-repeat;
+	background: url('') no-repeat;
 	background-position: top 100px left -50px;
 	background-size: 250px auto;
 	padding: 100px 0;
@@ -4711,7 +4711,7 @@ header.main-header .header-sticky.active{
 	position: absolute;
 	bottom: 100px;
 	right: -30px;
-	background: url('../images/section-bg-imgae-2.svg') no-repeat;
+	background: url('') no-repeat;
 	background-position: top center;
 	background-size: cover;
 	width: 230px;

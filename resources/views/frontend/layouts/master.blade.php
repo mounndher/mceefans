@@ -19,7 +19,7 @@
 	<!-- Page Title -->
     <title>{{ $settings->title ?? 'Default description' }}</title>
 	<!-- Favicon Icon -->
-	<link rel="shortcut icon" type="image/x-icon" href="{{ asset('frontend/images/favicon.png') }}">
+	<link rel="shortcut icon" type="image/x-icon" href="">
 	<!-- Google Fonts Css-->
 	<link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

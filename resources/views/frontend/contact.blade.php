@@ -51,7 +51,7 @@ use App\Models\Setting;
                     <!-- Contact Info Item Start -->
                     <div class="contact-info-item wow fadeInUp" data-wow-delay="0.2s">
                         <div class="icon-box">
-                            <img src="images/icon-mail-white.svg" alt="">
+                            <img src="" alt="">
                         </div>
                         <div class="contact-info-content">
                             <h3>{{ $contact->email_text }}</h3>
